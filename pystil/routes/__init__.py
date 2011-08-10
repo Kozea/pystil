@@ -3,9 +3,8 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from datetime import datetime, date
-from time import mktime
-from flask import render_template, Response, request, send_file, jsonify
+from datetime import datetime
+from flask import render_template, Response, request, send_file
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 from pystil.corns import Visit
@@ -76,6 +75,6 @@ def register_common_routes(app):
     def pystil_js():
         """Render the js with some jinja in it"""
         return Response(
-            render_template('js.jinja2',
+            render_template('js/pystil.jinja2',
                             url_root=request.url_root, uuid=str(uuid4())),
             mimetype='text/javascript')
