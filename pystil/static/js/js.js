@@ -1,17 +1,16 @@
 (function() {
   var draw;
   draw = function() {
-    var elt, g, plot, previousPoint, success, _i, _len, _ref, _results;
+    var elt, g, previousPoint, success, _i, _len, _ref, _results;
     _ref = window.graphs;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       g = _ref[_i];
-      $("#graphs").append($('<div>').attr('id', g.name).addClass("graph " + g.classname));
-      elt = $("#" + g.name);
-      plot = $.plot(elt, [], g.options);
+      elt = $('<div>').attr('id', g.name).addClass("graph " + g.classname);
+      $("#graphs").append(elt);
       success = (function(g, elt) {
         return function(response) {
-          return plot = $.plot(elt, g.data(response), g.options);
+          return $.plot(elt, g.data(response), g.options);
         };
       })(g, elt);
       $.ajax({
@@ -34,15 +33,15 @@
                 left: pos.pageX + 5,
                 border: '1px solid ' + item.series.color
               }).text(g.tooltip(item)).appendTo("body");
-            } else {
-              $("#tooltip").remove();
-              return previousPoint = null;
             }
+          } else {
+            $("#tooltip").remove();
+            return previousPoint = null;
           }
         };
       })(g)));
     }
     return _results;
   };
-  setTimeout(draw, 10);
+  setTimeout(draw, 1);
 }).call(this);
