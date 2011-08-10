@@ -34,7 +34,7 @@ def register_common_routes(app):
     @app.route("/graphs.js")
     def graphs():
         """Render the graph js with some url_for in it"""
-        return Response(render_template('js/graphs.jinja2'),
+        return Response(render_template('js/graphs.js'),
                         mimetype='text/javascript')
 
     @app.route('/pystil-<int:stamp>-<string:kind>.gif')
