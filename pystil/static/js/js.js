@@ -19,7 +19,6 @@ $(function () {
             success: success
         });
 
-
         var previousPoint = null;
         elt.bind("plothover", function (g) {
             return function (event, pos, item) {
@@ -29,13 +28,9 @@ $(function () {
                         previousPoint = index;
                         $("#tooltip").remove();
                         $('<div>').attr('id', 'tooltip').css({
-                            position: 'absolute',
                             top: pos.pageY + 5,
                             left: pos.pageX + 5,
                             border: '1px solid ' + item.series.color,
-                            padding: '2px',
-                            'background-color': 'white',
-                            opacity: 0.80
                         }).text(g.tooltip(item)).appendTo("body");
                     }
                 }
