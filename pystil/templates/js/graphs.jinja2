@@ -35,9 +35,9 @@ var graphs = [
             return [response];
         },
         tooltip: function (item) {
-            var x = item.datapoint[0];
             var y = item.datapoint[1];
-            return y + " visits on " + $.plot.formatDate(new Date(x), "%y-%0m-%0d");
+            var d =  new Date(item.datapoint[0]);
+            return y + " visits on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
         }
     }, {
         name: 'by_browser',
