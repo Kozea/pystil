@@ -2,7 +2,7 @@ $(function () {
     for(var i in graphs) {
         var g = graphs[i];
         $("#graphs").append(
-            $('<div>').attr('id', g.name).css(g.style));
+            $('<div>').attr('id', g.name).addClass("graph " + g.classname));
         var elt = $("#" + g.name);
         var opt = g.options;
         var plot = $.plot(elt, [], g.options);
@@ -30,7 +30,7 @@ $(function () {
                         $('<div>').attr('id', 'tooltip').css({
                             top: pos.pageY + 5,
                             left: pos.pageX + 5,
-                            border: '1px solid ' + item.series.color,
+                            border: '1px solid ' + item.series.color
                         }).text(g.tooltip(item)).appendTo("body");
                     }
                 }

@@ -2,10 +2,7 @@ var graphs = [
     {
         name: 'by_hour',
         url:  "{{ url_for('visit_by_hour')}}",
-        style: {
-            width: '800px',
-            height: '300px'
-        },
+        classname: 'histo',
         options: {
             bars: { show: true, fill: true },
             grid: { hoverable: true },
@@ -23,10 +20,7 @@ var graphs = [
     }, {
         name: 'by_day',
         url:  "{{ url_for('visit_by_day') }}",
-        style: {
-            width: '800px',
-            height: '300px'
-        },
+        classname: 'line',
         options: {
             lines: { show: true, fill: true },
             points: { show: true, fill: true },
@@ -48,10 +42,7 @@ var graphs = [
     }, {
         name: 'by_browser',
         url:  "{{ url_for('visit_by_browser') }}",
-        style: {
-            width: '500px',
-            height: '400px'
-        },
+        classname: 'pie',
         options: {
             grid: { hoverable: true },
             series: {
