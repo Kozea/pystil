@@ -31,10 +31,10 @@ def register_common_routes(app):
             text += repr(browser_parser.transform(parser, keep_existant=False))
         return Response(text, mimetype='text/css')
 
-    @app.route("/js.js")
-    def js_():
-        """Render the js with some url_for in it"""
-        return Response(render_template('js/js.jinja2'),
+    @app.route("/graphs.js")
+    def graphs():
+        """Render the graph js with some url_for in it"""
+        return Response(render_template('js/graphs.jinja2'),
                         mimetype='text/javascript')
 
     @app.route('/pystil-<int:stamp>-<string:kind>.gif')
