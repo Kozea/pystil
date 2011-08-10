@@ -5,6 +5,7 @@
     {% block script %}
       <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
       <!--[if lte IE 8]><script src="{{ url_for('static', filename='excanvas.min.js') }}"></script><![endif]-->
+      <script src="{{ url_for('pystil_js') }}"></script>
       <script src="http://code.jquery.com/jquery.min.js"></script>
       <script src="{{ url_for('static', filename='jquery.flot.js') }}"></script>
       <script src="{{ url_for('static', filename='jquery.flot.pie.js') }}"></script>
