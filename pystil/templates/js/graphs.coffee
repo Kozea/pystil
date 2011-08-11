@@ -109,5 +109,38 @@ window.graphs = () -> [
     tooltip: (item) ->
         p = item.datapoint[0]
         item.series.label + ": " + p.toFixed(1) + "%"
-    )
+    ),
+    (name: 'by_referrer'
+    url:  "{{ url_for('visit_by_referrer') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+    ),
+    (name: 'by_time'
+    url:  "{{ url_for('visit_by_time') }}"
+    classname: 'histo'
+    options:
+        bars:
+            show: true
+            fill: true
+        grid:
+            hoverable: true
+        xaxis:
+            min: 0
+            max: 60
+            tickDecimals: 0
+        yaxis: tickDecimals: 0
+    data: (response) -> [response]
+    tooltip: (item) ->
+        x = item.datapoint[0]
+        y = item.datapoint[1]
+        y + " visits at " + x + " h")
 ]

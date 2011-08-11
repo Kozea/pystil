@@ -38,6 +38,16 @@ def register_data_routes(app):
         return jsonify({'label': 'Visits per day',
                         'data': visits, 'color': '#FF00FF'})
 
+    @app.route('/visit_by_time.json')
+    def visit_by_time():
+        visits = [(int(visit['key']), visit['count'])
+                  for visit in Visit.all
+                  .map(c.time / 60000)
+                  .groupby(c, count=c.len())
+                  .execute() if visit['key']]
+        return jsonify({'label': 'Time spent on site (in min)', 'data': visits,
+                        'color': '#00FF00'})
+
     @app.route('/visit_by_hour.json')
     def visit_by_hour():
         visits = [(int(visit['key']), visit['count']) for visit in Visit.all
@@ -71,6 +81,15 @@ def register_data_routes(app):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
                   .groupby(c.platform, count=c.len())
+                  .sort(c.key)
+                  .execute()]
+        return jsonify({'list': visits})
+
+    @app.route('/visit_by_referrer.json')
+    def visit_by_referrer():
+        visits = [{'label': visit['key'],
+                   'data': visit['count']} for visit in Visit.all
+                  .groupby(c.referrer, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
