@@ -67,7 +67,7 @@ def register_common_routes(app):
         else:
             log.warn("No uuid in request %r" % request)
             return gif
-        log.warn("Visit %r" % visit)
+        log.debug("Visit %r" % visit.items())
         visit.save()
         return gif
 

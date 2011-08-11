@@ -1,2 +1,3 @@
 #!/bin/sh
-coffee --watch --compile pystil/static/js/js.coffee pystil/templates/js/graphs.coffee
+# Use coffee-maker.sh -w to watch for changes
+coffee $* --compile pystil/static/js/js.coffee pystil/templates/js/graphs.coffee

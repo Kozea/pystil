@@ -2,3 +2,5 @@
 *.db
 pystil/static/js/js.js
 pystil/templates/js/graphs.js
+GeoLiteCity.dat.gz
+ip.db
