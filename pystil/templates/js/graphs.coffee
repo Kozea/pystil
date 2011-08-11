@@ -39,7 +39,7 @@ window.graphs = () -> [
     tooltip: (item) ->
         y = item.datapoint[1]
         d =  new Date item.datapoint[0]
-        y + " " + item.series.label + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()),
+        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()),
     (name: 'by_browser'
     url:  "{{ url_for('visit_by_browser') }}"
     classname: 'pie'
@@ -82,8 +82,8 @@ window.graphs = () -> [
         p = item.datapoint[0]
         item.series.label + ": " + p.toFixed(1) + "%"
     ),
-    (name: 'by_site'
-    url:  "{{ url_for('visit_by_site') }}"
+    (name: 'by_host'
+    url:  "{{ url_for('visit_by_host') }}"
     classname: 'pie'
     options:
         grid:
@@ -142,5 +142,5 @@ window.graphs = () -> [
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
-        y + " visits at " + x + " h")
+        y + " visits during between " + x + " and  " + (x+1) + " minutes")
 ]

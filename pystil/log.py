@@ -48,7 +48,7 @@ class ColorFormatter(logging.Formatter):
 
 def get_default_handler():
     """Return the default handler"""
-    handler = StreamHandler(sys.stdout)
+    handler = StreamHandler(sys.stderr)
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(
         ColorFormatter(

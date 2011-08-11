@@ -17,6 +17,7 @@ class Visit(object):
     uuid = Property()
     browser_name = Property()
     hash = Property()
+    host = Property()
     browser_version = Property()
     date = Property(type=datetime)
     last_visit = Property(type=datetime)

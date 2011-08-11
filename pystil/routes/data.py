@@ -55,11 +55,11 @@ def register_data_routes(app):
                   .sort(c.key)
                   .execute()]
         return jsonify({'series': [
-            {'label': 'page hits',
+            {'label': 'Page hits',
              'data': page_hits},
-            {'label': 'visits',
+            {'label': 'Visits',
              'data': visits},
-            {'label': 'new visits',
+            {'label': 'New visits',
              'data': new_visits}]})
 
     @app.route('/visit_by_time.json')
@@ -68,7 +68,7 @@ def register_data_routes(app):
                   for visit in Visit.all
                   .map(c.time / 60000)
                   .groupby(c, count=c.len())
-                  .execute() if visit['key']]
+                  .execute() if visit['key'] is not None]
         return jsonify({'label': 'Time spent on site (in min)', 'data': visits,
                         'color': '#00FF00'})
 
@@ -111,18 +111,25 @@ def register_data_routes(app):
 
     @app.route('/visit_by_referrer.json')
     def visit_by_referrer():
-        visits = [{'label': visit['key'],
+        full_referrers = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(c.referrer != None)
                   .groupby(c.referrer, count=c.len())
                   .sort(c.key)
                   .execute()]
+        visits = {}
+        for referrer in full_referrers:
+            host = referrer['label'].split("://")[1].split("/")[0]
+            visits[host] = visits.get(host, 0) + referrer['data']
+        visits = [{'label': key,
+                   'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_site.json')
-    def visit_by_site():
+    @app.route('/visit_by_host.json')
+    def visit_by_host():
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .groupby(c.site, count=c.len())
+                  .groupby(c.host, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})

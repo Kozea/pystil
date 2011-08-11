@@ -51,6 +51,7 @@ def register_common_routes(app):
                 last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
             visit = {}
             visit['uuid'] = uuid
+            visit['host'] = request.args.get('k', None)
             visit['site'] = request.args.get('u', None)
             visit['date'] = datetime.fromtimestamp(stamp / 1000.)
             visit['last_visit'] = last_visit
