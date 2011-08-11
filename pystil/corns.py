@@ -5,7 +5,7 @@
 from datetime import datetime
 from multicorn import Multicorn
 from multicorn.corns.alchemy import Alchemy
-from multicorn.declarative import declare, Property, computed
+from multicorn.declarative import declare, Property
 
 MC = Multicorn()
 
@@ -19,6 +19,7 @@ class Visit(object):
     hash = Property()
     browser_version = Property()
     date = Property(type=datetime)
+    last_visit = Property(type=datetime)
     ip = Property()
     language = Property()
     page = Property()

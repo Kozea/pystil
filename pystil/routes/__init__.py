@@ -46,16 +46,20 @@ def register_common_routes(app):
             log.warn("No uuid in request %r" % request)
             return gif
         if kind == 'o':
+            last_visit = request.args.get('l', None)
+            if last_visit:
+                last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
             visit = {}
             visit['uuid'] = uuid
             visit['site'] = request.args.get('u', None)
+            visit['date'] = datetime.fromtimestamp(stamp / 1000.)
+            visit['last_visit'] = last_visit
+            visit['ip'] = request.remote_addr
             visit['referrer'] = request.args.get('r', None)
             visit['size'] = request.args.get('s', None)
             visit['page'] = request.args.get('p', None)
             visit['hash'] = request.args.get('h', None)
             visit['query'] = request.args.get('q', None)
-            visit['date'] = datetime.fromtimestamp(stamp / 1000.)
-            visit['ip'] = request.remote_addr
             visit['browser_name'] = request.user_agent.browser
             visit['browser_version'] = request.user_agent.version
             visit['platform'] = request.user_agent.platform

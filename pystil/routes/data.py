@@ -18,6 +18,7 @@ def register_data_routes(app):
     @app.route('/visit_by_day.json')
     def visit_by_day():
         today = date.today()
+        day_start = datetime(today.year, today.month, today.day)
         month_start = datetime(today.year, today.month, 1)
         if today.month == 12:
             year = today.year + 1
@@ -27,7 +28,7 @@ def register_data_routes(app):
             month = today.month + 1
         month_end = datetime(year, month, 1)
 
-        visits = [(int(1000 * mktime(
+        page_hits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
                   .filter((month_start <= c.date) & (c.date < month_end))
@@ -35,8 +36,31 @@ def register_data_routes(app):
                   .groupby(c.day, count=c.len())
                   .sort(c.key)
                   .execute()]
-        return jsonify({'label': 'Visits per day',
-                        'data': visits, 'color': '#FF00FF'})
+        new_visits = [(int(1000 * mktime(
+            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
+                          visit['count']) for visit in Visit.all
+                  .filter((month_start <= c.date) & (c.date < month_end))
+                  .filter(c.last_visit == None)
+                  .map({'day': c.date.str()[:10]})
+                  .groupby(c.day, count=c.len())
+                  .sort(c.key)
+                  .execute()]
+        visits = [(int(1000 * mktime(
+            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
+                          visit['count']) for visit in Visit.all
+                  .filter((month_start <= c.date) & (c.date < month_end))
+                  .filter((c.last_visit < day_start) | (c.last_visit == None))
+                  .map({'day': c.date.str()[:10]})
+                  .groupby(c.day, count=c.len())
+                  .sort(c.key)
+                  .execute()]
+        return jsonify({'series': [
+            {'label': 'page hits',
+             'data': page_hits},
+            {'label': 'visits',
+             'data': visits},
+            {'label': 'new visits',
+             'data': new_visits}]})
 
     @app.route('/visit_by_time.json')
     def visit_by_time():

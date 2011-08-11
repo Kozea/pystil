@@ -35,11 +35,11 @@ window.graphs = () -> [
             mode: "time"
             timeformat: "%y-%0m-%0d"
         yaxis: tickDecimals: 0
-    data: (response) -> [response]
+    data: (response) -> response.series
     tooltip: (item) ->
         y = item.datapoint[1]
         d =  new Date item.datapoint[0]
-        y + " visits on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()),
+        y + " " + item.series.label + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()),
     (name: 'by_browser'
     url:  "{{ url_for('visit_by_browser') }}"
     classname: 'pie'
