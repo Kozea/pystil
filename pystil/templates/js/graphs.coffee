@@ -1,4 +1,4 @@
-window.graphs = [
+window.graphs = () -> [
     (name: 'by_hour'
     url:  "{{ url_for('visit_by_hour') }}"
     classname: 'histo'

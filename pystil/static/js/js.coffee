@@ -1,5 +1,5 @@
 draw = () ->
-    for g in window.graphs
+    for g in window.graphs()
         elt = $('<div>').attr('id', g.name).addClass("graph " + g.classname)
         $("#graphs").append elt
         # Keep the closures FFS
@@ -30,4 +30,4 @@ draw = () ->
                 previousPoint = null
         )(g))
 
-setTimeout draw, 1
+$(draw)
