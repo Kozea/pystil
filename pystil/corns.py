@@ -5,7 +5,7 @@
 from datetime import datetime
 from multicorn import Multicorn
 from multicorn.corns.alchemy import Alchemy
-from multicorn.declarative import declare, Property
+from multicorn.declarative import declare, Property, computed
 
 MC = Multicorn()
 

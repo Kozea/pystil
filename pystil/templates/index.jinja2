@@ -3,8 +3,8 @@
   <head>
     <title>pystil - An elegant site web traffic analyzer</title>
     {% block script %}
-      <script src="{{ url_for('pystil_js') }}"><!-- document.location.href="{{ url_for('pystil_gif', stamp=0, kind='b') }}" --></script>
-      
+      <script src="{{ url_for('pystil_js') }}"></script>
+      <script><!-- /* document.location.href="{{ url_for('pystil_gif', stamp=0, kind='b') }}" */ --></script>
       <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
       <!--[if lte IE 8]><script src="{{ url_for('static', filename='js/excanvas.min.js') }}"></script><![endif]-->
 

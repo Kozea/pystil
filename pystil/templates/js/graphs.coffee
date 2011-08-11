@@ -53,5 +53,61 @@ window.graphs = () -> [
     tooltip: (item) ->
         p = item.datapoint[0]
         item.series.label + ": " + p.toFixed(1) + "%"
+    ),
+    (name: 'by_browser_version'
+    url:  "{{ url_for('visit_by_browser_version') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+    ),
+    (name: 'by_platform'
+    url:  "{{ url_for('visit_by_platform') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+    ),
+    (name: 'by_site'
+    url:  "{{ url_for('visit_by_site') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+    ),
+    (name: 'by_city'
+    url:  "{{ url_for('visit_by_city') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
     )
 ]
