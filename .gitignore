@@ -1,2 +1,4 @@
 *.pyc
 *.db
+pystil/static/js/js.js
+pystil/templates/js/graphs.js
