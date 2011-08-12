@@ -198,9 +198,31 @@
           return item.series.label + ": " + p.toFixed(1) + "%";
         }
       }, {
+        name: 'by_resolution',
+        url: "{{ url_for('visit_by_resolution') }}",
+        classname: 'pie',
+        options: {
+          grid: {
+            hoverable: true
+          },
+          series: {
+            pie: {
+              show: true
+            }
+          }
+        },
+        data: function(response) {
+          return response.list;
+        },
+        tooltip: function(item) {
+          var p;
+          p = item.datapoint[0];
+          return item.series.label + ": " + p.toFixed(1) + "%";
+        }
+      }, {
         name: 'by_time',
         url: "{{ url_for('visit_by_time') }}",
-        classname: 'histo',
+        classname: 'pie',
         options: {
           bars: {
             show: true,

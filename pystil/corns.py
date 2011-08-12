@@ -19,6 +19,7 @@ class Visit(object):
     hash = Property()
     host = Property()
     browser_version = Property()
+    client_tz_offset = Property(type=int)
     date = Property(type=datetime)
     last_visit = Property(type=datetime)
     ip = Property()

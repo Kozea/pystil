@@ -53,7 +53,8 @@ def register_common_routes(app):
             visit['uuid'] = uuid
             visit['host'] = request.args.get('k', None)
             visit['site'] = request.args.get('u', None)
-            visit['date'] = datetime.fromtimestamp(stamp / 1000.)
+            visit['client_tz_offset'] = request.args.get('z', 0)
+            visit['date'] = datetime.now()
             visit['last_visit'] = last_visit
             visit['ip'] = request.remote_addr
             visit['referrer'] = request.args.get('r', None)

@@ -4,7 +4,7 @@
     try {
     window.setTimeout(function () {
         var h = function(e, n, h) { var c = function() {}; if (e[n]) {c = e[n]} e[n] = function (e) {h(e); c(e);}};
-	    var w = window, l = w.location, d = w.document, s = w.screen, r = {}, i = {{ uuid | tojson }}, q = '_=' + i, t = new w.Date().getTime();
+	    var w = window, l = w.location, d = w.document, s = w.screen, r = {}, i = {{ uuid | tojson }}, q = '_=' + i, z = new w.Date(), t = z.getTime();
         var g = function (q, y) {new w.Image().src = {{ url_root | tojson }} + "pystil-" + t + "-" + y + ".gif?" + q;};
         var j = function (a, r) {var q = a; for (var k in r) {if(r[k]) {q += '&' + k + "=" + escape(r[k]);}} return q;};
         r.s = s.width + 'x' + s.height;
@@ -14,8 +14,9 @@
         r.p = l.pathname;
         r.h = l.hash;
         r.q = l.search;
+        r.z = -z.getTimezoneOffset();
         r.l = (d.cookie.match('pystil=([0-9]+)') || [])[1];
-        d.cookie = "pystil="+new Date().getTime()+"; path=/"
+        d.cookie = "pystil="+t+"; path=/"
         if(r.r.indexOf(r.u) > -1) r.r = r.r.replace(r.u, '');
         g(j(q, r), "o");
         h(w, 'onunload', function () {
