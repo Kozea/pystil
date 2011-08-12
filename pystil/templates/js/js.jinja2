@@ -50,7 +50,7 @@ $(function () {
             name: 'by_browser',
             url:  "{{ url_for('visit_by_browser') }}",
             style: {
-                width: '400px',
+                width: '500px',
                 height: '400px'
             },
             options: {
@@ -67,23 +67,13 @@ $(function () {
             }
         }
     ];
-    var showTooltip = function (x, y, contents) {
-        $('<div>').attr('id', 'tooltip').css( {
-            position: 'absolute',
-            display: 'none',
-            top: y + 5,
-            left: x + 5,
-            border: '1px solid #fdd',
-            padding: '2px',
-            'background-color': '#fee',
-            opacity: 0.80
-        }).text(contents).appendTo("body").fadeIn(200);
-    };
+
     for(var i in graphs) {
         var g = graphs[i];
         $("#graphs").append(
             $('<div>').attr('id', g.name).css(g.style));
         var elt = $("#" + g.name);
+        var opt = g.options;
         var plot = $.plot(elt, [], g.options);
         // Keep the closures FFS
         var success = function (g, elt) {
@@ -105,9 +95,16 @@ $(function () {
                 if (item) {
                     if (previousPoint != item.dataIndex) {
                         previousPoint = item.dataIndex;
-
                         $("#tooltip").remove();
-                        showTooltip(item.pageX, item.pageY, g.tooltip(item));
+                        $('<div>').attr('id', 'tooltip').css({
+                            position: 'absolute',
+                            top: pos.pageY + 5,
+                            left: pos.pageX + 5,
+                            border: '1px solid #fdd',
+                            padding: '2px',
+                            'background-color': '#fee',
+                            opacity: 0.80
+                        }).text(g.tooltip(item)).appendTo("body");
                     }
                 }
                 else {
