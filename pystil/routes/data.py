@@ -9,6 +9,7 @@ from flask import jsonify
 from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
 from  pygeoip import GeoIP
+from urlparse import urlparse
 import re
 
 IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
@@ -123,7 +124,7 @@ def register_data_routes(app):
                   .execute()]
         visits = {}
         for referrer in full_referrers:
-            host = referrer['label'].split("://")[1].split("/")[0]
+            host = urlparse(referrer['label']).netloc.split(':')[0]
             visits[host] = visits.get(host, 0) + referrer['data']
         visits = [{'label': key,
                    'data': value} for key, value in visits.items()]
@@ -153,6 +154,7 @@ def register_data_routes(app):
                 else:
                     location = gip.record_by_addr(ip)
                     city = (location.get('city', 'Unknown')
+                            .decode('iso-8859-1')
                             if location else 'Unknown')
             else:
                 city = 'ipv6'
