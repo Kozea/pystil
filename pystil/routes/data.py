@@ -5,18 +5,24 @@
 
 from datetime import datetime, date
 from time import mktime
-from flask import jsonify, session
+from flask import jsonify
+from threading import Lock
 from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
 from pygeoip import GeoIP
 from urlparse import urlparse
 from collections import Counter
+from functools import wraps
 import re
 
 IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
 BROWSER_VERSION_NUMBERS = {
+    'opera': 1,
     'safari': 1,
     'chrome': 1}
+
+
+ipdb_lock = Lock()
 
 
 def register_data_routes(app):
@@ -24,8 +30,11 @@ def register_data_routes(app):
     gip = GeoIP(app.config['geoipdb'])
     log = app.logger
 
-    @app.route('/visit_by_day.json')
-    def visit_by_day():
+    def on(site):
+        return c.site.matches(".*" + site + ".*") if site != '*' else True
+
+    @app.route('/<site>/visit_by_day.json')
+    def visit_by_day(site):
         today = date.today()
         day_start = datetime(today.year, today.month, today.day)
         month_start = datetime(today.year, today.month, 1)
@@ -40,7 +49,7 @@ def register_data_routes(app):
         page_hits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .map({'day': c.date.str()[:10]})
                   .groupby(c.day, count=c.len())
@@ -50,7 +59,7 @@ def register_data_routes(app):
         new_visits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .filter(c.last_visit == None)
                   .map({'day': c.date.str()[:10]})
@@ -60,9 +69,9 @@ def register_data_routes(app):
         visits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
+                  .filter((c.last_visit == None) | (c.last_visit < day_start))
                   .filter((month_start <= c.date) & (c.date < month_end))
-                  .filter((c.last_visit < day_start) | (c.last_visit == None))
                   .map({'day': c.date.str()[:10]})
                   .groupby(c.day, count=c.len())
                   .sort(c.key)
@@ -75,11 +84,11 @@ def register_data_routes(app):
             {'label': 'New visits',
              'data': new_visits}]})
 
-    @app.route('/visit_by_time.json')
-    def visit_by_time():
+    @app.route('/<site>/visit_by_time.json')
+    def visit_by_time(site):
         visits = [(int(visit / 60000))
                   for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .map(c.time)
                   .execute() if visit is not None]
 
@@ -87,34 +96,35 @@ def register_data_routes(app):
                         'data': Counter(visits).items(),
                         'color': '#00FF00'})
 
-    @app.route('/visit_by_hour.json')
-    def visit_by_hour():
+    @app.route('/<site>/visit_by_hour.json')
+    def visit_by_hour(site):
         visits = [(int(visit['key']), visit['count']) for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .map({'hour': c.date.str()[11:13]})
                   .groupby(c.hour, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'label': 'Visits per hour', 'data': visits})
 
-    @app.route('/visit_by_browser.json')
-    def visit_by_browser():
-        log.error(session['site'])
+    @app.route('/<site>/visit_by_browser.json')
+    def visit_by_browser(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .groupby(c.browser_name, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_browser_version.json')
-    def visit_by_browser_version():
-        visits = [{'label': visit['browser_name'] + " " +
-                   visit['browser_version'],
-                   'data': 1} for visit in Visit.all
-                  .filter(session['site'])
+    @app.route('/<site>/visit_by_browser_version.json')
+    def visit_by_browser_version(site):
+        visits = [{
+            'label': '%s %s' % (
+                visit['browser_name'], visit['browser_version']),
+            'data': 1} for visit in Visit.all
+                  .filter(on(site))
                   .execute()]
+
         version_visits = {}
         for visit in visits:
             label, data = visit['label'], visit['data']
@@ -131,31 +141,31 @@ def register_data_routes(app):
             for key, value in version_visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_platform.json')
-    def visit_by_platform():
+    @app.route('/<site>/visit_by_platform.json')
+    def visit_by_platform(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .groupby(c.platform, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_resolution.json')
-    def visit_by_resolution():
+    @app.route('/<site>/visit_by_resolution.json')
+    def visit_by_resolution(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .groupby(c.size, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_referrer.json')
-    def visit_by_referrer():
+    @app.route('/<site>/visit_by_referrer.json')
+    def visit_by_referrer(site):
         full_referrers = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .filter(c.referrer != None)
                   .groupby(c.referrer, count=c.len())
                   .sort(c.key)
@@ -168,20 +178,20 @@ def register_data_routes(app):
                    'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_host.json')
-    def visit_by_host():
+    @app.route('/<site>/visit_by_host.json')
+    def visit_by_host(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
-                  .filter(session['site'])
+                  .filter(on(site))
                   .groupby(c.host, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_city.json')
-    def visit_by_city():
+    @app.route('/<site>/visit_by_city.json')
+    def visit_by_city(site):
         ips = (Visit.all
-               .filter(session['site'])
+               .filter(on(site))
                .map(c.ip) .execute())
         visits = {}
         for ip in ips:
@@ -193,9 +203,10 @@ def register_data_routes(app):
                     or ip.startswith('10.')):
                     city = 'Local'
                 else:
-                    location = gip.record_by_addr(ip)
+                    with ipdb_lock:
+                        location = gip.record_by_addr(ip)
                     city = (location.get('city', 'Unknown')
-                            .decode('iso-8859-1')
+                            .decode('latin-1')
                             if location else 'Unknown')
             else:
                 city = 'ipv6'
@@ -204,10 +215,10 @@ def register_data_routes(app):
                    'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/visit_by_country.json')
-    def visit_by_country():
+    @app.route('/<site>/visit_by_country.json')
+    def visit_by_country(site):
         ips = (Visit.all
-               .filter(session['site'])
+               .filter(on(site))
                .map(c.ip) .execute())
         visits = {}
         for ip in ips:
@@ -219,8 +230,9 @@ def register_data_routes(app):
                     or ip.startswith('10.')):
                     country = 'Local'
                 else:
-                    location = gip.record_by_addr(ip)
-                    country = (location.get('country', 'Unknown')
+                    with ipdb_lock:
+                        location = gip.record_by_addr(ip)
+                    country = (location.get('country_name', 'Unknown')
                             .decode('iso-8859-1')
                             if location else 'Unknown')
             else:

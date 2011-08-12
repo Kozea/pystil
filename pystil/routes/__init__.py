@@ -4,7 +4,7 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from datetime import datetime
-from flask import render_template, Response, request, send_file, session
+from flask import render_template, Response, request, send_file, session, abort
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 from pystil.corns import Visit
@@ -15,12 +15,15 @@ def register_common_routes(app):
     """Defines common routes"""
     log = app.logger
 
+    @app.route('/favicon.ico')
+    def favicon():
+        abort(404)
+
     @app.route('/')
     @app.route('/<site>')
     def index(site=None):
         """Nothing yet"""
-        session['site'] = c.site.matches(".*" + site + ".*") if site else True
-        return render_template('index.jinja2')
+        return render_template('index.jinja2', site=site or '*')
 
     @app.route("/css.css")
     def css():
@@ -33,10 +36,10 @@ def register_common_routes(app):
             text += repr(browser_parser.transform(parser, keep_existant=False))
         return Response(text, mimetype='text/css')
 
-    @app.route("/graphs.js")
-    def graphs():
+    @app.route("/<site>/graphs.js")
+    def graphs(site):
         """Render the graph js with some url_for in it"""
-        return Response(render_template('js/graphs.js'),
+        return Response(render_template('js/graphs.js', site=site),
                         mimetype='text/javascript')
 
     @app.route('/pystil-<int:stamp>-<string:kind>.gif')

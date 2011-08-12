@@ -33,6 +33,6 @@ def app(ipdb='ip.db', log=''):
     getLogger('werkzeug').setLevel(INFO)
     app.logger.handlers = []
     app.logger.addHandler(handler)
-    register_common_routes(app)
     register_data_routes(app)
+    register_common_routes(app)
     return app

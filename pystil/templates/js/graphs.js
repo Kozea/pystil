@@ -3,7 +3,7 @@
     return [
       {
         name: 'by_hour',
-        url: "{{ url_for('visit_by_hour') }}",
+        url: "{{ url_for('visit_by_hour', site=site) }}",
         classname: 'histo',
         options: {
           bars: {
@@ -34,7 +34,7 @@
         }
       }, {
         name: 'by_day',
-        url: "{{ url_for('visit_by_day') }}",
+        url: "{{ url_for('visit_by_day', site=site) }}",
         classname: 'line',
         options: {
           lines: {
@@ -67,7 +67,7 @@
         }
       }, {
         name: 'by_browser',
-        url: "{{ url_for('visit_by_browser') }}",
+        url: "{{ url_for('visit_by_browser', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -89,7 +89,7 @@
         }
       }, {
         name: 'by_browser_version',
-        url: "{{ url_for('visit_by_browser_version') }}",
+        url: "{{ url_for('visit_by_browser_version', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -111,7 +111,7 @@
         }
       }, {
         name: 'by_platform',
-        url: "{{ url_for('visit_by_platform') }}",
+        url: "{{ url_for('visit_by_platform', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -133,7 +133,7 @@
         }
       }, {
         name: 'by_host',
-        url: "{{ url_for('visit_by_host') }}",
+        url: "{{ url_for('visit_by_host', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -155,7 +155,7 @@
         }
       }, {
         name: 'by_city',
-        url: "{{ url_for('visit_by_city') }}",
+        url: "{{ url_for('visit_by_city', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -177,7 +177,7 @@
         }
       }, {
         name: 'by_country',
-        url: "{{ url_for('visit_by_country') }}",
+        url: "{{ url_for('visit_by_country', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -199,7 +199,7 @@
         }
       }, {
         name: 'by_referrer',
-        url: "{{ url_for('visit_by_referrer') }}",
+        url: "{{ url_for('visit_by_referrer', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -221,7 +221,7 @@
         }
       }, {
         name: 'by_resolution',
-        url: "{{ url_for('visit_by_resolution') }}",
+        url: "{{ url_for('visit_by_resolution', site=site) }}",
         classname: 'pie',
         options: {
           grid: {
@@ -243,7 +243,7 @@
         }
       }, {
         name: 'by_time',
-        url: "{{ url_for('visit_by_time') }}",
+        url: "{{ url_for('visit_by_time', site=site) }}",
         classname: 'pie',
         options: {
           bars: {

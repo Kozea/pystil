@@ -12,7 +12,7 @@
       <script src="{{ url_for('static', filename='js/jquery.flot.js') }}"></script>
       <script src="{{ url_for('static', filename='js/jquery.flot.pie.js') }}"></script>
 
-      <script src="{{ url_for('graphs') }}"></script>
+      <script src="{{ url_for('graphs', site=site) }}"></script>
       <script src="{{ url_for('static', filename='js/js.js') }}"></script>
     {% endblock script %}
     {% block style %}
