@@ -23,6 +23,7 @@ CREATE TABLE visit
   size character varying,
   "time" integer,
   uuid character varying NOT NULL,
+  client_tz_offset integer,
   CONSTRAINT visit_pkey PRIMARY KEY (uuid)
 )
 WITH (
