@@ -20,7 +20,8 @@ def app(ipdb='ip.db'):
     static_folder = os.path.join(root, 'static')
     template_folder = os.path.join(root, 'templates')
     app = Flask(__name__,
-                static_folder=static_folder, template_folder=template_folder)
+                static_folder=static_folder,
+                template_folder=template_folder)
     app.config['geoipdb'] = ipdb
     handler = get_default_handler()
     getLogger('werkzeug').addHandler(handler)
