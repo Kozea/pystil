@@ -15,6 +15,7 @@ import re
 
 IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
 BROWSER_VERSION_NUMBERS = {
+    'opera': 1,
     'safari': 1,
     'chrome': 1}
 
