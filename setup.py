@@ -26,6 +26,14 @@ options = dict(
     platforms="Any",
     packages=find_packages(),
     install_requires=['pygeoip', 'Multicorn', "flask"],
+    package_data={'pystil': [
+        'templates/*.jinja2',
+        'templates/css/*',
+        'templates/js/*',
+        'static/*.gif',
+        'static/js/*',
+        'static/css/*',
+    ]},
     classifiers=[
         "Development Status :: WIP",
         "Intended Audience :: Public",
