@@ -11,8 +11,7 @@ MC = Multicorn()
 
 
 @MC.register
-@declare(Alchemy, identity_properties=['uuid'],
-         url='postgresql+psycopg2://pystil:pystil@localhost:5432/pystil')
+@declare(Alchemy, identity_properties=['uuid'], url='sqlite:///pystil.db')
 class Visit(object):
     """This corn contains the visits"""
     uuid = Property()
