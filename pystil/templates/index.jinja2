@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>pystil - An elegant site web traffic analyzer</title>
+    {% block script %}
+      <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="http://raw.github.com/flot/flot/master/excanvas.min.js"></script><![endif]-->
+      <script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+      <script language="javascript" type="text/javascript" src="https://raw.github.com/flot/flot/master/jquery.flot.js"></script>
+      <script language="javascript" type="text/javascript" src="https://raw.github.com/flot/flot/master/jquery.flot.pie.js"></script>
+      <script language="javascript" type="text/javascript" src="{{ url_for('js_') }}"></script>
+    {% endblock script %}
+    {% block style %}
+      <link rel="stylesheet" href="{{ url_for('css') }}" type="text/css" />
+    {% endblock style %}
+  </head>
+  <body>
+    <section>
+      <header>
+        <h1>pystil</h1>
+      </header>
+      <article id="graphs">
+      </article>
+    </section>
+  </body>
+</html>
