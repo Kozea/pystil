@@ -8,7 +8,7 @@ from time import mktime
 from flask import jsonify
 from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
-from  pygeoip import GeoIP
+from pygeoip import GeoIP
 from urlparse import urlparse
 import re
 
@@ -41,6 +41,7 @@ def register_data_routes(app):
                   .groupby(c.day, count=c.len())
                   .sort(c.key)
                   .execute()]
+
         new_visits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
@@ -110,6 +111,16 @@ def register_data_routes(app):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
                   .groupby(c.platform, count=c.len())
+                  .sort(c.key)
+                  .execute()]
+        return jsonify({'list': visits})
+
+
+    @app.route('/visit_by_resolution.json')
+    def visit_by_resolution():
+        visits = [{'label': visit['key'],
+                   'data': visit['count']} for visit in Visit.all
+                  .groupby(c.size, count=c.len())
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
