@@ -152,7 +152,8 @@ def register_data_routes(app):
                     city = 'Local'
                 else:
                     location = gip.record_by_addr(ip)
-                    city = location['city'] if location else 'Unknown'
+                    city = (location.get('city', 'Unknown')
+                            if location else 'Unknown')
             else:
                 city = 'ipv6'
             visits[city] = visits.get(city, 0) + 1
