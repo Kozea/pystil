@@ -26,6 +26,8 @@ def app(ipdb='ip.db', log=''):
                 static_folder=static_folder,
                 template_folder=template_folder)
     app.config['geoipdb'] = ipdb
+    # TODO: externalize this
+    app.config['SECRET_KEY'] = "ieui euir enruits nuiret nuiet nurets i"
     handler = get_default_handler()
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)

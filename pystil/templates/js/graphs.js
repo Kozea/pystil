@@ -176,6 +176,28 @@
           return item.series.label + ": " + p.toFixed(1) + "%";
         }
       }, {
+        name: 'by_country',
+        url: "{{ url_for('visit_by_country') }}",
+        classname: 'pie',
+        options: {
+          grid: {
+            hoverable: true
+          },
+          series: {
+            pie: {
+              show: true
+            }
+          }
+        },
+        data: function(response) {
+          return response.list;
+        },
+        tooltip: function(item) {
+          var p;
+          p = item.datapoint[0];
+          return item.series.label + ": " + p.toFixed(1) + "%";
+        }
+      }, {
         name: 'by_referrer',
         url: "{{ url_for('visit_by_referrer') }}",
         classname: 'pie',

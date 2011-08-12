@@ -4,7 +4,7 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from datetime import datetime
-from flask import render_template, Response, request, send_file
+from flask import render_template, Response, request, send_file, session
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 from pystil.corns import Visit
@@ -16,8 +16,10 @@ def register_common_routes(app):
     log = app.logger
 
     @app.route('/')
-    def index():
+    @app.route('/<site>')
+    def index(site=None):
         """Nothing yet"""
+        session['site'] = c.site.matches(".*" + site + ".*") if site else True
         return render_template('index.jinja2')
 
     @app.route("/css.css")

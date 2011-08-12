@@ -110,6 +110,20 @@ window.graphs = () -> [
         p = item.datapoint[0]
         item.series.label + ": " + p.toFixed(1) + "%"
     ),
+    (name: 'by_country'
+    url:  "{{ url_for('visit_by_country') }}"
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+    ),
     (name: 'by_referrer'
     url:  "{{ url_for('visit_by_referrer') }}"
     classname: 'pie'

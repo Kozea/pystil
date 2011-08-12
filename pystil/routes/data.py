@@ -5,7 +5,7 @@
 
 from datetime import datetime, date
 from time import mktime
-from flask import jsonify
+from flask import jsonify, session
 from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
 from pygeoip import GeoIP
@@ -22,6 +22,7 @@ BROWSER_VERSION_NUMBERS = {
 def register_data_routes(app):
     """Defines data routes"""
     gip = GeoIP(app.config['geoipdb'])
+    log = app.logger
 
     @app.route('/visit_by_day.json')
     def visit_by_day():
@@ -39,6 +40,7 @@ def register_data_routes(app):
         page_hits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
+                  .filter(session['site'])
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .map({'day': c.date.str()[:10]})
                   .groupby(c.day, count=c.len())
@@ -48,6 +50,7 @@ def register_data_routes(app):
         new_visits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
+                  .filter(session['site'])
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .filter(c.last_visit == None)
                   .map({'day': c.date.str()[:10]})
@@ -57,6 +60,7 @@ def register_data_routes(app):
         visits = [(int(1000 * mktime(
             datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
                           visit['count']) for visit in Visit.all
+                  .filter(session['site'])
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .filter((c.last_visit < day_start) | (c.last_visit == None))
                   .map({'day': c.date.str()[:10]})
@@ -75,6 +79,7 @@ def register_data_routes(app):
     def visit_by_time():
         visits = [(int(visit / 60000))
                   for visit in Visit.all
+                  .filter(session['site'])
                   .map(c.time)
                   .execute() if visit is not None]
 
@@ -85,6 +90,7 @@ def register_data_routes(app):
     @app.route('/visit_by_hour.json')
     def visit_by_hour():
         visits = [(int(visit['key']), visit['count']) for visit in Visit.all
+                  .filter(session['site'])
                   .map({'hour': c.date.str()[11:13]})
                   .groupby(c.hour, count=c.len())
                   .sort(c.key)
@@ -93,8 +99,10 @@ def register_data_routes(app):
 
     @app.route('/visit_by_browser.json')
     def visit_by_browser():
+        log.error(session['site'])
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(session['site'])
                   .groupby(c.browser_name, count=c.len())
                   .sort(c.key)
                   .execute()]
@@ -105,6 +113,7 @@ def register_data_routes(app):
         visits = [{'label': visit['browser_name'] + " " +
                    visit['browser_version'],
                    'data': 1} for visit in Visit.all
+                  .filter(session['site'])
                   .execute()]
         version_visits = {}
         for visit in visits:
@@ -126,6 +135,7 @@ def register_data_routes(app):
     def visit_by_platform():
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(session['site'])
                   .groupby(c.platform, count=c.len())
                   .sort(c.key)
                   .execute()]
@@ -135,6 +145,7 @@ def register_data_routes(app):
     def visit_by_resolution():
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(session['site'])
                   .groupby(c.size, count=c.len())
                   .sort(c.key)
                   .execute()]
@@ -144,6 +155,7 @@ def register_data_routes(app):
     def visit_by_referrer():
         full_referrers = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(session['site'])
                   .filter(c.referrer != None)
                   .groupby(c.referrer, count=c.len())
                   .sort(c.key)
@@ -160,6 +172,7 @@ def register_data_routes(app):
     def visit_by_host():
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
+                  .filter(session['site'])
                   .groupby(c.host, count=c.len())
                   .sort(c.key)
                   .execute()]
@@ -167,7 +180,9 @@ def register_data_routes(app):
 
     @app.route('/visit_by_city.json')
     def visit_by_city():
-        ips = Visit.all.map(c.ip) .execute()
+        ips = (Visit.all
+               .filter(session['site'])
+               .map(c.ip) .execute())
         visits = {}
         for ip in ips:
             # TODO Handle class B 172.16.0.0 -> 172.31.255.255
@@ -185,6 +200,32 @@ def register_data_routes(app):
             else:
                 city = 'ipv6'
             visits[city] = visits.get(city, 0) + 1
+        visits = [{'label': key,
+                   'data': value} for key, value in visits.items()]
+        return jsonify({'list': visits})
+
+    @app.route('/visit_by_country.json')
+    def visit_by_country():
+        ips = (Visit.all
+               .filter(session['site'])
+               .map(c.ip) .execute())
+        visits = {}
+        for ip in ips:
+            # TODO Handle class B 172.16.0.0 -> 172.31.255.255
+            ip = ip.replace('::ffff:', '')
+            if IPV4RE.match(ip):
+                if (ip == '127.0.0.1'
+                    or ip.startswith('192.168.')
+                    or ip.startswith('10.')):
+                    country = 'Local'
+                else:
+                    location = gip.record_by_addr(ip)
+                    country = (location.get('country', 'Unknown')
+                            .decode('iso-8859-1')
+                            if location else 'Unknown')
+            else:
+                country = 'ipv6'
+            visits[country] = visits.get(country, 0) + 1
         visits = [{'label': key,
                    'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
