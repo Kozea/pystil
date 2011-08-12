@@ -13,6 +13,9 @@ from urlparse import urlparse
 import re
 
 IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
+BROWSER_VERSION_NUMBERS = {
+    'safari': 1,
+    'chrome': 1}
 
 
 def register_data_routes(app):
@@ -103,6 +106,20 @@ def register_data_routes(app):
                       c.browser_name + " " + c.browser_version, count=c.len())
                   .sort(c.key)
                   .execute()]
+        version_visits = {}
+        for visit in visits:
+            label, data = visit['label'], visit['data']
+            browser = label.split(' ')[0]
+            if '.' in label:
+                label = '.'.join(
+                    label.split('.')[:BROWSER_VERSION_NUMBERS.get(browser, 2)])
+            if label in version_visits:
+                version_visits[label] += data
+            else:
+                version_visits[label] = data
+        visits = [
+            {'label': key, 'data': value}
+            for key, value in version_visits.items()]
         return jsonify({'list': visits})
 
     @app.route('/visit_by_platform.json')
