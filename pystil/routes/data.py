@@ -102,10 +102,10 @@ def register_data_routes(app):
 
     @app.route('/visit_by_browser_version.json')
     def visit_by_browser_version():
-        visits = [{'label': visit['browser_name'] + " " +
-                   visit['browser_version'],
-                   'data': 1} for visit in Visit.all
-                  .execute()]
+        visits = [{
+            'label': '%s %s' % (
+                visit['browser_name'], visit['browser_version']),
+            'data': 1} for visit in Visit.all .execute()]
         version_visits = {}
         for visit in visits:
             label, data = visit['label'], visit['data']
