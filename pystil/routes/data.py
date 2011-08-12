@@ -144,6 +144,7 @@ def register_data_routes(app):
         visits = {}
         for ip in ips:
             # TODO Handle class B 172.16.0.0 -> 172.31.255.255
+            ip = ip.replace('::ffff:', '')
             if IPV4RE.match(ip):
                 if (ip == '127.0.0.1'
                     or ip.startswith('192.168.')
