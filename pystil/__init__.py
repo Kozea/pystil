@@ -10,12 +10,15 @@ from logging import getLogger, INFO
 from pystil.log import get_default_handler
 from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
+import logging
 import pystil
 import os
 
 
-def app(ipdb='ip.db'):
+def app(ipdb='ip.db', log=''):
     """Create Flask app"""
+    if log:
+        logging.basicConfig(filename=log, filemode='w', level=logging.DEBUG)
     root = os.path.dirname(pystil.__file__)
     static_folder = os.path.join(root, 'static')
     template_folder = os.path.join(root, 'templates')
