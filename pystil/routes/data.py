@@ -9,6 +9,9 @@ from flask import jsonify
 from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
 from  pygeoip import GeoIP
+import re
+
+IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
 
 
 def register_data_routes(app):
@@ -141,13 +144,16 @@ def register_data_routes(app):
         visits = {}
         for ip in ips:
             # TODO Handle class B 172.16.0.0 -> 172.31.255.255
-            if (ip == '127.0.0.1'
-                or ip.startswith('192.168.')
-                or ip.startswith('10.')):
-                city = 'Local'
+            if IPV4RE.match(ip):
+                if (ip == '127.0.0.1'
+                    or ip.startswith('192.168.')
+                    or ip.startswith('10.')):
+                    city = 'Local'
+                else:
+                    location = gip.record_by_addr(ip)
+                    city = location['city'] if location else 'Unknown'
             else:
-                location = gip.record_by_addr(ip)
-                city = location['city'] if location else 'Unknown'
+                city = 'ipv6'
             visits[city] = visits.get(city, 0) + 1
         visits = [{'label': key,
                    'data': value} for key, value in visits.items()]
