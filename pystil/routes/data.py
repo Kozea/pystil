@@ -10,6 +10,7 @@ from multicorn.requests import CONTEXT as c
 from pystil.corns import Visit
 from pygeoip import GeoIP
 from urlparse import urlparse
+from collections import Counter
 import re
 
 IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
@@ -70,12 +71,13 @@ def register_data_routes(app):
 
     @app.route('/visit_by_time.json')
     def visit_by_time():
-        visits = [(int(visit['key']), visit['count'])
+        visits = [(int(visit / 60000))
                   for visit in Visit.all
-                  .map(c.time / 60000)
-                  .groupby(c, count=c.len())
-                  .execute() if visit['key'] is not None]
-        return jsonify({'label': 'Time spent on site (in min)', 'data': visits,
+                  .map(c.time)
+                  .execute() if visit is not None]
+
+        return jsonify({'label': 'Time spent on site (in min)',
+                        'data': Counter(visits).items(),
                         'color': '#00FF00'})
 
     @app.route('/visit_by_hour.json')
@@ -114,7 +116,6 @@ def register_data_routes(app):
                   .sort(c.key)
                   .execute()]
         return jsonify({'list': visits})
-
 
     @app.route('/visit_by_resolution.json')
     def visit_by_resolution():
