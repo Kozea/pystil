@@ -13,7 +13,7 @@ from  pygeoip import GeoIP
 
 def register_data_routes(app):
     """Defines data routes"""
-    gip = GeoIP('ip.db')
+    gip = GeoIP(app.config['geoipdb'])
 
     @app.route('/visit_by_day.json')
     def visit_by_day():

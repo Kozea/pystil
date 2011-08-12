@@ -1,5 +1,7 @@
 #!/usr/bin/python
 from flup.server.fcgi import WSGIServer
 from pystil import app
+import os
 
-WSGIServer(app(), debug=False).run()
+ipdb = os.path.join(os.path.dirname(__file__), 'ip.db')
+WSGIServer(app(ipdb=ipdb), debug=False).run()
