@@ -20,7 +20,6 @@ BROWSER_VERSION_NUMBERS = {
 
 def register_data_routes(app):
     """Defines data routes"""
-    print app.config['geoipdb']
     gip = GeoIP(app.config['geoipdb'])
 
     @app.route('/visit_by_day.json')
