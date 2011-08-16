@@ -15,7 +15,7 @@ from collections import Counter
 from functools import wraps
 import re
 
-IPV4RE = re.compile(r"(\d{1,3}\.?){4}")
+IPV4RE = re.compile(r"(\d{1,3}(\.|$)){4}")
 BROWSER_VERSION_NUMBERS = {
     'opera': 1,
     'safari': 1,

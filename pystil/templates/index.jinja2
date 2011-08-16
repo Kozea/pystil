@@ -1,31 +1,22 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>pystil - An elegant site web traffic analyzer</title>
-    {% block script %}
-      <script src="{{ url_for('pystil_js') }}"></script>
-      <script><!-- /* document.location.href="{{ url_for('pystil_gif', stamp=0, kind='b') }}" */ --></script>
-      <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-      <!--[if lte IE 8]><script src="{{ url_for('static', filename='js/excanvas.min.js') }}"></script><![endif]-->
+{% extends "_layout.jinja2" %}
 
-      <script src="http://code.jquery.com/jquery.min.js"></script>
-      <script src="{{ url_for('static', filename='js/jquery.flot.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/jquery.flot.pie.js') }}"></script>
-
-      <script src="{{ url_for('graphs', site=site) }}"></script>
-      <script src="{{ url_for('static', filename='js/js.js') }}"></script>
-    {% endblock script %}
-    {% block style %}
-      <link rel="stylesheet" href="{{ url_for('css') }}" type="text/css" />
-    {% endblock style %}
-  </head>
-  <body>
-    <section>
-      <header>
-        <h1>pystil</h1>
-      </header>
-      <article id="graphs">
-      </article>
-    </section>
-  </body>
-</html>
+{% block article %}
+  <table>
+    <thead>
+      <tr>
+        <th>Domain
+        <th>View
+    <tbody>
+      <tr>
+        <td>Tous</td>
+        <td><a href="{{ url_for('site', site='*') }}">Go</a></td>
+      </tr>
+      {% for site in sites %}
+        <tr>
+          <td>{{ site }}</td>
+          <td><a href="{{ url_for('site', site=site) }}">Go</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock article %}
