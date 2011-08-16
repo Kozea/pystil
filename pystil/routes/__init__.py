@@ -22,6 +22,7 @@ def register_common_routes(app, route):
 
     @route('/')
     def index():
+        """List of sites"""
         sites = Visit.all.map(c.site).sort().execute()
         sites = [urlparse(site).netloc for site in set(sites)]
         sites.sort()
@@ -29,7 +30,7 @@ def register_common_routes(app, route):
 
     @route('/<site>')
     def site(site):
-        """Nothing yet"""
+        """Stats per site or all if site = *"""
         return render_template('site.jinja2', site=site or '*')
 
     @route("/css.css")

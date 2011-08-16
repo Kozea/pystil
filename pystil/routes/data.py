@@ -8,7 +8,7 @@ from time import mktime
 from flask import jsonify
 from threading import Lock
 from multicorn.requests import CONTEXT as c
-from pygeoip import GeoIP
+from pygeoip import GeoIP, MMAP_CACHE
 from urlparse import urlparse
 from collections import Counter
 from functools import wraps
@@ -27,7 +27,7 @@ ipdb_lock = Lock()
 def register_data_routes(app, route):
     """Defines data routes"""
     from pystil.corns import Visit
-    gip = GeoIP(app.config['IP_DB'])
+    gip = GeoIP(app.config['IP_DB'], MMAP_CACHE)
     log = app.logger
 
     def on(site):
@@ -206,7 +206,7 @@ def register_data_routes(app, route):
                     with ipdb_lock:
                         location = gip.record_by_addr(ip)
                     city = (location.get('city', 'Unknown')
-                            .decode('latin-1')
+                            .decode('iso-8859-1')
                             if location else 'Unknown')
             else:
                 city = 'ipv6'
