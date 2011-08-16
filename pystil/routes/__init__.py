@@ -8,31 +8,31 @@ from flask import render_template, Response, request, send_file, session, abort
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 from urlparse import urlparse
-from pystil.corns import Visit
 import csstyle
 
 
-def register_common_routes(app):
+def register_common_routes(app, route):
     """Defines common routes"""
+    from pystil.corns import Visit
     log = app.logger
 
-    @app.route('/favicon.ico')
+    @route('/favicon.ico')
     def favicon():
         abort(404)
 
-    @app.route('/')
+    @route('/')
     def index():
         sites = Visit.all.map(c.site).sort().execute()
         sites = [urlparse(site).netloc for site in set(sites)]
         sites.sort()
         return render_template('index.jinja2', sites=sites)
 
-    @app.route('/<site>')
+    @route('/<site>')
     def site(site):
         """Nothing yet"""
         return render_template('site.jinja2', site=site or '*')
 
-    @app.route("/css.css")
+    @route("/css.css")
     def css():
         """Render the css with some url_for in it"""
         text = render_template('css/css.jinja2')
@@ -43,13 +43,13 @@ def register_common_routes(app):
             text += repr(browser_parser.transform(parser, keep_existant=False))
         return Response(text, mimetype='text/css')
 
-    @app.route("/<site>/graphs.js")
+    @route("/<site>/graphs.js")
     def graphs(site):
         """Render the graph js with some url_for in it"""
         return Response(render_template('js/graphs.js', site=site),
                         mimetype='text/javascript')
 
-    @app.route('/pystil-<int:stamp>-<string:kind>.gif')
+    @route('/pystil-<int:stamp>-<string:kind>.gif')
     def pystil_gif(stamp, kind):
         """Fake gif get to bypass crossdomain problems."""
         gif = send_file('static/pystil.gif')
@@ -89,7 +89,7 @@ def register_common_routes(app):
         visit.save()
         return gif
 
-    @app.route('/pystil.js')
+    @route('/pystil.js')
     def pystil_js():
         """Render the js with some jinja in it"""
         return Response(
