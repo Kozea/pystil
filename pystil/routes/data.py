@@ -28,8 +28,8 @@ def register_data_routes(app, route):
     gip = GeoIP(app.config['IP_DB'], MMAP_CACHE)
     log = app.logger
 
-    def on(site):
-        return c.site.matches(".*" + site + ".*") if site != '*' else True
+    def on(host):
+        return c.host == host if host != '*' else True
 
     @route('/<site>/visit_by_day.json')
     def visit_by_day(site):
@@ -201,8 +201,7 @@ def register_data_routes(app, route):
                     or ip.startswith('10.')):
                     city = 'Local'
                 else:
-                    with ipdb_lock:
-                        location = gip.record_by_addr(ip)
+                    location = gip.record_by_addr(ip)
                     city = (location.get('city', 'Unknown')
                             .decode('iso-8859-1')
                             if location else 'Unknown')
@@ -228,8 +227,7 @@ def register_data_routes(app, route):
                     or ip.startswith('10.')):
                     country = 'Local'
                 else:
-                    with ipdb_lock:
-                        location = gip.record_by_addr(ip)
+                    location = gip.record_by_addr(ip)
                     country = (location.get('country_name', 'Unknown')
                             .decode('iso-8859-1')
                             if location else 'Unknown')
