@@ -49,7 +49,8 @@ def register_common_routes(app, route):
         return Response(render_template('js/graphs.js', site=site),
                         mimetype='text/javascript')
 
-    @route('/pystil-<int:stamp>-<string:kind>.gif')
+    # Public route
+    @app.route('/pystil-<int:stamp>-<string:kind>.gif')
     def pystil_gif(stamp, kind):
         """Fake gif get to bypass crossdomain problems."""
         gif = send_file('static/pystil.gif')
@@ -89,7 +90,8 @@ def register_common_routes(app, route):
         visit.save()
         return gif
 
-    @route('/pystil.js')
+    # Public route
+    @app.route('/pystil.js')
     def pystil_js():
         """Render the js with some jinja in it"""
         return Response(
