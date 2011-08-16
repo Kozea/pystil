@@ -4,7 +4,7 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from datetime import datetime
-from flask import render_template, Response, request, send_file, session, abort
+from flask import render_template, Response, request, send_file, abort
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 from urlparse import urlparse

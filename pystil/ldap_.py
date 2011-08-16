@@ -27,7 +27,7 @@ def auth_route(app):
         except ldap.INVALID_CREDENTIALS:
             current_app.logger.warn("Invalid credentials for %s" % username)
             return False
-        session["user"] = user[0][1]
+        session["user"] = user[0][1]['uid'][0]
         return True
 
     def authenticate():
