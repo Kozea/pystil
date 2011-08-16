@@ -13,26 +13,43 @@ from pystil.routes.data import register_data_routes
 import logging
 import pystil
 import os
+import sys
 
 
-def app(ipdb='ip.db', log=''):
+def app():
     """Create Flask app"""
-    if log:
-        logging.basicConfig(filename=log, filemode='w', level=logging.DEBUG)
+
     root = os.path.dirname(pystil.__file__)
     static_folder = os.path.join(root, 'static')
     template_folder = os.path.join(root, 'templates')
     app = Flask(__name__,
                 static_folder=static_folder,
                 template_folder=template_folder)
-    app.config['geoipdb'] = ipdb
-    # TODO: externalize this
-    app.config['SECRET_KEY'] = "ieui euir enruits nuiret nuiet nurets i"
+
+    from pystil import config
+    if not config.FROZEN:
+        print "Config MUST be frozen before pystil init"
+        sys.exit(1)
+
+    app.config.update(config.CONFIG)
+    if app.config["LOG_FILE"]:
+        logging.basicConfig(filename=app.config["LOG_FILE"],
+                            filemode='w', level=logging.DEBUG)
+
     handler = get_default_handler()
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)
+
     app.logger.handlers = []
     app.logger.addHandler(handler)
-    register_data_routes(app)
-    register_common_routes(app)
+
+    if (app.config.get("LDAP_HOST", False) and
+        app.config.get("LDAP_PATH", False)):
+        from pystil.ldap_ import auth_route
+        route = auth_route(app)
+    else:
+        route = app.route
+
+    register_data_routes(app, route)
+    register_common_routes(app, route)
     return app

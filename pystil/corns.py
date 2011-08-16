@@ -3,6 +3,7 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 from datetime import datetime
+from pystil import config
 from multicorn import Multicorn
 from multicorn.corns.alchemy import Alchemy
 from multicorn.declarative import declare, Property
@@ -11,8 +12,7 @@ MC = Multicorn()
 
 
 @MC.register
-@declare(Alchemy, identity_properties=['uuid'],
-         url='postgresql+psycopg2://pystil:pystil@localhost:5432/pystil')
+@declare(Alchemy, identity_properties=['uuid'], url=config.CONFIG["DB_URL"])
 class Visit(object):
     """This corn contains the visits"""
     uuid = Property()

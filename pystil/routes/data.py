@@ -8,7 +8,6 @@ from time import mktime
 from flask import jsonify
 from threading import Lock
 from multicorn.requests import CONTEXT as c
-from pystil.corns import Visit
 from pygeoip import GeoIP
 from urlparse import urlparse
 import re
@@ -23,15 +22,16 @@ BROWSER_VERSION_NUMBERS = {
 ipdb_lock = Lock()
 
 
-def register_data_routes(app):
+def register_data_routes(app, route):
     """Defines data routes"""
-    gip = GeoIP(app.config['geoipdb'])
+    from pystil.corns import Visit
+    gip = GeoIP(app.config['IP_DB'])
     log = app.logger
 
     def on(site):
         return c.site.matches(".*" + site + ".*") if site != '*' else True
 
-    @app.route('/<site>/visit_by_day.json')
+    @route('/<site>/visit_by_day.json')
     def visit_by_day(site):
         today = date.today()
         day_start = datetime(today.year, today.month, today.day)
@@ -82,7 +82,7 @@ def register_data_routes(app):
             {'label': 'New visits',
              'data': new_visits}]})
 
-    @app.route('/<site>/visit_by_time.json')
+    @route('/<site>/visit_by_time.json')
     def visit_by_time(site):
         visits = [visit
                   for visit in Visit.all
@@ -94,7 +94,7 @@ def register_data_routes(app):
                         'data': visits,
                         'color': '#00FF00'})
 
-    @app.route('/<site>/visit_by_hour.json')
+    @route('/<site>/visit_by_hour.json')
     def visit_by_hour(site):
         visits = [(int(visit['key']), visit['count']) for visit in Visit.all
                   .filter(on(site))
@@ -104,7 +104,7 @@ def register_data_routes(app):
                   .execute()]
         return jsonify({'label': 'Visits per hour', 'data': visits})
 
-    @app.route('/<site>/visit_by_browser.json')
+    @route('/<site>/visit_by_browser.json')
     def visit_by_browser(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
@@ -114,7 +114,7 @@ def register_data_routes(app):
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_browser_version.json')
+    @route('/<site>/visit_by_browser_version.json')
     def visit_by_browser_version(site):
         visits = [{
             'label': '%s %s' % (
@@ -139,7 +139,7 @@ def register_data_routes(app):
             for key, value in version_visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_platform.json')
+    @route('/<site>/visit_by_platform.json')
     def visit_by_platform(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
@@ -149,7 +149,7 @@ def register_data_routes(app):
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_resolution.json')
+    @route('/<site>/visit_by_resolution.json')
     def visit_by_resolution(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
@@ -159,7 +159,7 @@ def register_data_routes(app):
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_referrer.json')
+    @route('/<site>/visit_by_referrer.json')
     def visit_by_referrer(site):
         full_referrers = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
@@ -176,7 +176,7 @@ def register_data_routes(app):
                    'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_host.json')
+    @route('/<site>/visit_by_host.json')
     def visit_by_host(site):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
@@ -186,7 +186,7 @@ def register_data_routes(app):
                   .execute()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_city.json')
+    @route('/<site>/visit_by_city.json')
     def visit_by_city(site):
         ips = (Visit.all
                .filter(on(site))
@@ -213,7 +213,7 @@ def register_data_routes(app):
                    'data': value} for key, value in visits.items()]
         return jsonify({'list': visits})
 
-    @app.route('/<site>/visit_by_country.json')
+    @route('/<site>/visit_by_country.json')
     def visit_by_country(site):
         ips = (Visit.all
                .filter(on(site))

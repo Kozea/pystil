@@ -5,6 +5,8 @@
 """
 pystil - An elegant site web traffic analyzer
 """
-from pystil import app
+from pystil import app, config
 
-app().run(debug=True, threaded=True, host='0.0.0.0', port=12345)
+config.freeze()
+
+app().run(host='0.0.0.0', port=12345, debug=True)
