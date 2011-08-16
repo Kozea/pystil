@@ -31,6 +31,26 @@ def register_data_routes(app, route):
     def on(host):
         return c.host == host if host != '*' else True
 
+    def top(dic, size=10):
+        sorted_ = sorted(
+            dic.items(),
+            lambda x, y: cmp(x[1], y[1]),
+            reverse=True)[:min(size, len(dic))]
+        other = sum(dic.values()) - sum(value[1] for value in sorted_)
+        if other:
+            return sorted_ + [['Other', other]]
+        return sorted_
+
+    def mc_top(visits, site):
+        all_visits = (Visit.all
+                      .filter(on(site))
+                      .len()
+                      .execute())
+        other = all_visits - sum(value['data'] for value in visits)
+        if other:
+            return visits + [{'label': 'Other', 'data': other}]
+        return visits
+
     @route('/<site>/visit_by_day.json')
     def visit_by_day(site):
         today = date.today()
@@ -84,7 +104,7 @@ def register_data_routes(app, route):
 
     @route('/<site>/visit_by_time.json')
     def visit_by_time(site):
-        visits = [visit
+        visits = [(int(visit['key']), visit['count'])
                   for visit in Visit.all
                   .filter(on(site))
                   .map(c.time / 60000)
@@ -100,7 +120,6 @@ def register_data_routes(app, route):
                   .filter(on(site))
                   .map({'hour': c.date.str()[11:13]})
                   .groupby(c.hour, count=c.len())
-                  .sort(c.key)
                   .execute()]
         return jsonify({'label': 'Visits per hour', 'data': visits})
 
@@ -110,9 +129,9 @@ def register_data_routes(app, route):
                    'data': visit['count']} for visit in Visit.all
                   .filter(on(site))
                   .groupby(c.browser_name, count=c.len())
-                  .sort(c.key)
+                  .sort(-c.count)[:10]
                   .execute()]
-        return jsonify({'list': visits})
+        return jsonify({'list': mc_top(mc_top(visits, site), site)})
 
     @route('/<site>/visit_by_browser_version.json')
     def visit_by_browser_version(site):
@@ -136,7 +155,8 @@ def register_data_routes(app, route):
                 version_visits[label] = data
         visits = [
             {'label': key, 'data': value}
-            for key, value in version_visits.items()]
+            for key, value in top(version_visits)]
+
         return jsonify({'list': visits})
 
     @route('/<site>/visit_by_platform.json')
@@ -145,9 +165,9 @@ def register_data_routes(app, route):
                    'data': visit['count']} for visit in Visit.all
                   .filter(on(site))
                   .groupby(c.platform, count=c.len())
-                  .sort(c.key)
+                  .sort(-c.count)[:10]
                   .execute()]
-        return jsonify({'list': visits})
+        return jsonify({'list': mc_top(visits, site)})
 
     @route('/<site>/visit_by_resolution.json')
     def visit_by_resolution(site):
@@ -155,9 +175,9 @@ def register_data_routes(app, route):
                    'data': visit['count']} for visit in Visit.all
                   .filter(on(site))
                   .groupby(c.size, count=c.len())
-                  .sort(c.key)
+                  .sort(-c.count)[:10]
                   .execute()]
-        return jsonify({'list': visits})
+        return jsonify({'list': mc_top(visits, site)})
 
     @route('/<site>/visit_by_referrer.json')
     def visit_by_referrer(site):
@@ -166,14 +186,14 @@ def register_data_routes(app, route):
                   .filter(on(site))
                   .filter(c.referrer != None)
                   .groupby(c.referrer, count=c.len())
-                  .sort(c.key)
+                  .sort(-c.count)[:10]
                   .execute()]
         visits = {}
         for referrer in full_referrers:
             host = urlparse(referrer['label']).netloc.split(':')[0]
             visits[host] = visits.get(host, 0) + referrer['data']
         visits = [{'label': key,
-                   'data': value} for key, value in visits.items()]
+                   'data': value} for key, value in top(visits)]
         return jsonify({'list': visits})
 
     @route('/<site>/visit_by_host.json')
@@ -182,9 +202,9 @@ def register_data_routes(app, route):
                    'data': visit['count']} for visit in Visit.all
                   .filter(on(site))
                   .groupby(c.host, count=c.len())
-                  .sort(c.key)
+                  .sort(-c.count)[:10]
                   .execute()]
-        return jsonify({'list': visits})
+        return jsonify({'list': mc_top(visits, site)})
 
     @route('/<site>/visit_by_city.json')
     def visit_by_city(site):
@@ -209,7 +229,7 @@ def register_data_routes(app, route):
                 city = 'ipv6'
             visits[city] = visits.get(city, 0) + 1
         visits = [{'label': key,
-                   'data': value} for key, value in visits.items()]
+                   'data': value} for key, value in top(visits)]
         return jsonify({'list': visits})
 
     @route('/<site>/visit_by_country.json')
@@ -235,5 +255,5 @@ def register_data_routes(app, route):
                 country = 'ipv6'
             visits[country] = visits.get(country, 0) + 1
         visits = [{'label': key,
-                   'data': value} for key, value in visits.items()]
+                   'data': value} for key, value in top(visits)]
         return jsonify({'list': visits})
