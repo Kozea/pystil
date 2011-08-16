@@ -6,7 +6,6 @@ import os
 config.CONFIG["SECRETS_FILE"] = '/var/www/.pystil-secrets'
 config.CONFIG["DEBUG"] = False
 config.CONFIG["TESTING"] = False
-config.CONFIG["PORT"] = None
 config.CONFIG["IP_DB"] = os.path.join(os.path.dirname(__file__), 'ip.db')
 config.CONFIG["LOG_FILE"] = '/var/log/lighttpd/pystil.log'
 config.freeze()
