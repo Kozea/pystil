@@ -14,9 +14,10 @@ MC = Multicorn()
 
 
 @MC.register
-@declare(Alchemy, identity_properties=['uuid'], url=config.CONFIG["DB_URL"])
+@declare(Alchemy, identity_properties=['id'], url=config.CONFIG["DB_URL"])
 class Visit(object):
     """This corn contains the visits"""
+    id = Property(type=int)
     uuid = Property()
     browser_name = Property()
     hash = Property()

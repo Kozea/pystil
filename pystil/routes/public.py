@@ -45,8 +45,10 @@ def register_public_routes(app):
             visit['language'] = request.user_agent.language
             visit = Visit.create(visit)
         elif kind == 'c':
-            visit = Visit.all.filter(c.uuid == uuid).one().execute()
-            visit['time'] = request.args.get('t', None)
+            visit = next(
+                Visit.all.filter(c.uuid == uuid).sort(-c.date).execute(), None)
+            if visit:
+                visit['time'] = request.args.get('t', None)
         else:
             log.warn("No uuid in request %r" % request)
             return gif
