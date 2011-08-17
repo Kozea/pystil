@@ -16,9 +16,14 @@ def register_common_routes(app, route):
     @route('/')
     def index():
         """List of sites"""
-        sites = list(set(Visit.all.map(c.host).sort().execute()))
-        sites.sort()
-        return render_template('index.jinja2', sites=sites)
+        sites = list(
+            Visit.all
+            .map(c.host)
+            .groupby(c, count=c.len())
+            .sort(-c.count)
+            .execute())
+        all_ = Visit.all.len().execute()
+        return render_template('index.jinja2', sites=sites, all_=all_)
 
     @route('/favicon.ico')
     def favicon():
