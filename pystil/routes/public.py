@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import render_template, Response, request, send_file
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
-
+import pickle
 
 def register_public_routes(app):
     """Defines public routes"""
