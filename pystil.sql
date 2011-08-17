@@ -24,10 +24,23 @@ CREATE TABLE visit
   "time" integer,
   uuid character varying NOT NULL,
   client_tz_offset integer,
+  country character varying,
+  city character varying,
+  lat numeric,
+  lng numeric,
   CONSTRAINT visit_pkey PRIMARY KEY (uuid)
 )
 WITH (
   OIDS=FALSE
 );
 ALTER TABLE visit OWNER TO pystil;
+
+-- Index: btrees
+
+-- DROP INDEX btrees;
+
+CREATE INDEX btrees
+  ON visit
+  USING btree
+  (host, date);
 

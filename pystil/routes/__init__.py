@@ -13,16 +13,16 @@ def register_common_routes(app, route):
     from pystil.corns import Visit
     log = app.logger
 
-    @route('/favicon.ico')
-    def favicon():
-        abort(404)
-
     @route('/')
     def index():
         """List of sites"""
         sites = list(set(Visit.all.map(c.host).sort().execute()))
         sites.sort()
         return render_template('index.jinja2', sites=sites)
+
+    @route('/favicon.ico')
+    def favicon():
+        abort(404)
 
     @route('/<site>')
     def site(site):
