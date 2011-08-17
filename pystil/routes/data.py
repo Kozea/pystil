@@ -105,12 +105,12 @@ def register_data_routes(app, route):
 
     @route('/<site>/visit_by_time.json')
     def visit_by_time(site):
-        visits = [(int(visit['key']), visit['count'])
+        visits = [(visit['key'], visit['count'])
                   for visit in Visit.all
-                  .filter(on(site))
+                  .filter(on(site) & (c.time != None))
                   .map(c.time / 60000)
                   .groupby(c, count=c.len())
-                  .execute() if visit is not None]
+                  .execute()]
         return jsonify({'label': 'Time spent on site (in min)',
                         'data': visits,
                         'color': '#00FF00'})
@@ -171,23 +171,23 @@ def register_data_routes(app, route):
 
     @route('/<site>/visit_by_resolution.json')
     def visit_by_resolution(site):
-        visits = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
+        visits = (Visit.all
                   .filter(on(site))
                   .groupby(c.size, count=c.len())
-                  .sort(-c.count)[:10]
-                  .execute()]
+                  .map({'label': c.key, 'data': c.count})
+                  .sort(-c.data)[:10]
+                  .execute())
         return jsonify({'list': mc_top(visits, site)})
 
     @route('/<site>/visit_by_referrer.json')
     def visit_by_referrer(site):
-        full_referrers = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
+        full_referrers = (Visit.all
                   .filter(on(site))
                   .filter(c.referrer != None)
                   .groupby(c.referrer, count=c.len())
-                  .sort(-c.count)[:10]
-                  .execute()]
+                  .map({'label': c.key, 'data': c.count})
+                  .sort(-c.data)[:10]
+                  .execute())
         visits = {}
         for referrer in full_referrers:
             host = urlparse(referrer['label']).netloc.split(':')[0]
