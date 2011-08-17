@@ -13,6 +13,12 @@ with open('pystil/static/pystil.gif') as f:
 with open('pystil/static/js/pystil.js') as f:
     js_content = f.read()
 
+def render_js(environ):
+    base_url = 'http://%s/' % environ['HTTP_HOST']
+    content = js_content % (str(uuid.uuid4()), base_url)
+    return content
+
+
 class Application(object):
 
     def __init__(self, delegate=lambda x, y: None):
@@ -22,10 +28,8 @@ class Application(object):
         myapp = threading.local()
         if environ['PATH_INFO'] == '/pystil.js':
             start_response('200 OK', [('Content-Type', 'application/javascript')])
-            base_url = 'http://%s/' % environ['HTTP_HOST']
-            content = js_content % (str(uuid.uuid4()), base_url)
-            return content
-        elif re.match('/pystil-[^/]*-[^/]*\.gif', environ['PATH_INFO']):
+            return render_js(environ)
+        elif re.match('/pystil-[^/]*\.gif', environ['PATH_INFO']):
             start_response('200 OK', [('Content-Type', 'image/gif')])
             if not hasattr(myapp, 'connection'):
                 params  = pika.ConnectionParameters(host='localhost')

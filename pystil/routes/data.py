@@ -6,9 +6,7 @@
 from datetime import datetime, date
 from time import mktime
 from flask import jsonify
-from threading import Lock
 from multicorn.requests import CONTEXT as c
-from pygeoip import GeoIP, MMAP_CACHE
 from urlparse import urlparse
 import re
 
@@ -19,13 +17,9 @@ BROWSER_VERSION_NUMBERS = {
     'chrome': 1}
 
 
-ipdb_lock = Lock()
-
-
 def register_data_routes(app, route):
     """Defines data routes"""
     from pystil.corns import Visit
-    gip = GeoIP(app.config['IP_DB'], MMAP_CACHE)
     log = app.logger
 
     def on(host):
@@ -55,7 +49,6 @@ def register_data_routes(app, route):
     @route('/<site>/visit_by_day.json')
     def visit_by_day(site):
         today = date.today()
-        day_start = datetime(today.year, today.month, today.day)
         month_start = datetime(today.year, today.month, 1)
         if today.month == 12:
             year = today.year + 1
@@ -212,52 +205,20 @@ def register_data_routes(app, route):
 
     @route('/<site>/visit_by_city.json')
     def visit_by_city(site):
-        ips = (Visit.all
-               .filter(on(site))
-               .map(c.ip) .execute())
-        visits = {}
-        for ip in ips:
-            # TODO Handle class B 172.16.0.0 -> 172.31.255.255
-            ip = ip.replace('::ffff:', '')
-            if IPV4RE.match(ip):
-                if (ip == '127.0.0.1'
-                    or ip.startswith('192.168.')
-                    or ip.startswith('10.')):
-                    city = 'Local'
-                else:
-                    location = gip.record_by_addr(ip)
-                    city = (location.get('city', 'Unknown')
-                            .decode('iso-8859-1')
-                            if location else 'Unknown')
-            else:
-                city = 'ipv6'
-            visits[city] = visits.get(city, 0) + 1
-        visits = [{'label': key,
-                   'data': value} for key, value in top(visits)]
-        return jsonify({'list': visits})
+        visits = [{'label': visit['key'],
+                   'data': visit['count']} for visit in Visit.all
+                  .filter(on(site))
+                  .groupby(c.city, count=c.len())
+                  .sort(-c.count)[:10]
+                  .execute()]
+        return jsonify({'list': mc_top(visits, site)})
 
     @route('/<site>/visit_by_country.json')
     def visit_by_country(site):
-        ips = (Visit.all
-               .filter(on(site))
-               .map(c.ip) .execute())
-        visits = {}
-        for ip in ips:
-            # TODO Handle class B 172.16.0.0 -> 172.31.255.255
-            ip = ip.replace('::ffff:', '')
-            if IPV4RE.match(ip):
-                if (ip == '127.0.0.1'
-                    or ip.startswith('192.168.')
-                    or ip.startswith('10.')):
-                    country = 'Local'
-                else:
-                    location = gip.record_by_addr(ip)
-                    country = (location.get('country_name', 'Unknown')
-                            .decode('iso-8859-1')
-                            if location else 'Unknown')
-            else:
-                country = 'ipv6'
-            visits[country] = visits.get(country, 0) + 1
-        visits = [{'label': key,
-                   'data': value} for key, value in top(visits)]
-        return jsonify({'list': visits})
+        visits = [{'label': visit['key'],
+                   'data': visit['count']} for visit in Visit.all
+                  .filter(on(site))
+                  .groupby(c.country, count=c.len())
+                  .sort(-c.count)[:10]
+                  .execute()]
+        return jsonify({'list': mc_top(visits, site)})
