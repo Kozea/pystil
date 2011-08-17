@@ -24,7 +24,8 @@ CONFIG = {
     "DB_PORT": 5432,
     "THREADED": True,
     "LOG_FILE": None,
-    "IP_DB": 'ip.db'
+    "IP_DB": 'ip.db',
+    "PUBLIC_ROUTES": True
 }
 
 

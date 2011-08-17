@@ -51,7 +51,9 @@ def app():
     else:
         route = app.route
 
-    register_public_routes(app)
+    if app.config.get("PUBLIC_ROUTES", True):
+        register_public_routes(app)
+
     register_data_routes(app, route)
     register_common_routes(app, route)
     return app
