@@ -12,10 +12,12 @@
         <td><a href="{{ url_for('site', site='*') }}">Go</a></td>
       </tr>
       {% for site in sites %}
-        <tr>
-          <td>{{ site }}</td>
-          <td><a href="{{ url_for('site', site=site) }}">Go</a></td>
-        </tr>
+        {% if site %}
+          <tr>
+            <td>{{ site }}</td>
+            <td><a href="{{ url_for('site', site=site) }}">Go</a></td>
+          </tr>
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>
