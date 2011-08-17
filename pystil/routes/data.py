@@ -138,6 +138,8 @@ def register_data_routes(app, route):
     def visit_by_browser_version(site):
         visits = (Visit.all
                   .filter(on(site))
+                  .filter((c.browser_name != None) &
+                          (c.browser_version != None))
                   .map({'label': c.browser_name + ' ' + c.browser_version,
                         'data': 1})
                   .execute())
