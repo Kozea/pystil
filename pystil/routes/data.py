@@ -85,21 +85,23 @@ def register_data_routes(app, route):
                   .groupby(c.day, count=c.len())
                   .sort(c.key)
                   .execute()]
-        visits = [(int(1000 * mktime(
-            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
-                          visit['count']) for visit in Visit.all
-                  .filter(on(site))
-                  .filter((c.last_visit == None) | (c.last_visit < day_start))
-                  .filter((month_start <= c.date) & (c.date < month_end))
-                  .map({'day': c.date.str()[:10]})
-                  .groupby(c.day, count=c.len())
-                  .sort(c.key)
-                  .execute()]
+        # TODO: Make it work in MC
+        # visits = [(int(1000 * mktime(
+        #     datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
+        #                   visit['count']) for visit in Visit.all
+        #           .filter(on(site))
+        #           .filter((month_start <= c.date) & (c.date < month_end))
+        #           .map({'day': c.date.str()[:10], 'uuid': c.uuid})
+        #           .groupby({'day': c.day, 'uuid: c.uuid}, count=c.len())
+        #           .map({'day': c.key.day, 'val': c.count})
+        #           .groupby(c.day, count=c.len())
+        #           .sort(c.key)
+        #           .execute()]
         return jsonify({'series': [
             {'label': 'Page hits',
              'data': page_hits},
-            {'label': 'Visits',
-             'data': visits},
+            # {'label': 'Visits',
+            #  'data': visits},
             {'label': 'New visits',
              'data': new_visits}]})
 
@@ -138,6 +140,8 @@ def register_data_routes(app, route):
     def visit_by_browser_version(site):
         visits = (Visit.all
                   .filter(on(site))
+                  .filter((c.browser_name != None) &
+                          (c.browser_version != None))
                   .map({'label': c.browser_name + ' ' + c.browser_version,
                         'data': 1})
                   .execute())

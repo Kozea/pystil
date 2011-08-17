@@ -32,7 +32,7 @@ def register_common_routes(app, route):
     @route('/<site>')
     def site(site):
         """Stats per site or all if site = *"""
-        return render_template('site.jinja2', site=site or '*')
+        return render_template('site.jinja2', site=site)
 
     @route("/css.css")
     def css():

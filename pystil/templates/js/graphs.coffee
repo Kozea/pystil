@@ -1,26 +1,10 @@
-window.graphs = () -> [
-    (name: 'by_hour'
-    url:  "{{ url_for('visit_by_hour', site=site) }}"
-    classname: 'histo'
-    options:
-        bars:
-            show: true
-            fill: true
-        grid:
-            hoverable: true
-        xaxis:
-            min: 0
-            max: 23
-            ticks: 24
-            tickDecimals: 0
-        yaxis: tickDecimals: 0
-    data: (response) -> [response]
-    tooltip: (item) ->
-        x = item.datapoint[0]
-        y = item.datapoint[1]
-        y + " visits at " + x + " h"),
-    (name: 'by_day'
-    url: "{{ url_for('visit_by_day', site=site) }}"
+root = "{{ url_for('visit_by_day', site=site) }}".replace('visit_by_day.json', '')
+
+class Graph
+    constructor: (@name)->
+        @url = root + 'visit_by_' + name + ".json"
+
+class Line extends Graph
     classname: 'line'
     options:
         lines:
@@ -36,125 +20,56 @@ window.graphs = () -> [
             timeformat: "%y-%0m-%0d"
         yaxis: tickDecimals: 0
     data: (response) -> response.series
+
+class Bars extends Graph
+    classname: 'histo'
+    options:
+        bars:
+            show: true
+            fill: true
+        grid:
+            hoverable: true
+        xaxis:
+            min: 0
+            max: 23
+            ticks: 24
+            tickDecimals: 0
+        yaxis: tickDecimals: 0
+    data: (response) -> [response]
+
+class Pie extends Graph
+    classname: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
     tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"
+
+graphs = []
+
+graph = new Line('day')
+graph.tooltip = (item) ->
         y = item.datapoint[1]
         d =  new Date item.datapoint[0]
-        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()),
-    (name: 'by_browser'
-    url:  "{{ url_for('visit_by_browser', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_browser_version'
-    url:  "{{ url_for('visit_by_browser_version', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_platform'
-    url:  "{{ url_for('visit_by_platform', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_host'
-    url:  "{{ url_for('visit_by_host', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_city'
-    url:  "{{ url_for('visit_by_city', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_country'
-    url:  "{{ url_for('visit_by_country', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_referrer'
-    url:  "{{ url_for('visit_by_referrer', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_resolution'
-    url:  "{{ url_for('visit_by_resolution', site=site) }}"
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
-    tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-    ),
-    (name: 'by_time'
-    url:  "{{ url_for('visit_by_time', site=site) }}"
-    classname: 'pie'
+        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
+graphs.push(graph)
+
+graph = new Bars('hour')
+graph.tooltip = (item) ->
+    x = item.datapoint[0]
+    y = item.datapoint[1]
+    y + " visits at " + x + " h"
+graphs.push(graph)
+
+for name in ['browser', 'browser_version', 'platform', 'host', 'city', 'country', 'referrer', 'resolution']
+    graphs.push(new Pie(name))
+
+class TimeBars extends Bars
     options:
         bars:
             show: true
@@ -166,9 +81,12 @@ window.graphs = () -> [
             max: 60
             tickDecimals: 0
         yaxis: tickDecimals: 0
-    data: (response) -> [response]
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
-        y + " visits during between " + x + " and  " + (x+1) + " minutes")
-]
+        y + " visits during between " + x + " and  " + (x+1) + " minutes"
+
+graphs.push(new TimeBars('time'))
+
+window.graphs = () ->
+    graphs
