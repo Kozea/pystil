@@ -14,15 +14,17 @@
         r.p = l.pathname;
         r.h = l.hash;
         r.q = l.search;
+        r.d = "o";
         r.z = -z.getTimezoneOffset();
         r.l = (d.cookie.match('pystil=([0-9]+)') || [])[1];
         d.cookie = "pystil="+t+"$"+i+"; path=/"
         if(r.r.indexOf(r.u) > -1) r.r = r.r.replace(r.u, '');
-        g(j(q, r), "o");
+        g(j(q, r));
         h(w, 'onunload', function () {
             var r = {};
+            r.d = "c"
             r.t = new w.Date().getTime() - t;
-            g(j(q, r), "c");
+            g(j(q, r));
         });
     }, 10);
     } catch (e) {}

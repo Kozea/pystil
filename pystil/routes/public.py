@@ -49,14 +49,15 @@ def register_public_routes(app):
         visit['lat'] = lat
         visit['lng'] = lng
 
-    @app.route('/pystil-<int:stamp>-<string:kind>.gif')
-    def pystil_gif(stamp, kind):
+    @app.route('/pystil-<int:stamp>.gif')
+    def pystil_gif(stamp):
         """Fake gif get to bypass crossdomain problems."""
         gif = send_file('static/pystil.gif')
         uuid = request.args.get('_', None)
         if not uuid:
             log.warn("No uuid in request %r" % request)
             return gif
+        kind = request.args.get('d', None)
         if kind == 'o':
             last_visit = request.args.get('l', None)
             if last_visit:
