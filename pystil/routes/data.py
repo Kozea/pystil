@@ -29,7 +29,7 @@ def register_data_routes(app, route):
     log = app.logger
 
     def on(site):
-        return c.site.matches(".*" + site + ".*") if site != '*' else True
+        return c.site.matches(site + ".*") if site != '*' else True
 
     @route('/<site>/visit_by_day.json')
     def visit_by_day(site):
@@ -141,12 +141,12 @@ def register_data_routes(app, route):
 
     @route('/<site>/visit_by_platform.json')
     def visit_by_platform(site):
-        visits = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
+        visits = list(Visit.all
                   .filter(on(site))
                   .groupby(c.platform, count=c.len())
-                  .sort(c.key)
-                  .execute()]
+                  .map({'label': c.key, 'data': c.count})
+                  .sort(c.label)
+                  .execute())
         return jsonify({'list': visits})
 
     @route('/<site>/visit_by_resolution.json')
