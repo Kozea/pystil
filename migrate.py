@@ -6,11 +6,11 @@ from pystil import config
 config.freeze()
 
 from pystil.corns import Visit
-from pygeoip import GeoIP
+from pygeoip import GeoIP, MMAP_CACHE
 import re
 
 
-gip = GeoIP(config.CONFIG['IP_DB'])
+gip = GeoIP(config.CONFIG['IP_DB'], MMAP_CACHE)
 IPV4RE = re.compile(r"(\d{1,3}(\.|$)){4}")
 
 
