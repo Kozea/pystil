@@ -7,7 +7,6 @@ from datetime import datetime
 from flask import render_template, Response, request, send_file, abort
 from multicorn.requests import CONTEXT as c
 from uuid import uuid4
-from urlparse import urlparse
 import csstyle
 
 
@@ -22,14 +21,14 @@ def register_common_routes(app, route):
 
     @route('/')
     def index():
-        sites = Visit.all.map(c.site).sort().execute()
-        sites = [urlparse(site).netloc for site in set(sites)]
+        """List of sites"""
+        sites = list(set(Visit.all.map(c.host).sort().execute()))
         sites.sort()
         return render_template('index.jinja2', sites=sites)
 
     @route('/<site>')
     def site(site):
-        """Nothing yet"""
+        """Stats per site or all if site = *"""
         return render_template('site.jinja2', site=site or '*')
 
     @route("/css.css")

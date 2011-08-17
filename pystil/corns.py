@@ -3,6 +3,8 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 from datetime import datetime
+from decimal import Decimal
+
 from pystil import config
 from multicorn import Multicorn
 from multicorn.corns.alchemy import Alchemy
@@ -32,3 +34,7 @@ class Visit(object):
     site = Property()
     size = Property()
     time = Property(type=int)
+    country = Property()
+    city = Property()
+    lat = Property(type=Decimal)
+    lng = Property(type=Decimal)
