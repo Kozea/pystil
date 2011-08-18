@@ -5,7 +5,7 @@
     window.setTimeout(function () {
         var h = function(e, n, h) { var c = function() {}; if (e[n]) {c = e[n]} e[n] = function (e) {h(e); c(e);}};
 	    var w = window, l = w.location, d = w.document, s = w.screen, r = {}, i = (d.cookie.match('pystil=[0-9]+\\$(.+)') || [])[1] || "%s", q = '_=' + i, z = new w.Date(), t = z.getTime();
-        var g = function (q, y) {new w.Image().src = "%s" + "pystil-" + t + "-" + y + ".gif?" + q;};
+        var g = function (q) {new w.Image().src = "%s" + "pystil-" + t + ".gif?" + q;};
         var j = function (a, r) {var q = a; for (var k in r) {if(r[k]) {q += '&' + k + "=" + escape(r[k]);}} return q;};
         r.s = s.width + 'x' + s.height;
         r.r = d.referrer;

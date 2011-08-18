@@ -28,7 +28,12 @@ if 'mc' in sys.argv:
     console = FunkyConsole(locals=globals())
     if getenv("PYTHONSTARTUP"):
         execfile(getenv("PYTHONSTARTUP"))
-
     console.interact()
+elif 'rabbit' in sys.argv:
+    print "Developping with a rabbit"
+    from werkzeug.serving import run_simple
+    from pystil.service.http import Application
+    run_simple('localhost', 12345, Application(app()),
+            use_reloader=True, use_debugger=True)
 else:
     app().run(host='0.0.0.0', port=12345, debug=True)
