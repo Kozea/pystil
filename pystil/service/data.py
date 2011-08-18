@@ -12,6 +12,7 @@ ipv4re = re.compile(r"(\d{1,3}(\.|$)){4}")
 
 gip_tl = threading.local()
 
+
 class Message(object):
 
     def __init__(self, query, user_agent, remote_addr):
@@ -19,7 +20,6 @@ class Message(object):
         self.stamp = datetime.now()
         self.user_agent = user_agent
         self.remote_addr = remote_addr
-
 
     @property
     def gip(self):
@@ -54,10 +54,12 @@ class Message(object):
             visit['browser_version'] = user_agent.version
             visit['platform'] = user_agent.platform
             visit['language'] = user_agent.language
+            self.add_geolocalization(visit)
             visit = Visit.create(visit)
             visit.save()
         elif kind == 'c':
-            visit = next(Visit.all.filter(c.uuid == uuid).sort(-c.date).execute(),
+            visit = next(
+                Visit.all.filter(c.uuid == uuid).sort(-c.date).execute(),
                     None)
             if visit:
                 visit['time'] = request_args.get('t', [None])[0]
@@ -69,6 +71,7 @@ class Message(object):
         ip = visit['ip']
         lat = None
         lng = None
+        country_code = None
         ip = ip.replace('::ffff:', '')
         if ipv4re.match(ip):
             if (ip == '127.0.0.1'
@@ -84,13 +87,16 @@ class Message(object):
                 country = (location.get('country_name', 'Unknown')
                         .decode('iso-8859-1')
                         if location else 'Unknown')
+                country_code = (location.get('country_code', 'Unknown')
+                        .decode('iso-8859-1')
+                        if location else 'Unknown')
                 lat = location.get('latitude', None)
                 lng = location.get('longitude', None)
         else:
             country = 'ipv6'
             city = 'ipv6'
         visit['country'] = country
+        visit['country_code'] = country_code
         visit['city'] = city
         visit['lat'] = lat
         visit['lng'] = lng
-

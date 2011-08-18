@@ -36,6 +36,7 @@ class Visit(object):
     size = Property()
     time = Property(type=int)
     country = Property()
+    country_code = Property()
     city = Property()
     lat = Property(type=Decimal)
     lng = Property(type=Decimal)

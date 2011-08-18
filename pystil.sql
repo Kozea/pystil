@@ -25,6 +25,7 @@ CREATE TABLE visit
   uuid character varying NOT NULL,
   client_tz_offset integer,
   country character varying,
+  country_code character varying,
   city character varying,
   lat numeric,
   lng numeric,

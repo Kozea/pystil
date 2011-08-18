@@ -17,6 +17,7 @@ IPV4RE = re.compile(r"(\d{1,3}(\.|$)){4}")
 for visit in Visit.all.execute():
     lat = None
     lng = None
+    country_code = None
     ip = visit['ip']
     ip = ip.replace('::ffff:', '')
     if IPV4RE.match(ip):
@@ -33,12 +34,16 @@ for visit in Visit.all.execute():
             country = (location.get('country_name', 'Unknown')
                     .decode('iso-8859-1')
                     if location else 'Unknown')
+            country_code = (location.get('country_code', 'Unknown')
+                    .decode('iso-8859-1')
+                    if location else 'Unknown')
             lat = location.get('latitude', None)
             lng = location.get('longitude', None)
     else:
         country = 'ipv6'
         city = 'ipv6'
     visit['country'] = country
+    visit['country_code'] = country_code
     visit['city'] = city
     visit['lat'] = lat
     visit['lng'] = lng
