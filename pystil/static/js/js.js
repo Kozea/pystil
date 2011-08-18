@@ -1,26 +1,39 @@
 (function() {
   var draw;
-  draw = function() {
-    var elt, g, previousPoint, success, _i, _len, _ref, _results;
-    _ref = window.graphs();
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  draw = __bind(function() {
+    var $elt, elt, g, previousPoint, success, _i, _len, _ref, _results;
+    _ref = $(".graph");
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      g = _ref[_i];
-      elt = $('<div>').attr('id', g.name).addClass("graph " + g.classname);
-      $("#graphs").append(elt);
-      success = (function(g, elt) {
+      elt = _ref[_i];
+      $elt = $(elt);
+      if ($elt.hasClass("pie")) {
+        g = new this.Pie(elt.id);
+      } else if ($elt.hasClass("line")) {
+        g = new this.Line(elt.id);
+      } else if ($elt.hasClass("bar")) {
+        if ($elt.hasClass("time")) {
+          g = new this.TimeBar(elt.id);
+        } else {
+          g = new this.Bar(elt.id);
+        }
+      }
+      $elt.addClass('loading');
+      success = (function(g, $elt) {
         return function(response) {
-          return $.plot(elt, g.data(response), g.options);
+          $elt.removeClass('loading');
+          return $.plot($elt, g.data(response), g.options);
         };
-      })(g, elt);
+      })(g, $elt);
       $.ajax({
-        url: g.url,
+        url: g.url(),
         method: 'GET',
         dataType: 'json',
         success: success
       });
       previousPoint = null;
-      _results.push(elt.bind("plothover", (function(g) {
+      _results.push($elt.bind("plothover", (function(g) {
         return function(event, pos, item) {
           var index;
           if (item) {
@@ -42,6 +55,6 @@
       })(g)));
     }
     return _results;
-  };
+  }, this);
   $(draw);
 }).call(this);

@@ -46,8 +46,8 @@ def register_data_routes(app, route):
             return visits + [{'label': 'Other', 'data': other}]
         return visits
 
-    @route('/<site>/visit_by_day.json')
-    def visit_by_day(site):
+    @route('/<site>/line_by_day.json')
+    def line_by_day(site):
         today = date.today()
         month_start = datetime(today.year, today.month, 1)
         if today.month == 12:
@@ -98,8 +98,8 @@ def register_data_routes(app, route):
             {'label': 'New visits',
              'data': new_visits}]})
 
-    @route('/<site>/visit_by_time.json')
-    def visit_by_time(site):
+    @route('/<site>/bar_by_time.json')
+    def bar_by_time(site):
         visits = [(visit['key'], visit['count'])
                   for visit in Visit.all
                   .filter(on(site) & (c.time != None))
@@ -110,8 +110,8 @@ def register_data_routes(app, route):
                         'data': visits,
                         'color': '#00FF00'})
 
-    @route('/<site>/visit_by_hour.json')
-    def visit_by_hour(site):
+    @route('/<site>/bar_by_hour.json')
+    def bar_by_hour(site):
         visits = [(int(visit['key']), visit['count']) for visit in Visit.all
                   .filter(on(site))
                   .map({'hour': c.date.str()[11:13]})
@@ -119,18 +119,37 @@ def register_data_routes(app, route):
                   .execute()]
         return jsonify({'label': 'Visits per hour', 'data': visits})
 
-    @route('/<site>/visit_by_browser.json')
-    def visit_by_browser(site):
+    @route('/<site>/pie_by_<any%r:criteria>.json' % (tuple(Visit.properties),))
+    def pie_by_criteria(site, criteria):
         visits = [{'label': visit['key'],
                    'data': visit['count']} for visit in Visit.all
                   .filter(on(site))
-                  .groupby(c.browser_name, count=c.len())
+                  .filter(getattr(c, criteria) != None)
+                  .groupby(getattr(c, criteria), count=c.len())
                   .sort(-c.count)[:10]
                   .execute()]
         return jsonify({'list': mc_top(visits, site)})
 
-    @route('/<site>/visit_by_browser_version.json')
-    def visit_by_browser_version(site):
+    @route('/<site>/pie_by_simple_referrer.json')
+    def pie_by_simple_referrer(site):
+        full_referrers = (Visit.all
+                  .filter(on(site))
+                  .filter(c.referrer != None)
+                  .groupby(c.referrer, count=c.len())
+                  .map({'label': c.key, 'data': c.count})
+                  .sort(-c.data)[:10]
+                  .execute())
+        visits = {}
+        for referrer in full_referrers:
+            host = urlparse(referrer['label']).netloc.split(':')[0]
+            host = host if host else referrer['label']
+            visits[host] = visits.get(host, 0) + referrer['data']
+        visits = [{'label': key,
+                   'data': value} for key, value in top(visits)]
+        return jsonify({'list': visits})
+
+    @route('/<site>/pie_by_browser_with_version.json')
+    def pie_by_browser_with_version(site):
         visits = (Visit.all
                   .filter(on(site))
                   .filter((c.browser_name != None) &
@@ -155,70 +174,3 @@ def register_data_routes(app, route):
             for key, value in top(version_visits)]
 
         return jsonify({'list': visits})
-
-    @route('/<site>/visit_by_platform.json')
-    def visit_by_platform(site):
-        visits = (Visit.all
-                  .filter(on(site))
-                  .groupby(c.platform, count=c.len())
-                  .map({'label': c.key, 'data': c.count})
-                  .sort(-c.data)[:10]
-                  .execute())
-        return jsonify({'list': mc_top(visits, site)})
-
-    @route('/<site>/visit_by_resolution.json')
-    def visit_by_resolution(site):
-        visits = (Visit.all
-                  .filter(on(site))
-                  .groupby(c.size, count=c.len())
-                  .map({'label': c.key, 'data': c.count})
-                  .sort(-c.data)[:10]
-                  .execute())
-        return jsonify({'list': mc_top(visits, site)})
-
-    @route('/<site>/visit_by_referrer.json')
-    def visit_by_referrer(site):
-        full_referrers = (Visit.all
-                  .filter(on(site))
-                  .filter(c.referrer != None)
-                  .groupby(c.referrer, count=c.len())
-                  .map({'label': c.key, 'data': c.count})
-                  .sort(-c.data)[:10]
-                  .execute())
-        visits = {}
-        for referrer in full_referrers:
-            host = urlparse(referrer['label']).netloc.split(':')[0]
-            visits[host] = visits.get(host, 0) + referrer['data']
-        visits = [{'label': key,
-                   'data': value} for key, value in top(visits)]
-        return jsonify({'list': visits})
-
-    @route('/<site>/visit_by_host.json')
-    def visit_by_host(site):
-        visits = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
-                  .filter(on(site))
-                  .groupby(c.host, count=c.len())
-                  .sort(-c.count)[:10]
-                  .execute()]
-        return jsonify({'list': mc_top(visits, site)})
-
-    @route('/<site>/visit_by_city.json')
-    def visit_by_city(site):
-        visits = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
-                  .filter(on(site))
-                  .groupby(c.city, count=c.len())
-                  .sort(-c.count)[:10]
-                  .execute()]
-        return jsonify({'list': mc_top(visits, site)})
-
-    @route('/<site>/visit_by_country.json')
-    def visit_by_country(site):
-        visits = [{'label': visit['key'],
-                   'data': visit['count']} for visit in Visit.all
-                  .filter(on(site))
-                  .groupby(c.country, count=c.len())
-                  .sort(-c.count)[:10]
-                  .execute()]
-        return jsonify({'list': mc_top(visits, site)})

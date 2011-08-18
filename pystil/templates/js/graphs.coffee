@@ -1,11 +1,13 @@
-root = "{{ url_for('visit_by_day', site=site) }}".replace('visit_by_day.json', '')
+root = "{{ url_for('line_by_day', site=site) }}".replace('line_by_day.json', '')
 
-class Graph
+class @Graph
     constructor: (@name)->
-        @url = root + 'visit_by_' + name + ".json"
+    root: root
+    url: () ->
+        root + @type + '_by_' + @name + ".json"
 
-class Line extends Graph
-    classname: 'line'
+class @Line extends @Graph
+    type: 'line'
     options:
         lines:
              show: true
@@ -20,9 +22,13 @@ class Line extends Graph
             timeformat: "%y-%0m-%0d"
         yaxis: tickDecimals: 0
     data: (response) -> response.series
+    tooltip: (item) ->
+        y = item.datapoint[1]
+        d =  new Date item.datapoint[0]
+        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
-class Bars extends Graph
-    classname: 'histo'
+class @Bar extends @Graph
+    type: 'bar'
     options:
         bars:
             show: true
@@ -36,40 +42,12 @@ class Bars extends Graph
             tickDecimals: 0
         yaxis: tickDecimals: 0
     data: (response) -> [response]
-
-class Pie extends Graph
-    classname: 'pie'
-    options:
-        grid:
-            hoverable: true
-        series:
-            pie:
-                show: true
-    data: (response) -> response.list
     tooltip: (item) ->
-        p = item.datapoint[0]
-        item.series.label + ": " + p.toFixed(1) + "%"
-
-graphs = []
-
-graph = new Line('day')
-graph.tooltip = (item) ->
+        x = item.datapoint[0]
         y = item.datapoint[1]
-        d =  new Date item.datapoint[0]
-        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-graphs.push(graph)
+        y + " visits at " + x + " h"
 
-graph = new Bars('hour')
-graph.tooltip = (item) ->
-    x = item.datapoint[0]
-    y = item.datapoint[1]
-    y + " visits at " + x + " h"
-graphs.push(graph)
-
-for name in ['browser', 'browser_version', 'platform', 'host', 'city', 'country', 'referrer', 'resolution']
-    graphs.push(new Pie(name))
-
-class TimeBars extends Bars
+class @TimeBar extends @Bar
     options:
         bars:
             show: true
@@ -86,7 +64,15 @@ class TimeBars extends Bars
         y = item.datapoint[1]
         y + " visits during between " + x + " and  " + (x+1) + " minutes"
 
-graphs.push(new TimeBars('time'))
-
-window.graphs = () ->
-    graphs
+class @Pie extends @Graph
+    type: 'pie'
+    options:
+        grid:
+            hoverable: true
+        series:
+            pie:
+                show: true
+    data: (response) -> response.list
+    tooltip: (item) ->
+        p = item.datapoint[0]
+        item.series.label + ": " + p.toFixed(1) + "%"

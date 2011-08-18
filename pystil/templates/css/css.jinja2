@@ -6,11 +6,17 @@
    opacity: 0.80;
 }
 
-.graph {
+#graphs > aside {
   float: left;
 }
 
-.histo, .line {
+.loading {
+  background-image: url("{{ url_for('static', filename='ajaxloader.gif') }}");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bar, .line {
   width: 50%;
   height: 300px;
 }

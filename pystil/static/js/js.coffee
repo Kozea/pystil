@@ -1,20 +1,31 @@
-draw = () ->
-    for g in window.graphs()
-        elt = $('<div>').attr('id', g.name).addClass("graph " + g.classname)
-        $("#graphs").append elt
+draw = () =>
+    for elt in $(".graph")
+        $elt = $(elt)
+        if $elt.hasClass("pie")
+            g = new @Pie(elt.id)
+        else if $elt.hasClass("line")
+            g = new @Line(elt.id)
+        else if $elt.hasClass("bar")
+            if $elt.hasClass("time")
+                g = new @TimeBar(elt.id)
+            else
+                g = new @Bar(elt.id)
+
         # Keep the closures FFS
-        success = ((g, elt) ->
+        $elt.addClass('loading')
+        success = ((g, $elt) ->
             (response) ->
-                $.plot(elt, g.data(response), g.options)
-        )(g, elt)
+                $elt.removeClass('loading')
+                $.plot($elt, g.data(response), g.options)
+        )(g, $elt)
         $.ajax
-            url: g.url
+            url: g.url()
             method: 'GET'
             dataType: 'json'
             success: success
 
         previousPoint = null
-        elt.bind("plothover", ((g) -> (event, pos, item) ->
+        $elt.bind("plothover", ((g) -> (event, pos, item) ->
             if item
                 index = if item.series.pie.show then item.seriesIndex else item.dataIndex
                 if previousPoint != index
