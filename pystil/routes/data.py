@@ -174,3 +174,15 @@ def register_data_routes(app, route):
             for key, value in top(version_visits)]
 
         return jsonify({'list': visits})
+
+    @route('/<site>/map_by_visit.json')
+    def map_by_visit(site):
+        visits = list(Visit.all
+                  .filter(on(site))
+                  .filter(c.country_code != None)
+                  .groupby(c.country + "$" + c.country_code,
+                           count=c.len())
+                  .execute())
+        return jsonify({'list': visits,
+                        'max': max(
+                            [visit['count'] for visit in visits] + [0])})

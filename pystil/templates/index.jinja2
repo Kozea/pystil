@@ -6,7 +6,8 @@
       <tr>
         <th>Visits</th>
         <th>Domain</th>
-        <th>View</th>
+        <th>Stats</th>
+        <th>World map</th>
       </tr>
     </thead>
     <tbody>
@@ -14,6 +15,7 @@
         <td>{{ all_ }}</td>
         <td>All</td>
         <td><a href="{{ url_for('site', site='*') }}">Go</a></td>
+        <td><a href="{{ url_for('map', site='*') }}">Go</a></td>
       </tr>
       {% for site in sites %}
         {% if site %}
@@ -21,6 +23,7 @@
             <td>{{ site.count }}</td>
             <td>{{ site.key }}</td>
             <td><a href="{{ url_for('site', site=site.key) }}">Go</a></td>
+            <td><a href="{{ url_for('map', site=site.key) }}">Go</a></td>
           </tr>
         {% endif %}
       {% endfor %}

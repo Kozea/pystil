@@ -1,34 +1,36 @@
 {% extends "_layout.jinja2" %}
 
+{% block script %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock script %}
+
 {% block article %}
- <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+ <svg version="1.0" id="svg-world-map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	  viewBox="-303.862 120.445 1209 593" enable-background="new -303.862 120.445 1209 593"
 	 xml:space="preserve">
 <defs>
   <style type="text/css" >
   <![CDATA[
-           .borders {
-             fill: none;
-             stroke: #777;
-             stroke-width: 0.1556;
-             stroke-linecap: round;
-             stroke-linejoin: round;
-           }
-           .sub {
-             stroke-width: 0.0778;
-           }
-           .country {
-             fill: #aaa;
-             opacity: 0.2;
-           }
-           .country:hover {
-             -webkit-transition: 1s;
-             opacity: 0.9;
-           }
-           .lake {
-             fill: #55f;
-           }
-
+    .borders {
+      fill: none;
+      stroke: #999;
+      stroke-width: 0.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .country {
+      fill: rgba(0, 0, 255, 0.1);
+      -webkit-transition: 1s;
+    }
+    .country:hover {
+      fill-opacity: 0.5;
+    }
+    .lake {
+      fill: #fff;
+      stroke: #00f;
+      stroke-width: 0.2;
+    }
   ]]>
   </style>
 </defs>
@@ -11066,7 +11068,7 @@
 		M-15.857,423.644c-0.015-0.492-0.117-1.41,0.413-1.652"/>
 	<path id="path33474" class="borders" d="
 		M-15.444,421.992c-0.042-0.074-0.084-0.148-0.127-0.223c0.421-0.301,0.791,0.57,1.08-0.031"/>
-	<path id="path33472" class="borders sub" d="
+	<path id="path33472" class="borders" d="
 		M53.668,389.293c-0.126-0.087-0.276-0.126-0.415-0.095"/>
 	<path id="path33470" class="borders" d="
 		M25.373,383.018c-0.072,0.625-0.101,1.265,0.014,1.885c0.116,0.623-0.643,0.617-0.711,0.942c-0.038,0.185,0.385,0.235,0.342,0.598
