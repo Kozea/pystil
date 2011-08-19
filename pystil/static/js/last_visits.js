@@ -2,10 +2,10 @@
   var last_visits;
   last_visits = function() {
     var stamp, success, update;
-    stamp = new Date().getTime();
+    stamp = 0;
     update = function() {
       return $.ajax({
-        url: location.href + "*/" + stamp + "/last_visits.json",
+        url: location.href + "/*/" + stamp + "/last_visits.json",
         method: 'GET',
         dataType: 'json',
         success: success
@@ -18,11 +18,11 @@
         visit = _ref[_i];
         $("#last-visits tbody").prepend($('<tr>').append($('<td>').text(visit.host)).append($('<td>').text(visit.ip)).append($('<td>').text(visit.country)).append($('<td>').text(visit.city)).append($('<td>').text(visit.page)).append($('<td>').text(visit.referrer)));
       }
-      stamp = new Date().getTime();
+      stamp = response.stamp;
       return setTimeout(update, 2000);
     };
     return $.ajax({
-      url: location.href + "/*/" + stamp + "/last_visits.json",
+      url: location.href + "/*/last_visits.json",
       method: 'GET',
       dataType: 'json',
       success: success

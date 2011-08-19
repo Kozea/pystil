@@ -1,8 +1,8 @@
 last_visits = () ->
-    stamp = new Date().getTime()
+    stamp = 0
     update = () ->
         $.ajax
-            url: location.href + "*/" + stamp + "/last_visits.json"
+            url: location.href + "/*/" + stamp + "/last_visits.json"
             method: 'GET'
             dataType: 'json'
             success: success
@@ -17,11 +17,11 @@ last_visits = () ->
                     .append($('<td>').text(visit.city))
                     .append($('<td>').text(visit.page))
                     .append($('<td>').text(visit.referrer)))
-        stamp = new Date().getTime()
+        stamp = response.stamp
         setTimeout(update, 2000)
 
     $.ajax
-        url: location.href + "/*/" + stamp + "/last_visits.json"
+        url: location.href + "/*/last_visits.json"
         method: 'GET'
         dataType: 'json'
         success: success

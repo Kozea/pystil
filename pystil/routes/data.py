@@ -193,16 +193,18 @@ def register_data_routes(app, route):
                         'max': max(
                             [visit['count'] for visit in visits] + [0])})
 
+    @route('/<site>/last_visits.json')
     @route('/<site>/<int:stamp>/last_visits.json')
-    def last_visits(site, stamp):
+    def last_visits(site, stamp=0):
         visits = [dict(visit) for visit in Visit.all
                       .filter(on(site))
                       .filter(c.date > datetime.fromtimestamp(
-                          stamp / 1000))
+                          stamp / 1000) if stamp else True)
                       .sort(-c.date)[:10]
                       .execute()]
         for visit in visits:
             visit['date'] = date_to_time(visit['date'])
             if visit['last_visit']:
                 visit['last_visit'] = date_to_time(visit['last_visit'])
-        return jsonify({'list': visits})
+        return jsonify({'list': visits,
+                        'stamp': date_to_time(datetime.today())})
