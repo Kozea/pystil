@@ -1,5 +1,10 @@
 {% extends "_layout.jinja2" %}
 
+{% block script %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/last_visits.js') }}"></script>
+{% endblock script %}
+
 {% block article %}
   <table>
     <thead>
@@ -27,6 +32,28 @@
           </tr>
         {% endif %}
       {% endfor %}
+    </tbody>
+  </table>
+  <table id="last-visits">
+    <thead>
+      <tr>
+        <th>Site</th>
+        <th>Ip</th>
+        <th>Country</th>
+        <th>City</th>
+        <th>Page</th>
+        <th>Referrer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
     </tbody>
   </table>
 {% endblock article %}

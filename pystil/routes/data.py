@@ -22,6 +22,13 @@ def register_data_routes(app, route):
     from pystil.corns import Visit
     log = app.logger
 
+    def str_to_time(date):
+        return int(1000 * mktime(
+            datetime.strptime(date, '%Y-%m-%d').timetuple()))
+
+    def date_to_time(date):
+        return int(1000 * mktime(date.timetuple()))
+
     def on(host):
         return c.host == host if host != '*' else True
 
@@ -58,9 +65,8 @@ def register_data_routes(app, route):
             month = today.month + 1
         month_end = datetime(year, month, 1)
 
-        page_hits = [(int(1000 * mktime(
-            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
-                          visit['count']) for visit in Visit.all
+        page_hits = [(str_to_time(visit['key']),
+                      visit['count']) for visit in Visit.all
                   .filter(on(site))
                   .filter((month_start <= c.date) & (c.date < month_end))
                   .map({'day': c.date.str()[:10]})
@@ -68,8 +74,7 @@ def register_data_routes(app, route):
                   .sort(c.key)
                   .execute()]
 
-        new_visits = [(int(1000 * mktime(
-            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
+        new_visits = [(str_to_time(visit['key']),
                           visit['count']) for visit in Visit.all
                   .filter(on(site))
                   .filter((month_start <= c.date) & (c.date < month_end))
@@ -78,6 +83,7 @@ def register_data_routes(app, route):
                   .groupby(c.day, count=c.len())
                   .sort(c.key)
                   .execute()]
+
         # TODO: Make it work in MC
         # visits = [(int(1000 * mktime(
         #     datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
@@ -178,11 +184,25 @@ def register_data_routes(app, route):
     @route('/<site>/map_by_visit.json')
     def map_by_visit(site):
         visits = list(Visit.all
-                  .filter(on(site))
-                  .filter(c.country_code != None)
-                  .groupby(c.country + "$" + c.country_code,
-                           count=c.len())
-                  .execute())
+                      .filter(on(site))
+                      .filter(c.country_code != None)
+                      .groupby(c.country + "$" + c.country_code,
+                               count=c.len())
+                      .execute())
         return jsonify({'list': visits,
                         'max': max(
                             [visit['count'] for visit in visits] + [0])})
+
+    @route('/<site>/<int:stamp>/last_visits.json')
+    def last_visits(site, stamp):
+        visits = [dict(visit) for visit in Visit.all
+                      .filter(on(site))
+                      .filter(c.date > datetime.fromtimestamp(
+                          stamp / 1000))
+                      .sort(-c.date)[:10]
+                      .execute()]
+        for visit in visits:
+            visit['date'] = date_to_time(visit['date'])
+            if visit['last_visit']:
+                visit['last_visit'] = date_to_time(visit['last_visit'])
+        return jsonify({'list': visits})
