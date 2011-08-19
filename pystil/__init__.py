@@ -5,24 +5,25 @@
 """
 pystil - An elegant site web traffic analyzer
 """
+
+import os
+import sys
+
+ROOT = os.path.dirname(__file__)
+
+import logging
 from flask import Flask
 from logging import getLogger, INFO
+
 from pystil.log import get_default_handler
 from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
 from pystil.routes.public import register_public_routes
-import logging
-import pystil
-import os
-import sys
-
 
 def app():
     """Create Flask app"""
-
-    root = os.path.dirname(pystil.__file__)
-    static_folder = os.path.join(root, 'static')
-    template_folder = os.path.join(root, 'templates')
+    static_folder = os.path.join(ROOT, 'static')
+    template_folder = os.path.join(ROOT, 'templates')
     app = Flask(__name__,
                 static_folder=static_folder,
                 template_folder=template_folder)
