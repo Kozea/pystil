@@ -34,6 +34,11 @@ def register_common_routes(app, route):
         """Stats per site or all if site = *"""
         return render_template('site.jinja2', site=site)
 
+    @route('/<site>/map')
+    def map(site):
+        """Stats per site or all if site = *"""
+        return render_template('map.jinja2', site=site)
+
     @route("/css.css")
     def css():
         """Render the css with some url_for in it"""
