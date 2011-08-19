@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import os
 import pickle
 import pika
 import threading
@@ -6,11 +7,13 @@ import re
 from .data import Message
 import uuid
 
+import pystil
 
-with open('pystil/static/pystil.gif') as f:
+
+with open(os.path.join(pystil.ROOT, 'static', 'pystil.gif')) as f:
     gif_content = f.read()
 
-with open('pystil/static/js/pystil.js') as f:
+with open(os.path.join(pystil.ROOT, 'static', 'js', 'pystil.js')) as f:
     js_content = f.read()
 
 def render_js(environ):
