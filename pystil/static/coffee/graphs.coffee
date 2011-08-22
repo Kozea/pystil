@@ -1,4 +1,4 @@
-root = "{{ url_for('line_by_day', site=site) }}".replace('line_by_day.json', '')
+root = location.pathname + "/" # FIXME add site
 
 class @Graph
     constructor: (@name)->

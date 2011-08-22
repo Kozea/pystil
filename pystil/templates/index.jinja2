@@ -1,59 +1,56 @@
 {% extends "_layout.jinja2" %}
 
-{% block script %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/last_visits.js') }}"></script>
-{% endblock script %}
-
 {% block article %}
-  <table>
-    <thead>
-      <tr>
-        <th>Visits</th>
-        <th>Domain</th>
-        <th>Stats</th>
-        <th>World map</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{ all_ }}</td>
-        <td>All</td>
-        <td><a href="{{ url_for('site', site='*') }}">Go</a></td>
-        <td><a href="{{ url_for('map', site='*') }}">Go</a></td>
-      </tr>
-      {% for site in sites %}
-        {% if site %}
-          <tr>
-            <td>{{ site.count }}</td>
-            <td>{{ site.key }}</td>
-            <td><a href="{{ url_for('site', site=site.key) }}">Go</a></td>
-            <td><a href="{{ url_for('map', site=site.key) }}">Go</a></td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-    </tbody>
-  </table>
-  <table id="last-visits">
-    <thead>
-      <tr>
-        <th>Site</th>
-        <th>Ip</th>
-        <th>Country</th>
-        <th>City</th>
-        <th>Page</th>
-        <th>Referrer</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
+  <article id="front">
+    <table>
+      <thead>
+        <tr>
+          <th>Visits</th>
+          <th>Domain</th>
+          <th>Stats</th>
+          <th>World map</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ all_ }}</td>
+          <td>All</td>
+          <td><a href="{{ url_for('site', site='*') }}">Go</a></td>
+          <td><a href="{{ url_for('map', site='*') }}">Go</a></td>
+        </tr>
+        {% for site in sites %}
+          {% if site %}
+            <tr>
+              <td>{{ site.count }}</td>
+              <td>{{ site.key }}</td>
+              <td><a href="{{ url_for('site', site=site.key) }}">Go</a></td>
+              <td><a href="{{ url_for('map', site=site.key) }}">Go</a></td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <table id="last-visits">
+      <thead>
+        <tr>
+          <th>Site</th>
+          <th>Ip</th>
+          <th>Country</th>
+          <th>City</th>
+          <th>Page</th>
+          <th>Referrer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
 {% endblock article %}

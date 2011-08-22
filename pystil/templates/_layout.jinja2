@@ -4,6 +4,7 @@
     <title>pystil - An elegant site web traffic analyzer</title>
     {% block script %}
       <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+      <!--[if lte IE 8]><script src="{{ url_for('static', filename='js/excanvas.min.js') }}"></script><![endif]-->
       <script src="http://code.jquery.com/jquery.min.js"></script>
       <script type="text/javascript">
         (function() {
@@ -11,6 +12,9 @@
         p.type='text/javascript';p.async=true;p.src="{{ url_for('pystil_js') }}";s.parentNode.insertBefore(p,s);
         })();
       </script>
+      <script src="{{ url_for('static', filename='js/jquery.flot.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/jquery.flot.pie.js') }}"></script>
+      <script src="{{ url_for('static', filename='min.js') }}"></script>
     {% endblock script %}
 
     {% block style %}
@@ -24,24 +28,6 @@
         <h1>pystil</h1>
       </header>
       {% block article %}
-        <article id="graphs">
-          <aside id="day" class="graph line"></aside>
-          <aside id="hour" class="graph bar"></aside>
-          {% if site == '*' %}
-            <aside id="host" class="graph pie"></aside>
-            {% else %}
-            <aside id="page" class="graph pie"></aside>
-            <aside id="hash" class="graph pie"></aside>
-            <aside id="query" class="graph pie"></aside>
-          {% endif %}
-          <aside id="browser_name" class="graph pie"></aside>
-          <aside id="browser_with_version" class="graph pie"></aside>
-          <aside id="platform" class="graph pie"></aside>
-          <aside id="country" class="graph pie"></aside>
-          <aside id="simple_referrer" class="graph pie"></aside>
-          <aside id="size" class="graph pie"></aside>
-          <aside id="time" class="graph bar"></aside>
-        </article>
       {% endblock article %}
     </section>
   </body>

@@ -2,3 +2,4 @@
 *.db
 GeoLiteCity.dat.gz
 ip.db
+pystil/static/all.js
