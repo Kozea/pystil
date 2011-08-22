@@ -8,8 +8,6 @@ class Graph extends Base
         super
         $.plot(@elt, @data(response), @options)
 
-    root: location.pathname + "/" # FIXME handle all pages
-
     url: () =>
         @root + @type + '_by_' + @elt.attr('id') + ".json"
 
