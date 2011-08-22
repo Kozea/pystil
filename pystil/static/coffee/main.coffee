@@ -19,4 +19,10 @@ draw = () ->
             new Map(elt)
         )
 
+    $(".last-visits").each(
+        (i, elt) ->
+            elt = $ elt
+            new LastVisits(elt)
+        )
+
 $ draw

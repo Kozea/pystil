@@ -6,6 +6,8 @@
 from flask import render_template, Response, abort
 from multicorn.requests import CONTEXT as c
 import csstyle
+import os
+import pystil
 
 
 def register_common_routes(app, route):
@@ -41,17 +43,16 @@ def register_common_routes(app, route):
 
     @route("/css.css")
     def css():
-        """Render the css with some url_for in it"""
-        text = render_template('css/css.jinja2')
+        """Render the css with CSStyle"""
+        style = os.path.join(
+            os.path.dirname(os.path.abspath(pystil.__file__)),
+            'static', 'css.css')
+        with open(style) as style:
+            text = style.read()
+
         for browser in csstyle.BROWSERS:
             browser_parser = getattr(csstyle, browser)
             text += '\n\n/* CSS for %s */\n\n' % browser
-            parser = csstyle.Parser(text=render_template('css/css.jinja2'))
+            parser = csstyle.Parser(text=text)
             text += repr(browser_parser.transform(parser, keep_existant=False))
         return Response(text, mimetype='text/css')
-
-    @route("/<site>/graphs.js")
-    def graphs(site):
-        """Render the graph js with some url_for in it"""
-        return Response(render_template('js/graphs.js', site=site),
-                        mimetype='text/javascript')

@@ -202,6 +202,7 @@ def register_data_routes(app, route):
                           stamp / 1000) if stamp else True)
                       .sort(-c.date)[:10]
                       .execute()]
+        visits.reverse()
         for visit in visits:
             visit['date'] = date_to_time(visit['date'])
             if visit['last_visit']:

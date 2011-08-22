@@ -10,13 +10,14 @@ table {
   float: left;
   margin: 10px;
 }
+
 #graphs > aside {
   float: left;
   margin: 10px;
 }
 
 .loading {
-  background-image: url("{{ url_for('static', filename='ajaxloader.gif') }}");
+  background-image: url('/static/ajaxloader.gif');
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -29,4 +30,12 @@ table {
 .pie {
   width: 30%;
   height: 300px;
+}
+
+.last-visits tr {
+  transition: 500ms;
+}
+
+.new-visit {
+  color: orangered;
 }
