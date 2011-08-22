@@ -1,12 +1,39 @@
-root = location.pathname + "/" # FIXME add site
+class Graph
+    constructor: (@elt)->
+        @elt.addClass 'loading'
+        $.ajax
+            url: @url()
+            method: 'GET'
+            dataType: 'json'
+            success: @reply
+        @old_index = null
+        @elt.bind("plothover", @plothover)
 
-class @Graph
-    constructor: (@name)->
-    root: root
-    url: () ->
-        root + @type + '_by_' + @name + ".json"
+    reply: (response) =>
+        @elt.removeClass('loading')
+        $.plot(@elt, @data(response), @options)
 
-class @Line extends @Graph
+    root: location.pathname + "/" # FIXME add site
+
+    url: () =>
+        @root + @type + '_by_' + @elt.attr('id') + ".json"
+
+    plothover: (event, pos, item) =>
+        if item
+            index = if item.series.pie.show then item.seriesIndex else item.dataIndex
+            if @old_index != index
+                @old_index = index
+                $("#tooltip").remove()
+                $('<div>').attr('id', 'tooltip').css(
+                    top: pos.pageY + 5,
+                    left: pos.pageX + 5,
+                    border: '1px solid ' + item.series.color
+                ).text(@tooltip item).appendTo("body")
+        else
+            $("#tooltip").remove()
+            @old_index = null
+
+class Line extends Graph
     type: 'line'
     options:
         lines:
@@ -27,7 +54,7 @@ class @Line extends @Graph
         d =  new Date item.datapoint[0]
         y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
-class @Bar extends @Graph
+class Bar extends Graph
     type: 'bar'
     options:
         bars:
@@ -47,7 +74,7 @@ class @Bar extends @Graph
         y = item.datapoint[1]
         y + " visits at " + x + " h"
 
-class @TimeBar extends @Bar
+class TimeBar extends Bar
     options:
         bars:
             show: true
@@ -64,7 +91,7 @@ class @TimeBar extends @Bar
         y = item.datapoint[1]
         y + " visits during between " + x + " and  " + (x+1) + " minutes"
 
-class @Pie extends @Graph
+class Pie extends Graph
     type: 'pie'
     options:
         grid:
