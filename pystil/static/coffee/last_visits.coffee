@@ -53,5 +53,3 @@ class LastVisits extends Base
         if @stamp != 0
             base  += @stamp + "/"
         base + 'last_visits.json'
-
-

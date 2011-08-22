@@ -3,13 +3,13 @@ fs     = require 'fs'
 util   = require 'util'
 uglify = require 'uglify-js'
 
-coffee_dir = './pystil/static/coffee/'
-js_dir = './pystil/static/'
-js_file = './pystil/static/all.js'
-min_file = './pystil/static/min.js'
-all_coffee_file = './pystil/static/all.coffee'
+root = './pystil/static/'
+coffee_dir = root + 'coffee'
+js_file = root + 'all.js'
+min_file = root + 'min.js'
+all_coffee_file = root + 'all.coffee'
 
-coffee_opts = "--output #{js_dir} --compile #{all_coffee_file} "
+coffee_opts = "--output #{root} --compile #{all_coffee_file} "
 
 coffee_files = [
     'base'
@@ -28,6 +28,7 @@ task 'watch', 'Watch coffee files and build changes', ->
             if +curr.mtime isnt +prev.mtime
                 util.log "Saw change in #{coffee_dir}/#{file}.coffee"
                 invoke 'build'
+                util.log "Watching for changes in #{coffee_dir}"
 
 task 'build', 'Build a single js file from coffee files', ->
     util.log "Building #{js_file}"
@@ -52,7 +53,6 @@ task 'build', 'Build a single js file from coffee files', ->
             'utf8',
             (err) ->
                 handleError(err) if err
-                util.log "Done"
                 util.log "Running coffee..."
                 exec "coffee #{coffee_opts}", (err, stdout, stderr) ->
                     handleError(err) if err
@@ -72,10 +72,9 @@ task 'uglify', 'Minify and obfuscate', ->
         ast = pro.ast_mangle ast # get a new AST with mangled names
         ast = pro.ast_squeeze ast # get an AST with compression optimizations
         final_code = pro.gen_code ast # compressed code here
-
         fs.writeFile min_file, final_code
-
-        util.log "Uglified #{js_file} to #{min_file} (#{final_code.length} chars)"
+        util.log "Uglified #{js_file} (#{fileContents.length} chars) to #{min_file} (#{final_code.length} chars)"
 
 handleError = (error) ->
+    exec "notify-send 'Cake error:' '#{error}'"
     throw error
