@@ -207,8 +207,8 @@ def register_data_routes(app, route):
             if visit['last_visit']:
                 visit['last_visit'] = date_to_time(visit['last_visit'])
             if visit['lat']:
-                visit['lat'] = float(visit['lat']) 
+                visit['lat'] = float(visit['lat'])
             if visit['lng']:
-                visit['lng'] = float(visit['lng']) 
+                visit['lng'] = float(visit['lng'])
         return jsonify({'list': visits,
                         'stamp': date_to_time(datetime.today())})
