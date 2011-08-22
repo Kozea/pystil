@@ -12,9 +12,10 @@ all_coffee_file = './pystil/static/all.coffee'
 coffee_opts = "--output #{js_dir} --compile #{all_coffee_file} "
 
 coffee_files = [
-    'last_visits'
+    'base'
     'map'
     'graphs'
+    'last_visits'
     'main'
 ]
 

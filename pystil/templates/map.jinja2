@@ -1,12 +1,8 @@
 {% extends "_layout.jinja2" %}
 
-{% block script %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/map.js') }}"></script>
-{% endblock script %}
-
 {% block article %}
- <svg version="1.0" id="svg-world-map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<article class="map">
+<svg version="1.0" id="svg-world-map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	  viewBox="-303.862 120.445 1209 593" enable-background="new -303.862 120.445 1209 593"
 	 xml:space="preserve">
 <defs>
@@ -13257,4 +13253,5 @@
 		c-1.187-0.963-2.057-0.899-1.954-0.555"/>
 </g>
 </svg>
+</article>
 {% endblock article %}

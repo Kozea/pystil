@@ -1,19 +1,14 @@
-class Graph
-    constructor: (@elt)->
-        @elt.addClass 'loading'
-        $.ajax
-            url: @url()
-            method: 'GET'
-            dataType: 'json'
-            success: @reply
+class Graph extends Base
+    constructor: (@elt) ->
+        super
         @old_index = null
         @elt.bind("plothover", @plothover)
 
     reply: (response) =>
-        @elt.removeClass('loading')
+        super
         $.plot(@elt, @data(response), @options)
 
-    root: location.pathname + "/" # FIXME add site
+    root: location.pathname + "/" # FIXME handle all pages
 
     url: () =>
         @root + @type + '_by_' + @elt.attr('id') + ".json"
@@ -33,8 +28,10 @@ class Graph
             $("#tooltip").remove()
             @old_index = null
 
+
 class Line extends Graph
     type: 'line'
+
     options:
         lines:
              show: true
@@ -48,14 +45,18 @@ class Line extends Graph
             mode: "time"
             timeformat: "%y-%0m-%0d"
         yaxis: tickDecimals: 0
+
     data: (response) -> response.series
+
     tooltip: (item) ->
         y = item.datapoint[1]
         d =  new Date item.datapoint[0]
         y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
+
 class Bar extends Graph
     type: 'bar'
+
     options:
         bars:
             show: true
@@ -68,11 +69,14 @@ class Bar extends Graph
             ticks: 24
             tickDecimals: 0
         yaxis: tickDecimals: 0
+
     data: (response) -> [response]
+
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
         y + " visits at " + x + " h"
+
 
 class TimeBar extends Bar
     options:
@@ -86,20 +90,25 @@ class TimeBar extends Bar
             max: 60
             tickDecimals: 0
         yaxis: tickDecimals: 0
+
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
         y + " visits during between " + x + " and  " + (x+1) + " minutes"
 
+
 class Pie extends Graph
     type: 'pie'
+
     options:
         grid:
             hoverable: true
         series:
             pie:
                 show: true
+
     data: (response) -> response.list
+
     tooltip: (item) ->
         p = item.datapoint[0]
         item.series.label + ": " + p.toFixed(1) + "%"
