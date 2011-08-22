@@ -16,6 +16,7 @@ with open(os.path.join(pystil.ROOT, 'static', 'pystil.gif')) as f:
 with open(os.path.join(pystil.ROOT, 'static', 'js', 'pystil.js')) as f:
     js_content = f.read()
 
+
 def render_js(environ):
     base_url = 'http://%s/' % environ['HTTP_HOST']
     content = js_content % (str(uuid.uuid4()), base_url)
@@ -30,16 +31,18 @@ class Application(object):
     def __call__(self, environ, start_response):
         myapp = threading.local()
         if environ['PATH_INFO'] == '/pystil.js':
-            start_response('200 OK', [('Content-Type', 'application/javascript')])
+            start_response('200 OK',
+                           [('Content-Type', 'application/javascript')])
             return render_js(environ)
         elif re.match('/pystil-[^/]*\.gif', environ['PATH_INFO']):
             start_response('200 OK', [('Content-Type', 'image/gif')])
             if not hasattr(myapp, 'connection'):
-                params  = pika.ConnectionParameters(host='localhost')
+                params = pika.ConnectionParameters(host='localhost')
                 myapp.connection = pika.BlockingConnection(params)
                 myapp.channel = myapp.connection.channel()
                 myapp.channel.queue_declare(queue='pystil')
-            message = Message(environ['QUERY_STRING'], environ['HTTP_USER_AGENT'],
+            message = Message(environ['QUERY_STRING'],
+                              environ['HTTP_USER_AGENT'],
                     environ['REMOTE_ADDR'])
             myapp.channel.basic_publish(exchange='',
                 routing_key='pystil',
