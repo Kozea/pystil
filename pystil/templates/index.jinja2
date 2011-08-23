@@ -19,7 +19,7 @@
           <td><a href="{{ url_for('map', site='*') }}">Go</a></td>
         </tr>
         {% for site in sites %}
-          {% if site %}
+          {% if site and site.key %}
             <tr>
               <td>{{ site.count }}</td>
               <td>{{ site.key }}</td>

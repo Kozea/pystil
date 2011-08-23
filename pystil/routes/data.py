@@ -84,8 +84,7 @@ def register_data_routes(app, route):
                   .sort(c.key)
                   .execute()]
 
-        visits = [(int(1000 * mktime(
-            datetime.strptime(visit['key'], '%Y-%m-%d').timetuple())),
+        visits = [(str_to_time(visit['key']),
                           visit['count']) for visit in Visit.all
                   .filter(on(site))
                   .filter((month_start <= c.date) & (c.date < month_end))
