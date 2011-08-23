@@ -31,7 +31,7 @@ class Visit(object):
     page = Property()
     platform = Property()
     query = Property()
-    referrer = Property()
+    referrer = Property(type=str)
     site = Property()
     size = Property()
     time = Property(type=int)

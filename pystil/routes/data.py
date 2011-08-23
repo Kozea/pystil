@@ -7,7 +7,7 @@ from datetime import datetime, date
 from time import mktime
 from flask import jsonify
 from multicorn.requests import CONTEXT as c
-from urlparse import urlparse
+from urlparse import urlparse, parse_qs
 import re
 
 IPV4RE = re.compile(r"(\d{1,3}(\.|$)){4}")
@@ -204,12 +204,26 @@ def register_data_routes(app, route):
                       .execute()]
         visits.reverse()
         for visit in visits:
-            visit['date'] = date_to_time(visit['date'])
+            visit['date'] = visit['date'].strftime('%Y-%m-%d %H:%M:%S')
             if visit['last_visit']:
                 visit['last_visit'] = date_to_time(visit['last_visit'])
             if visit['lat']:
                 visit['lat'] = float(visit['lat'])
             if visit['lng']:
                 visit['lng'] = float(visit['lng'])
+            url = visit['referrer']
+            if url:
+                up = urlparse(url)
+                netloc = up.netloc
+                query = up.query
+                search = parse_qs(query).get(
+                    'q', parse_qs(query).get(
+                        'p', parse_qs(query).get(
+                            'rdata', None)))
+                if search:
+                    # TODO Yahoo variable encoding
+                    visit['referrer'] = "Organic: %s %s" % (
+                        netloc, search[0].decode('utf-8'))
+
         return jsonify({'list': visits,
                         'stamp': date_to_time(datetime.today())})
