@@ -1,4 +1,6 @@
-class LastVisits extends Base
+class @Last extends @Base
+    type: 'last'
+
     constructor: (@elt) ->
         @stamp = 0
         super
@@ -14,6 +16,7 @@ class LastVisits extends Base
         @update(response)
 
     ask_update: () =>
+        @criteria.push('all')  # Fix this
         $.ajax
             url: @url()
             method: 'GET'
@@ -45,11 +48,3 @@ class LastVisits extends Base
         @stamp = response.stamp
         setTimeout(@ask_update, 2500)
 
-    url: () ->
-        if location.pathname == "/"
-            base = "/*/"
-        else
-            base = location.pathname + "/"
-        if @stamp != 0
-            base  += @stamp + "/"
-        base + 'last_visits.json'

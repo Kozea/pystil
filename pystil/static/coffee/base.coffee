@@ -1,14 +1,25 @@
-class Base
-    data_type: 'json'
+class @Base
+
     constructor: (@elt) ->
         @elt.addClass 'loading'
+        @criteria = @elt.attr("data-criteria").split(',')
+        @fetch()
+
+    fetch: () ->
         $.ajax
             url: @url()
             method: 'GET'
-            dataType: @data_type
+            dataType: 'json'
             success: @reply
 
     reply: (response) =>
-        @elt.removeClass('loading')
+        @elt.removeClass 'loading'
+        if @criteria.length > 0
+            @fetch()
 
-    root: "/" + location.pathname.split("/")[1] + "/"
+    url: () ->
+        site = location.pathname.split("/")[1]
+        json = "/#{site}/#{@type}_by_#{@criteria.pop()}"
+        if @stamp
+            json += "_at_#{@stamp}"
+        "#{json}.json"

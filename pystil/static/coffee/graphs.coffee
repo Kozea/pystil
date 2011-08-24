@@ -1,5 +1,6 @@
-class Graph extends Base
+class @Graph extends @Base
     constructor: (@elt) ->
+        @datas = []
         super
         @old_index = null
         @elt.bind("plothover", @plothover)
@@ -8,8 +9,9 @@ class Graph extends Base
         super
         $.plot(@elt, @data(response), @options)
 
-    url: () =>
-        @root + @type + '_by_' + @elt.attr('id') + ".json"
+    data: (response) ->
+        @datas.push(response)
+        @datas
 
     plothover: (event, pos, item) =>
         if item
@@ -27,7 +29,7 @@ class Graph extends Base
             @old_index = null
 
 
-class Line extends Graph
+class @Line extends @Graph
     type: 'line'
 
     options:
@@ -44,7 +46,6 @@ class Line extends Graph
             timeformat: "%y-%0m-%0d"
         yaxis: tickDecimals: 0
 
-    data: (response) -> response.series
 
     tooltip: (item) ->
         y = item.datapoint[1]
@@ -52,7 +53,7 @@ class Line extends Graph
         y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
 
-class Bar extends Graph
+class @Bar extends @Graph
     type: 'bar'
 
     options:
@@ -68,15 +69,13 @@ class Bar extends Graph
             tickDecimals: 0
         yaxis: tickDecimals: 0
 
-    data: (response) -> [response]
-
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
         y + " visits at " + x + " h"
 
 
-class TimeBar extends Bar
+class @Time extends @Bar
     options:
         bars:
             show: true
@@ -95,7 +94,7 @@ class TimeBar extends Bar
         y + " visits during between " + x + " and  " + (x+1) + " minutes"
 
 
-class Pie extends Graph
+class @Pie extends @Graph
     type: 'pie'
 
     options:
@@ -105,7 +104,8 @@ class Pie extends Graph
             pie:
                 show: true
 
-    data: (response) -> response.list
+    data: (response) ->
+        @datas = response.list
 
     tooltip: (item) ->
         p = item.datapoint[0]

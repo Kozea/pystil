@@ -13,15 +13,15 @@ aside {
   margin: 2.5%;
 }
 
+aside[data-graph=Pie] {
+  width: 23%;
+  margin: 1%;
+}
+
 .loading {
   background-image: url('/static/ajaxloader.gif');
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.pie {
-  width: 30%;
-  margin: 1.5%;
 }
 
 .sites, .last-visits {

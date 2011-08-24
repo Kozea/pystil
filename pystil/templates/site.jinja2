@@ -2,23 +2,22 @@
 
 {% block article %}
   <article id="graphs">
-    <aside class="last-visits"></aside>
-    <aside class="map"></aside>
-    <aside id="day" class="graph line"></aside>
-    <aside id="hour" class="graph bar"></aside>
+    <aside class="graph" data-graph="Last" data-criteria="all"></aside>
+    <aside class="graph" data-graph="Map" data-criteria="all"></aside>
+    <aside class="graph" data-graph="Line" data-criteria="new,unique,all"></aside>
+    <aside class="graph" data-graph="Bar" data-criteria="hour"></aside>
     {% if site == '*' %}
-      <aside id="host" class="graph pie"></aside>
+      <aside class="graph" data-graph="Pie" data-criteria="host"></aside>
     {% else %}
-      <aside id="page" class="graph pie"></aside>
-      <aside id="hash" class="graph pie"></aside>
-      <aside id="query" class="graph pie"></aside>
+      <aside class="graph" data-graph="Pie" data-criteria="page"></aside>
+      <aside class="graph" data-graph="Pie" data-criteria="hash"></aside>
     {% endif %}
-    <aside id="browser_name" class="graph pie"></aside>
-    <aside id="browser_with_version" class="graph pie"></aside>
-    <aside id="platform" class="graph pie"></aside>
-    <aside id="country" class="graph pie"></aside>
-    <aside id="simple_referrer" class="graph pie"></aside>
-    <aside id="size" class="graph pie"></aside>
-    <aside id="time" class="graph bar"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="browser_name"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="browser_version"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="platform"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="country"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="referrer"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="size"></aside>
+    <aside class="graph" data-graph="Time" data-criteria="time"></aside>
   </article>
 {% endblock article %}
