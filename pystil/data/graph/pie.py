@@ -28,9 +28,9 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
                 version_visits[label] += data
             else:
                 version_visits[label] = data
-                visits = [
-                    {'label': key, 'data': value}
-                    for key, value in top(version_visits)]
+        visits = [
+            {'label': key, 'data': value}
+            for key, value in top(version_visits)]
         return {'list': visits}
 
     rq = (rq.filter(getattr(c, criteria) != None)
