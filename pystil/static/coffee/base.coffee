@@ -18,8 +18,8 @@ class @Base
             @fetch()
 
     url: () ->
-        site = location.pathname.split("/")[1]
-        json = "/#{site}/#{@type}_by_#{@criteria.pop()}"
+        site = location.pathname.split("/")[1] or "all"
+        ref = "/#{site}/#{@type}_by_#{@criteria.pop()}"
         if @stamp
-            json += "_at_#{@stamp}"
-        "#{json}.json"
+            ref += "_at_#{@stamp}"
+        "#{ref}.json"

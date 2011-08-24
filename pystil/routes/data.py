@@ -14,7 +14,8 @@ import re
 def register_data_routes(app, route):
     """Defines data routes"""
     from pystil.corns import Visit
-    from pystil.data import process_data, date_to_time
+    from pystil.data import process_data
+    from pystil.data.utils import date_to_time
     log = app.logger
 
     url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>' % (
