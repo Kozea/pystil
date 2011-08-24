@@ -16,7 +16,7 @@ class @Last extends @Base
         @update(response)
 
     ask_update: () =>
-        @criteria.push('all')  # Fix this
+        @remaining_criteria = 1  # Fix this
         $.ajax
             url: @url()
             method: 'GET'

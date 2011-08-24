@@ -2,6 +2,10 @@
 
 {% block article %}
   <article id="graphs">
+    <header>
+      <label for="from">From: </label><input id="from" type="text" class="datepicker" />
+      <label for="to">To: </label><input id="to" type="text" class="datepicker" />
+    </header>
     <aside class="graph" data-graph="Last" data-criteria="all"></aside>
     <aside class="graph" data-graph="Map" data-criteria="all"></aside>
     <aside class="graph" data-graph="Line" data-criteria="new,unique,all"></aside>

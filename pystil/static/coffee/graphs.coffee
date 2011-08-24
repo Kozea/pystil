@@ -1,17 +1,26 @@
 class @Graph extends @Base
     constructor: (@elt) ->
-        @datas = []
+        @data = []
+        @plotable = true
         super
         @old_index = null
         @elt.bind("plothover", @plothover)
 
     reply: (response) =>
         super
-        $.plot(@elt, @data(response), @options)
+        if response.list
+            for serie in response.list
+                @data.push(serie)
+        else
+            @data.push(response)
+        @plot()
 
-    data: (response) ->
-        @datas.push(response)
-        @datas
+    clear: () ->
+        super
+        @data = []
+
+    plot: () ->
+        $.plot(@elt, @data, @options)
 
     plothover: (event, pos, item) =>
         if item
@@ -103,9 +112,6 @@ class @Pie extends @Graph
         series:
             pie:
                 show: true
-
-    data: (response) ->
-        @datas = response.list
 
     tooltip: (item) ->
         p = item.datapoint[0]
