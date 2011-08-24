@@ -10,10 +10,11 @@ $ () =>
         dateFormat: 'yy-mm-dd'
         maxDate: new Date()
     )
-    $("#from").datepicker("setDate", '-1m')
-    $("#to").datepicker("setDate", new Date())
-    @fromDate = $("#from").datepicker("getDate")
-    @toDate = $("#to").datepicker("getDate")
+    if $('.datepicker').length
+        $("#from").datepicker("setDate", '-1m')
+        $("#to").datepicker("setDate", new Date())
+        @fromDate = $("#from").datepicker("getDate")
+        @toDate = $("#to").datepicker("getDate")
 
     for elt in $(".graph")
         elt = $ elt

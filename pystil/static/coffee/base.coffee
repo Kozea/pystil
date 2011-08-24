@@ -26,6 +26,6 @@ class @Base
         ref = "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
         if @stamp
             ref += "_at_#{@stamp}"
-        else
+        else if window.fromDate and window.toDate
             ref += "_from_#{window.fromDate.getTime()}_to_#{window.toDate.getTime()}"
         "#{ref}.json"

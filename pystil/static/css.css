@@ -13,6 +13,11 @@ aside {
   margin: 2.5%;
 }
 
+aside[data-graph=Last] {
+  width: 95%;
+  margin: 0 2.5%;
+}
+
 aside[data-graph=Pie] {
   width: 23%;
   margin: 1%;
@@ -27,7 +32,7 @@ aside[data-graph=Pie] {
 .sites, .last-visits {
   width: 45%;
   float: left;
-  margin: 2.5%;
+  margin: 1% 2.5%;
   overflow: auto;
   font-size: 0.8em;
 }
