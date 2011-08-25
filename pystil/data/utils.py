@@ -5,7 +5,7 @@
 
 """Utility functions to help processing data"""
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from multicorn.requests import CONTEXT as c
 from urlparse import urlparse, parse_qs
 from pystil.corns import Visit
@@ -53,7 +53,7 @@ def on(host):
 def between(from_date, to_date):
     """Generate a filter between 2 dates"""
     return ((time_to_date(from_date) <= c.date) &
-            (c.date < time_to_date(to_date)))
+            (c.date < time_to_date(to_date) + timedelta(1)))
 
 
 def top(dic, size=10):
