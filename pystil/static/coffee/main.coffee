@@ -2,7 +2,7 @@ $ () =>
     elts = []
     $('.datepicker').datepicker(
         onSelect: (d, inst) =>
-            @[inst.id + "Date"] = new Date(d)
+            @[inst.id + "Date"] = $.datepicker.parseDate('yy-mm-dd', d)
             for elt in elts
                 if elt.plotable
                     elt.clear()
