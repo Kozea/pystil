@@ -23,7 +23,6 @@ if 'mc' in sys.argv:
             import sys
             code.InteractiveConsole.showtraceback(self)
             pdb.post_mortem(sys.exc_info()[2])
-            sys.exit(1)
 
     console = FunkyConsole(locals=globals())
     if getenv("PYTHONSTARTUP"):
