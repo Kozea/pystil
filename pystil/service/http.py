@@ -13,13 +13,13 @@ import pystil
 with open(os.path.join(pystil.ROOT, 'static', 'pystil.gif')) as f:
     gif_content = f.read()
 
-with open(os.path.join(pystil.ROOT, 'static', 'js', 'pystil.js')) as f:
+with open(os.path.join(pystil.ROOT, 'static', 'pystil.js')) as f:
     js_content = f.read()
 
 
 def render_js(environ):
     base_url = 'http://%s/' % environ['HTTP_HOST']
-    content = js_content % (str(uuid.uuid4()), base_url)
+    content = js_content % (base_url, str(uuid.uuid4()))
     return content
 
 

@@ -3,3 +3,4 @@
 GeoLiteCity.dat.gz
 ip.db
 pystil/static/all.js
+pystil/static/tracker.js

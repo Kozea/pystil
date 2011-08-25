@@ -6,9 +6,11 @@ uglify = require 'uglify-js'
 root = './pystil/static/'
 coffee_dir = root + 'coffee'
 js_file = root + 'all.js'
+pystil_coffee_file = 'tracker.coffee'
+pystil_js_file = root + 'tracker.js'
+pystil_min_file = root + 'pystil.js'
 min_file = root + 'min.js'
 all_coffee_file = root + 'all.coffee'
-
 coffee_opts = "--output #{root} --compile #{all_coffee_file} "
 
 coffee_files = [
@@ -21,14 +23,43 @@ coffee_files = [
 
 task 'watch', 'Watch coffee files and build changes', ->
     invoke 'build'
+    invoke 'build:tracker'
     util.log "Watching for changes in #{coffee_dir}"
-
     for file in coffee_files then do (file) ->
         fs.watchFile "#{coffee_dir}/#{file}.coffee", (curr, prev) ->
             if +curr.mtime isnt +prev.mtime
                 util.log "Saw change in #{coffee_dir}/#{file}.coffee"
                 invoke 'build'
                 util.log "Watching for changes in #{coffee_dir}"
+
+    fs.watchFile "#{coffee_dir}/#{pystil_coffee_file}", (curr, prev) ->
+        if +curr.mtime isnt +prev.mtime
+            util.log "Saw change in #{coffee_dir}/#{pystil_coffee_file}"
+            invoke 'build:tracker'
+            util.log "Watching for changes in #{coffee_dir}"
+
+task 'build:tracker', 'Build the tracker file to js', ->
+    util.log "Building tracker"
+    exec "coffee --output #{root} --compile #{coffee_dir}/#{pystil_coffee_file} ",
+        (err, stdout, stderr) ->
+            handleError(err) if err
+            util.log "Compiled #{pystil_js_file}"
+            invoke 'uglify:tracker'
+
+
+task 'uglify:tracker', 'Minify and obfuscate the tracker', ->
+    util.log "Minifying #{pystil_js_file}"
+    jsp = uglify.parser
+    pro = uglify.uglify
+
+    fs.readFile pystil_js_file, 'utf8', (err, fileContents) ->
+        ast = jsp.parse fileContents  # parse code and get the initial AST
+        ast = pro.ast_mangle ast # get a new AST with mangled names
+        ast = pro.ast_squeeze ast # get an AST with compression optimizations
+        final_code = pro.gen_code ast # compressed code here
+        fs.writeFile pystil_min_file, final_code
+        util.log "Uglified #{pystil_js_file} (#{fileContents.length} chars) to #{pystil_min_file} (#{final_code.length} chars)"
+
 
 task 'build', 'Build a single js file from coffee files', ->
     util.log "Building #{js_file}"
