@@ -7,8 +7,9 @@ from decimal import Decimal
 
 from pystil import config
 from multicorn import Multicorn
+from multicorn.requests import CONTEXT as c, case, when
 from multicorn.corns.alchemy import Alchemy
-from multicorn.declarative import declare, Property
+from multicorn.declarative import declare, Property, computed
 
 MC = Multicorn()
 
@@ -40,3 +41,27 @@ class Visit(object):
     city = Property()
     lat = Property(type=Decimal)
     lng = Property(type=Decimal)
+
+    @computed()
+    def day(self):
+        return c.date.str()[:10]
+
+    @computed()
+    def hour(self):
+        return c.date.str()[11:13]
+
+    @computed()
+    def spent_time(self):
+        return case(
+            when(c.time == None, None),
+            when(c.time < 1000, 0),
+            when(c.time < 2000, 1),
+            when(c.time < 5000, 2),
+            when(c.time < 10000, 3),
+            when(c.time < 20000, 4),
+            when(c.time < 30000, 5),
+            when(c.time < 60000, 6),
+            when(c.time < 120000, 7),
+            when(c.time < 300000, 8),
+            when(c.time < 600000, 9),
+            10)

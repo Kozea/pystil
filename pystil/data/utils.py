@@ -25,7 +25,7 @@ def labelize(string):
         'new': 'New visits',
         'unique': 'Visits',
         'all': 'Page hits',
-        'time': 'Time spent on site',
+        'spent_time': 'Time spent on site',
         'hour': 'Visits per hour'
     }[string]
 
@@ -83,13 +83,23 @@ def transform_for_pie(results, site):
     return {'list': visits}
 
 
-def make_serie(rq, criteria, is_time=False):
+def make_time_serie(results, criteria, from_date, to_date):
+    """Create a serie with 0 days at 0 for Flot from request"""
+    visits = {str_to_time(visit['key']): visit['count'] for visit in results}
+
+    for time in range(from_date, to_date, 1000 * 3600 * 24):
+        visits[time] = visits.get(time, 0)
+    data = visits.items()
+    data.sort()
+    return {'label': labelize(criteria),
+            'data': data}
+
+
+def make_serie(results, criteria, is_time=False):
     """Create a serie for Flot from request"""
     return {'label': labelize(criteria),
-            'data': [(str_to_time(visit['key']) if is_time
-                      else visit['key'],
-                      visit['count'])
-                     for visit in rq.execute()]}
+            'data': [(visit['key'], visit['count'])
+                     for visit in results]}
 
 
 def base_request(site, from_date, to_date):

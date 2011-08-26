@@ -14,7 +14,7 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
     rq = base_request(site, from_date, to_date)
     visits = list(rq
                   .filter(c.country_code != None)
-                  .groupby(c.country + "$" + c.country_code,
+                  .groupby({'country': c.country, 'code': c.country_code},
                            count=c.len())
                   .execute())
     return {'list': visits,

@@ -92,15 +92,15 @@ class @Time extends @Bar
         grid:
             hoverable: true
         xaxis:
-            min: 0
-            max: 60
-            tickDecimals: 0
+            ticks: [[0, "< 1s"], [1, "< 2s"], [2, "< 5s"], [3, "< 10s"], [4, "< 20s"]
+                    [5, "< 30s"], [6, "< 1min"], [7, "< 2min"], [8, "< 5min"], [9, "< 10min"]
+                    [10, "> 10min"]]
         yaxis: tickDecimals: 0
 
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
-        y + " visits during between " + x + " and  " + (x+1) + " minutes"
+        y + " visits"
 
 
 class @Pie extends @Graph

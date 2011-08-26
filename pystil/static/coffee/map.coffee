@@ -28,9 +28,9 @@ class @Map extends @Base
 
     plot: () ->
         for country in @data.list
-            $("#" + country.key.split("$")[1].toLowerCase())
+            $("#" + country.key.code.toLowerCase())
                 .css(fill: 'rgba(0, 0, 255, ' + ((country.count / @data.max) * 0.7 + 0.2) + ')')
-                .prepend($('<title>').text(country.key.split("$")[0].toLowerCase() + ": " + country.count))
+                .prepend($('<title>').text(country.key.country.toLowerCase() + ": " + country.count))
 
     make_tooltip: () ->
         $(".country").mouseover (e) ->

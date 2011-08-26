@@ -6,9 +6,6 @@
 
 from datetime import datetime, date
 from flask import jsonify
-from multicorn.requests import CONTEXT as c
-from urlparse import urlparse, parse_qs
-import re
 
 
 def register_data_routes(app, route):
@@ -16,12 +13,11 @@ def register_data_routes(app, route):
     from pystil.corns import Visit
     from pystil.data import process_data
     from pystil.data.utils import date_to_time
-    log = app.logger
 
     url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>' % (
         ('pie', 'bar', 'line', 'table', 'map', 'last'),
         tuple(Visit.properties) + (
-            'all', 'unique', 'new', 'hour', 'time'))
+            'all', 'unique', 'new'))
     url_with_at = '%s_at_<int:stamp>' % url_base
     url_with_from = '%s_from_<int:from_date>' % url_base
     url_with_to = '%s_to_<int:to_date>' % url_with_from

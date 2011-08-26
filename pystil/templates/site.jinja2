@@ -9,9 +9,9 @@
     <aside class="graph" data-graph="Last" data-criteria="all"></aside>
     <aside class="graph" data-graph="Line" data-criteria="new,unique,all"></aside>
     <aside class="graph" data-graph="Bar" data-criteria="hour"></aside>
-    <aside class="graph" data-graph="Time" data-criteria="time"></aside>
+    <aside class="graph" data-graph="Time" data-criteria="spent_time"></aside>
     <aside class="graph" data-graph="Map" data-criteria="all"></aside>
-    {% if site == '*' %}
+    {% if site == 'all' %}
       <aside class="graph" data-graph="Pie" data-criteria="host"></aside>
     {% else %}
       <aside class="graph" data-graph="Pie" data-criteria="page"></aside>
@@ -23,5 +23,7 @@
     <aside class="graph" data-graph="Pie" data-criteria="country"></aside>
     <aside class="graph" data-graph="Pie" data-criteria="referrer"></aside>
     <aside class="graph" data-graph="Pie" data-criteria="size"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="day"></aside>
+    <aside class="graph" data-graph="Pie" data-criteria="ip"></aside>
   </article>
 {% endblock article %}
