@@ -11,11 +11,9 @@ import sys
 
 ROOT = os.path.dirname(__file__)
 
-import logging
 from flask import Flask
-from logging import getLogger, INFO
-
-from pystil.log import get_default_handler
+from logging import getLogger, INFO, WARN, DEBUG, basicConfig
+from log_colorizer import make_colored_stream_handler
 from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
 from pystil.routes.public import register_public_routes
@@ -36,12 +34,14 @@ def app():
 
     app.config.update(config.CONFIG)
     if app.config["LOG_FILE"]:
-        logging.basicConfig(filename=app.config["LOG_FILE"],
-                            filemode='w', level=logging.DEBUG)
+        basicConfig(filename=app.config["LOG_FILE"],
+                            filemode='w', level=DEBUG)
 
-    handler = get_default_handler()
+    handler = make_colored_stream_handler()
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)
+    getLogger('multicorn').addHandler(handler)
+    getLogger('multicorn').setLevel(INFO if app.debug else WARN)
 
     app.logger.handlers = []
     app.logger.addHandler(handler)
