@@ -10,7 +10,7 @@ class @Base
         $.ajax
             url: @url()
             method: 'GET'
-            dataType: 'json'
+            dataType: if window.pystil_site then 'jsonp' else 'json'
             success: @reply
 
     clear: () ->
@@ -22,8 +22,13 @@ class @Base
             @fetch()
 
     url: () ->
-        site = location.pathname.split("/")[1] or "all"
-        ref = "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
+        if window.pystil_site
+            ref = window.pystil_site
+            site = location.hostname
+        else
+            ref = ""
+            site = location.pathname.split("/")[1] or "all"
+        ref += "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
         if @stamp
             ref += "_at_#{@stamp}"
         else if window.fromDate and window.toDate

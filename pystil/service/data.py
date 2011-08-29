@@ -64,7 +64,6 @@ class Message(object):
             visit['browser_version'] = user_agent.version
             visit['platform'] = user_agent.platform
             self.add_geolocalization(visit)
-            current_app.logger.warn(visit)
             visit = Visit.create(visit)
             visit.save()
         elif kind == 'c':
@@ -73,7 +72,6 @@ class Message(object):
                     None)
             if visit:
                 visit['time'] = get('t')
-                current_app.logger.error(visit['time'])
                 visit.save()
             else:
                 current_app.logger.error(uuid)

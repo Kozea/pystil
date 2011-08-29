@@ -34,6 +34,14 @@ class @Map extends @Base
 
     make_tooltip: () ->
         $(".country").mouseover (e) ->
-            $('#maptooltip').css(top: e.pageY + 10 + 'px', left: e.pageX + 10 + 'px', display: 'block'
+            $('#maptooltip').css(
+                position: 'absolute'
+                padding: '2px'
+                'background-color': 'white'
+                'border-radius': '10px 0 0 0'
+                opacity: 0.80
+                top: e.pageY + 10 + 'px'
+                left: e.pageX + 10 + 'px'
+                display: 'block'
             ).text($('title', e.currentTarget).text())
         $(".country").mouseout (e) -> $('#maptooltip').css(display: 'none')

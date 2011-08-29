@@ -5,7 +5,23 @@
 
 
 from datetime import datetime, date
-from flask import jsonify
+from flask import jsonify, request, current_app
+from functools import wraps
+
+
+def jsonp(f):
+    """Wraps JSONified output for JSONP"""
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        callback = request.args.get('callback', False)
+        if callback:
+            content = str(callback) + '(' + str(f(*args, **kwargs).data) + ')'
+            return current_app.response_class(
+                content, mimetype='application/javascript')
+        else:
+            return f(*args, **kwargs)
+    return decorated_function
 
 
 def register_data_routes(app, route):
@@ -29,6 +45,7 @@ def register_data_routes(app, route):
     @route('%s.json' % url_with_from)
     @route('%s.json' % url_with_to)
     @route('%s.json' % url_with_step)
+    @jsonp
     def data(site, graph, criteria,
              from_date=None, to_date=None, step='day', stamp=0):
         today = date.today()

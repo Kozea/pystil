@@ -29,6 +29,11 @@ class @Graph extends @Base
                 @old_index = index
                 $("#tooltip").remove()
                 $('<div>').attr('id', 'tooltip').css(
+                    position: 'absolute'
+                    padding: '2px'
+                    'background-color': 'white'
+                    'border-radius': '10px 0 0 0'
+                    opacity: 0.80
                     top: pos.pageY + 5,
                     left: pos.pageX + 5,
                     border: '1px solid ' + item.series.color
