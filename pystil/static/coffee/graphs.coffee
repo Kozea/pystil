@@ -58,6 +58,7 @@ class @Line extends @Graph
         xaxis:
             mode: "time"
             timeformat: "%y-%0m-%0d"
+            labelAngle: 50
         yaxis: tickDecimals: 0
 
 
