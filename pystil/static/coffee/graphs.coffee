@@ -92,9 +92,9 @@ class @Time extends @Bar
         grid:
             hoverable: true
         xaxis:
-            ticks: [[0, "< 1s"], [1, "< 2s"], [2, "< 5s"], [3, "< 10s"], [4, "< 20s"]
-                    [5, "< 30s"], [6, "< 1min"], [7, "< 2min"], [8, "< 5min"], [9, "< 10min"]
-                    [10, "> 10min"]]
+            ticks: [[0, "0"], [1, "1s"], [2, "2s"], [3, "5s"], [4, "10s"], [5, "20s"]
+                    [6, "30s"], [7, "1min"], [8, "2min"], [9, "5min"], [10, "10min"]
+                    [11, "10+ min"]]
         yaxis: tickDecimals: 0
 
     tooltip: (item) ->
