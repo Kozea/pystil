@@ -20,7 +20,8 @@ class @Last extends @Base
         $.ajax
             url: @url()
             method: 'GET'
-            dataType: 'json'
+            data: if window.pystil_key then uuid: window.pystil_key else undefined
+            dataType: if window.pystil_site then 'jsonp' else 'json'
             success: @update
 
     update: (response) =>
