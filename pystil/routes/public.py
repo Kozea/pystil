@@ -3,7 +3,7 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from flask import Response, request, send_file
+from flask import Response, request, send_file, abort
 from ..service.data import Message
 from ..service.http import render_js
 
@@ -27,3 +27,7 @@ def register_public_routes(app):
         return Response(
                 render_js(request.environ),
                 mimetype='text/javascript')
+
+    @app.route('/favicon.ico')
+    def favicon():
+        abort(404)

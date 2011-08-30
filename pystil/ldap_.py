@@ -5,7 +5,7 @@
 """
 pystil - An elegant site web traffic analyzer
 """
-from flask import current_app, session, request, Response
+from flask import current_app, session, request, Response, abort
 
 
 def auth_route(app):
@@ -45,6 +45,25 @@ def auth_route(app):
             else:
                 def decorated(*fargs, **fkwargs):
                     """Auth decoratorated"""
+                    from pystil.corns import Keys
+                    from multicorn.requests import CONTEXT as c
+                    uuid = request.args.get('uuid', False)
+                    site = request.view_args.get('site', False)
+
+                    if uuid and site:
+                        if list(
+                            Keys.all
+                            .filter(
+                                (c.host == site) &
+                                (c.key == uuid))
+                            .execute()):
+                            return fun(*fargs, **fkwargs)
+                        else:
+                            current_app.logger.warn(
+                                "Bad uuid attempt on %s uuid %s" % (
+                                    site, uuid))
+                            abort(403)
+
                     auth = request.authorization
                     if (not auth or
                         not check_auth(auth.username, auth.password)):

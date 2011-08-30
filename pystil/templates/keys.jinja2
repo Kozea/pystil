@@ -1,0 +1,34 @@
+{% extends "_layout.jinja2" %}
+
+{% block article %}
+  <article class="keys">
+    {% if keys %}
+      <table>
+        <thead>
+          <tr>
+            <th>Site</th>
+            <th>Key</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key in keys %}
+            <tr>
+              <td>{{ key.host }}</td>
+              <td>{{ key.key }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      No keys found
+    {% endif %}
+    <form method="post" action="{{ url_for('add_key') }}">
+      <select name="host">
+          {% for host in hosts %}
+            <option value="{{ host }}">{{ host }}</option>
+          {% endfor %}
+      </select>
+      <input type="submit" value="Add" />
+    </form>
+  </article>
+{% endblock article %}

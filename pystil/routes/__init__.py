@@ -27,10 +27,6 @@ def register_common_routes(app, route):
         all_ = Visit.all.len().execute()
         return render_template('index.jinja2', sites=sites, all_=all_)
 
-    @route('/favicon.ico')
-    def favicon():
-        abort(404)
-
     @route('/<site>')
     def site(site):
         """Stats per site or all if site = all"""

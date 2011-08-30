@@ -45,3 +45,19 @@ CREATE INDEX btrees
   USING btree
   (host, date);
 
+
+-- Table: keys
+
+-- DROP TABLE keys;
+
+CREATE TABLE keys
+(
+  id serial NOT NULL,
+  "key" character varying NOT NULL,
+  "host" character varying NOT NULL,
+  CONSTRAINT keys_pk PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE keys OWNER TO pystil;

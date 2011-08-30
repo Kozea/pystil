@@ -65,3 +65,12 @@ class Visit(object):
             when(c.time < 300000, 8),
             when(c.time < 600000, 9),
             10)
+
+
+@MC.register
+@declare(Alchemy, identity_properties=['id'], url=config.CONFIG["DB_URL"])
+class Keys(object):
+    """This corn contains the auth keys"""
+    id = Property(type=int)
+    key = Property()
+    host = Property()

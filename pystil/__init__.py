@@ -16,6 +16,7 @@ from logging import getLogger, INFO, WARN, DEBUG, basicConfig
 from log_colorizer import make_colored_stream_handler
 from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
+from pystil.routes.admin import register_admin_routes
 from pystil.routes.public import register_public_routes
 
 
@@ -46,17 +47,18 @@ def app():
     app.logger.handlers = []
     app.logger.addHandler(handler)
 
-    if (not app.config.get("DEBUG", True) and
-        app.config.get("LDAP_HOST", False) and
-        app.config.get("LDAP_PATH", False)):
-        from pystil.ldap_ import auth_route
-        route = auth_route(app)
-    else:
-        route = app.route
+    # if (not app.config.get("DEBUG", True) and
+    #     app.config.get("LDAP_HOST", False) and
+    #     app.config.get("LDAP_PATH", False)):
+    from pystil.ldap_ import auth_route
+    route = auth_route(app)
+    # else:
+    #     route = app.route
 
     if app.config.get("PUBLIC_ROUTES", True):
         register_public_routes(app)
 
     register_data_routes(app, route)
     register_common_routes(app, route)
+    register_admin_routes(app, route)
     return app
