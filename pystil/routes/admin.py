@@ -26,3 +26,11 @@ def register_admin_routes(app, route):
         uuid = uuid4()
         Keys.create({'host': request.values['host'], 'key': str(uuid)}).save()
         return redirect(url_for('keys'))
+
+    @route('/keys/<int:id>/rm', methods=("POST",))
+    def rm_key(id):
+        """Remove a key"""
+        key = Keys.all.filter(c.id == id).one(None).execute()
+        if key:
+            key.delete()
+        return redirect(url_for('keys'))

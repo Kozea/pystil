@@ -1,6 +1,7 @@
 {% extends "_layout.jinja2" %}
 
 {% block article %}
+  <nav class="links"><a href="{{ url_for('keys') }}">Manage secre keys</a></aside>
   <aside class="graph" data-graph="Last" data-criteria="all"></aside>
   <article class="sites">
     <table>
