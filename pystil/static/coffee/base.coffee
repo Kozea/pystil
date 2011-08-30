@@ -10,6 +10,7 @@ class @Base
         $.ajax
             url: @url()
             method: 'GET'
+            data: if window.pystil_key then uuid: window.pystil_key else undefined
             dataType: if window.pystil_site then 'jsonp' else 'json'
             success: @reply
 

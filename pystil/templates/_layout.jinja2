@@ -5,17 +5,13 @@
     {% block script %}
       <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
       <!--[if lte IE 8]><script src="{{ url_for('static', filename='js/excanvas.min.js') }}"></script><![endif]-->
-      <script src="http://code.jquery.com/jquery.min.js"></script>
-      <script src="http://code.jquery.com/ui/1.8.16/jquery-ui.min.js"></script>
       <script type="text/javascript">
         (function() {
         var d=document,t='script',p=d.createElement(t),s=d.getElementsByTagName(t)[0];
         p.type='text/javascript';p.async=true;p.src="{{ url_for('pystil_js') }}";s.parentNode.insertBefore(p,s);
         })();
       </script>
-      <script src="{{ url_for('static', filename='js/jquery.flot.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/jquery.flot.pie.js') }}"></script>
-      <script src="{{ url_for('static', filename='min.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/js.js') }}"></script>
     {% endblock script %}
 
     {% block style %}

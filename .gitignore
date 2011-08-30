@@ -2,5 +2,6 @@
 *.db
 GeoLiteCity.dat.gz
 ip.db
-pystil/static/all.js
-pystil/static/tracker.js
+pystil/static/js/all.js
+pystil/static/js/all-deps.js
+pystil/static/js/tracker.js

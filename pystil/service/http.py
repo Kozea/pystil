@@ -13,7 +13,7 @@ import pystil
 with open(os.path.join(pystil.ROOT, 'static', 'pystil.gif')) as f:
     gif_content = f.read()
 
-with open(os.path.join(pystil.ROOT, 'static', 'pystil.js')) as f:
+with open(os.path.join(pystil.ROOT, 'static', 'js', 'pystil.js')) as f:
     js_content = f.read()
 
 

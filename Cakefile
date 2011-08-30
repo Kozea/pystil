@@ -3,15 +3,16 @@ fs     = require 'fs'
 util   = require 'util'
 uglify = require 'uglify-js'
 
-root = './pystil/static/'
-coffee_dir = root + 'coffee'
-js_file = root + 'all.js'
+root = './pystil/static'
+coffee_dir = "#{root}/coffee"
+js_file = "#{root}/js/all.js"
+js_with_deps_file = "#{root}/js/all-deps.js"
 pystil_coffee_file = 'tracker.coffee'
-pystil_js_file = root + 'tracker.js'
-pystil_min_file = root + 'pystil.js'
-min_file = root + 'min.js'
-all_coffee_file = root + 'all.coffee'
-coffee_opts = "--output #{root} --compile #{all_coffee_file} "
+pystil_js_file = "#{root}/js/tracker.js"
+pystil_min_file = "#{root}/js/pystil.js"
+min_file = "#{root}/js/js.js"
+all_coffee_file = "#{root}/coffee/all.coffee"
+coffee_opts = "--output #{root}/js/ --compile #{all_coffee_file} "
 
 coffee_files = [
     'base'
@@ -19,6 +20,14 @@ coffee_files = [
     'graphs'
     'last_visits'
     'main'
+]
+
+deps_files = [
+    'jquery.min'
+    'jquery-ui.min'
+    'jquery.flot'
+    'jquery.flot.pie'
+    'all'
 ]
 
 task 'watch', 'Watch coffee files and build changes', ->
@@ -40,7 +49,7 @@ task 'watch', 'Watch coffee files and build changes', ->
 
 task 'build:tracker', 'Build the tracker file to js', ->
     util.log "Building tracker"
-    exec "coffee --output #{root} --compile #{coffee_dir}/#{pystil_coffee_file} ",
+    exec "coffee --output #{root}/js/ --compile #{coffee_dir}/#{pystil_coffee_file} ",
         (err, stdout, stderr) ->
             handleError(err) if err
             util.log "Compiled #{pystil_js_file}"
@@ -91,20 +100,45 @@ task 'build', 'Build a single js file from coffee files', ->
                     util.log "Removing #{all_coffee_file}"
                     fs.unlink all_coffee_file, (err) ->
                         handleError(err) if err
-                        invoke 'uglify'
+                        invoke 'deps'
+
+task 'deps', 'Include deps files', ->
+    util.log "Appending deps to #{js_with_deps_file}"
+    appContents = new Array remaining = deps_files.length
+    util.log "Appending #{deps_files.length} files to #{js_with_deps_file}"
+
+    for file, index in deps_files then do (file, index) ->
+        util.log "Reading #{file}"
+        fs.readFile "#{root}/js/#{file}.js",
+            'utf8',
+            (err, fileContents) ->
+                handleError(err) if err
+                appContents[index] = fileContents
+                util.log "Added [#{index + 1}] #{file}.js"
+                if --remaining is 0
+                    util.log "All file read"
+                    process()
+    process = ->
+        util.log "Writing #{js_with_deps_file}..."
+        fs.writeFile js_with_deps_file,
+            appContents.join('\n\n'),
+            'utf8',
+            (err) ->
+                handleError(err) if err
+                invoke 'uglify'
 
 task 'uglify', 'Minify and obfuscate', ->
-    util.log "Minifying #{js_file}"
+    util.log "Minifying #{js_with_deps_file}"
     jsp = uglify.parser
     pro = uglify.uglify
 
-    fs.readFile js_file, 'utf8', (err, fileContents) ->
+    fs.readFile js_with_deps_file, 'utf8', (err, fileContents) ->
         ast = jsp.parse fileContents  # parse code and get the initial AST
         ast = pro.ast_mangle ast # get a new AST with mangled names
         ast = pro.ast_squeeze ast # get an AST with compression optimizations
         final_code = pro.gen_code ast # compressed code here
         fs.writeFile min_file, final_code
-        util.log "Uglified #{js_file} (#{fileContents.length} chars) to #{min_file} (#{final_code.length} chars)"
+        util.log "Uglified #{js_with_deps_file} (#{fileContents.length} chars) to #{min_file} (#{final_code.length} chars)"
 
 handleError = (error) ->
     exec "notify-send 'Cake error:' '#{error}'"
