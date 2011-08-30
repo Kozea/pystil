@@ -16,7 +16,7 @@
               <td>{{ key.host }}</td>
               <td>{{ key.key }}</td>
               <td><form method="post" action="{{ url_for('rm_key', id=key.id) }}">
-                  <input type="submit" value="mm" /></form></td>
+                  <input type="submit" value="rm" /></form></td>
             </tr>
           {% endfor %}
         </tbody>
