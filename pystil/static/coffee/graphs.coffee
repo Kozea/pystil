@@ -79,8 +79,8 @@ class @Bar extends @Graph
             hoverable: true
         xaxis:
             min: 0
-            max: 23
-            ticks: 24
+            max: 24
+            ticks: 25
             tickDecimals: 0
         yaxis: tickDecimals: 0
 
