@@ -47,13 +47,13 @@ def app():
     app.logger.handlers = []
     app.logger.addHandler(handler)
 
-    # if (not app.config.get("DEBUG", True) and
-    #     app.config.get("LDAP_HOST", False) and
-    #     app.config.get("LDAP_PATH", False)):
-    from pystil.ldap_ import auth_route
-    route = auth_route(app)
-    # else:
-    #     route = app.route
+    if (not app.config.get("DEBUG", True) and
+        app.config.get("LDAP_HOST", False) and
+        app.config.get("LDAP_PATH", False)):
+        from pystil.ldap_ import auth_route
+        route = auth_route(app)
+    else:
+        route = app.route
 
     if app.config.get("PUBLIC_ROUTES", True):
         register_public_routes(app)
