@@ -4,27 +4,26 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from flask import render_template, Response, abort
-from multicorn.requests import CONTEXT as c
 import csstyle
 import os
 import pystil
+from pystil.db import db, Visit
+from sqlalchemy import func, desc
 
 
 def register_common_routes(app, route):
     """Defines common routes"""
-    from pystil.corns import Visit
     log = app.logger
 
     @route('/')
     def index():
         """List of sites"""
-        sites = list(
-            Visit.all
-            .map(c.host)
-            .groupby(c, count=c.len())
-            .sort(-c.count)
-            .execute())
-        all_ = Visit.all.len().execute()
+        sites = (db.session
+                 .query(func.count(Visit.host).label('count'),
+                        Visit.host.label('host'))
+                 .group_by(Visit.host).order_by(desc('count')).all())
+        all_ = db.session.query(func.count('*')).select_from(Visit).scalar()
+
         return render_template('index.jinja2', sites=sites, all_=all_)
 
     @route('/<site>')

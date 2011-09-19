@@ -25,8 +25,8 @@ options = dict(
     license="BSD",
     platforms="Any",
     packages=find_packages(),
-    install_requires=['pygeoip', 'Multicorn', "flask", "CSStyle", 'pika',
-                  'log_colorizer'],
+    install_requires=['pygeoip', "flask", 'flask-sqlalchemy', "CSStyle",
+                      'pika', 'log_colorizer'],
     package_data={'pystil': [
         'templates/*.jinja2',
         'templates/css/*',

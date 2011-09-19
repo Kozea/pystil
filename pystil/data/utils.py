@@ -6,9 +6,8 @@
 """Utility functions to help processing data"""
 
 from datetime import datetime, timedelta
-from multicorn.requests import CONTEXT as c
 from urlparse import urlparse, parse_qs
-from pystil.corns import Visit
+from pystil.db import Visit
 from time import mktime
 import re
 
@@ -47,13 +46,13 @@ def time_to_date(time):
 
 def on(host):
     """Generate a filter on a host """
-    return c.host == host if host != 'all' else True
+    return Visit.host == (host if host != 'all' else Visit.host)
 
 
 def between(from_date, to_date):
     """Generate a filter between 2 dates"""
-    return ((time_to_date(from_date) <= c.date) &
-            (c.date < time_to_date(to_date) + timedelta(1)))
+    return ((time_to_date(from_date) <= Visit.date) &
+            (Visit.date < time_to_date(to_date) + timedelta(1)))
 
 
 def top(dic, size=10):
@@ -147,11 +146,20 @@ def parse_referrer(referrer, with_query=False, host_only=False):
 
 def polish_visit(visit):
     """Transform a visit for nicer display"""
-    visit['date'] = visit['date'].strftime('%Y-%m-%d %H:%M:%S')
-    if visit['last_visit']:
-        visit['last_visit'] = date_to_time(visit['last_visit'])
-    if visit['lat']:
-        visit['lat'] = float(visit['lat'])
-    if visit['lng']:
-        visit['lng'] = float(visit['lng'])
-    visit['referrer'] = parse_referrer(visit['referrer'], True)
+    visit.date = visit.date.strftime('%Y-%m-%d %H:%M:%S')
+    if visit.last_visit:
+        visit.last_visit = date_to_time(visit.last_visit)
+    if visit.lat:
+        visit.lat = float(visit.lat)
+    if visit.lng:
+        visit.lng = float(visit.lng)
+    visit.referrer = parse_referrer(visit.referrer, True)
+
+
+def visit_to_dict(visit):
+    visit_dict = {}
+    for key in Visit.__table__.columns.keys():
+        if key == 'query':
+            key = 'query_string'
+        visit_dict[key] = getattr(visit, key)
+    return visit_dict

@@ -6,7 +6,6 @@
 """Treat pie data"""
 
 
-from multicorn.requests import CONTEXT as c
 from pystil.data.utils import (top, transform_for_pie, base_request,
                                cut_browser_version, parse_referrer)
 

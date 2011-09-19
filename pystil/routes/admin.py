@@ -4,13 +4,12 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from flask import render_template, request, redirect, url_for
-from multicorn.requests import CONTEXT as c
 from uuid import uuid4
 
 
 def register_admin_routes(app, route):
     """Defines admin routes"""
-    from pystil.corns import Visit, Keys
+    from pystil.db import Visit, Keys
     log = app.logger
 
     @route('/keys')

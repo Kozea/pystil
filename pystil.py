@@ -10,11 +10,13 @@ import sys
 
 config.freeze()
 
-if 'mc' in sys.argv:
+if 'shell' in sys.argv:
     from os import getenv
-    from pystil.corns import Visit
-    from multicorn.requests import CONTEXT as c
+    from sqlalchemy.ext.sqlsoup import SqlSoup
     import code
+    db = SqlSoup(config.CONFIG["DB_URL"])
+    Visit = db.visit
+    Keys = db.keys
 
     class FunkyConsole(code.InteractiveConsole):
 

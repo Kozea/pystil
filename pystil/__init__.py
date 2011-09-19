@@ -18,22 +18,25 @@ from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
 from pystil.routes.admin import register_admin_routes
 from pystil.routes.public import register_public_routes
+from pystil.db import db
 
 
 def app():
     """Create Flask app"""
     static_folder = os.path.join(ROOT, 'static')
     template_folder = os.path.join(ROOT, 'templates')
-    app = Flask(__name__,
-                static_folder=static_folder,
-                template_folder=template_folder)
-
     from pystil import config
+
     if not config.FROZEN:
         print "Config MUST be frozen before pystil init"
         sys.exit(1)
-
+    app = Flask(__name__,
+                static_folder=static_folder,
+                template_folder=template_folder)
     app.config.update(config.CONFIG)
+    app.config['SQLALCHEMY_DATABASE_URI'] = config.CONFIG["DB_URL"]
+    db.init_app(app)
+
     if app.config["LOG_FILE"]:
         basicConfig(filename=app.config["LOG_FILE"],
                             filemode='w', level=DEBUG)

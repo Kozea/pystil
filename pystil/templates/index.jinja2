@@ -19,11 +19,11 @@
           <td><a href="{{ url_for('site', site='all') }}">Go</a></td>
         </tr>
         {% for site in sites %}
-          {% if site and site.key %}
+          {% if site and site.host %}
             <tr>
               <td>{{ site.count }}</td>
-              <td>{{ site.key }}</td>
-              <td><a href="{{ url_for('site', site=site.key) }}">Go</a></td>
+              <td>{{ site.host }}</td>
+              <td><a href="{{ url_for('site', site=site.host) }}">Go</a></td>
             </tr>
           {% endif %}
         {% endfor %}

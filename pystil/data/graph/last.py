@@ -7,20 +7,23 @@
 
 
 from datetime import datetime
-from multicorn.requests import CONTEXT as c
-from pystil.corns import Visit
-from pystil.data.utils import on, polish_visit, date_to_time
+from pystil.data.utils import on, polish_visit, date_to_time, visit_to_dict
+from pystil.db import db, Visit
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
-    visits = [dict(visit) for visit in Visit.all
-                  .filter(on(site))
-                  .filter(c.date > datetime.fromtimestamp(
-                      stamp / 1000) if stamp else True)
-                  .sort(-c.date)[:10]
-                  .execute()]
+    visits = (Visit.query
+              .filter(on(site))
+              .filter(Visit.date > (datetime.fromtimestamp(
+                  stamp / 1000) if stamp else datetime.min))
+              .order_by(Visit.date.desc())
+              .limit(10)
+              .all())
+
     visits.reverse()
+
     for visit in visits:
         polish_visit(visit)
 
-    return {'list': visits, 'stamp': date_to_time(datetime.today())}
+    return {'list': [visit_to_dict(visit) for visit in visits],
+            'stamp': date_to_time(datetime.today())}

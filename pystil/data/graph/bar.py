@@ -5,8 +5,6 @@
 
 """Treat bar data"""
 
-
-from multicorn.requests import CONTEXT as c
 from pystil.data.utils import base_request, make_serie
 
 

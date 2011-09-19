@@ -26,13 +26,13 @@ def jsonp(f):
 
 def register_data_routes(app, route):
     """Defines data routes"""
-    from pystil.corns import Visit
+    from pystil.db import Visit
     from pystil.data import process_data
     from pystil.data.utils import date_to_time
 
     url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>' % (
         ('pie', 'bar', 'line', 'table', 'map', 'last'),
-        tuple(Visit.properties) + (
+        tuple(Visit.__table__.columns.keys()) + (
             'all', 'unique', 'new'))
     url_with_at = '%s_at_<int:stamp>' % url_base
     url_with_from = '%s_from_<int:from_date>' % url_base

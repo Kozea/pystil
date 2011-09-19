@@ -1,7 +1,6 @@
 import urlparse
 from datetime import datetime
 from werkzeug.useragents import UserAgent
-from multicorn.requests import CONTEXT as c
 from pygeoip import GeoIP, MMAP_CACHE
 import threading
 import re
@@ -28,7 +27,8 @@ class Message(object):
         return gip_tl.gip
 
     def process(self):
-        from pystil.corns import Visit
+        from pystil.db import db, Visit
+        from sqlalchemy import desc
 
         def get(key, default=None):
             value = request_args.get(key, [default])[0]
@@ -46,40 +46,41 @@ class Message(object):
                 last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
             else:
                 last_visit = None
-            visit = {}
-            visit['uuid'] = uuid
-            visit['host'] = get('k')
-            visit['site'] = get('u')
-            visit['client_tz_offset'] = get('z', 0)
-            visit['date'] = datetime.now()
-            visit['last_visit'] = last_visit
-            visit['ip'] = self.remote_addr
-            visit['referrer'] = get('r')
-            visit['size'] = get('s')
-            visit['page'] = get('p')
-            visit['hash'] = get('h')
-            visit['query'] = get('q')
-            visit['language'] = get('i')
-            visit['browser_name'] = user_agent.browser
-            visit['browser_version'] = user_agent.version
-            visit['platform'] = user_agent.platform
+            visit = Visit(uuid=uuid,
+                          host=get('k'),
+                          site=get('u'),
+                          client_tz_offset=get('z', 0),
+                          date=datetime.now(),
+                          last_visit=last_visit,
+                          ip=self.remote_addr,
+                          referrer=get('r'),
+                          size=get('s'),
+                          page=get('p'),
+                          hash=get('h'),
+                          query_string=get('q'),
+                          language=get('i'),
+                          browser_name=user_agent.browser,
+                          browser_version=user_agent.version,
+                          platform=user_agent.platform)
+            db.session.add(visit)
             self.add_geolocalization(visit)
-            visit = Visit.create(visit)
-            visit.save()
+            db.session.commit()
+
         elif kind == 'c':
-            visit = next(
-                Visit.all.filter(c.uuid == uuid).sort(-c.date).execute(),
-                    None)
+            visit = (Visit.query
+                     .filter(Visit.uuid == uuid)
+                     .order_by(desc(Visit.date))
+                     .first())
             if visit:
-                visit['time'] = get('t')
-                visit.save()
+                visit.time = get('t')
+                db.session.commit()
             else:
                 current_app.logger.error(uuid)
         else:
             return
 
     def add_geolocalization(self, visit):
-        ip = visit['ip']
+        ip = visit.ip
         lat = None
         lng = None
         country_code = None
@@ -106,8 +107,8 @@ class Message(object):
         else:
             country = 'ipv6'
             city = 'ipv6'
-        visit['country'] = country
-        visit['country_code'] = country_code
-        visit['city'] = city
-        visit['lat'] = lat
-        visit['lng'] = lng
+        visit.country = country
+        visit.country_code = country_code
+        visit.city = city
+        visit.lat = lat
+        visit.lng = lng

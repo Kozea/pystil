@@ -6,7 +6,6 @@
 """Treat line data"""
 
 
-from multicorn.requests import CONTEXT as c
 from pystil.data.utils import make_time_serie, base_request
 
 
