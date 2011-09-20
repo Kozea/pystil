@@ -8,14 +8,28 @@
 from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qs
 from pystil.db import Visit
+from datetime import date, datetime
 from time import mktime
 import re
+import json
 
 IPV4RE = re.compile(r"(\d{1,3}(\.|$)){4}")
 BROWSER_VERSION_NUMBERS = {
     'opera': 1,
     'safari': 1,
     'chrome': 1}
+
+
+class PystilEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, date):
+            return obj.strftime("%Y-%m-%d")
+        if isinstance(obj, datetime):
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
+        if isinstance(obj, str):
+            return obj
+        return json.JSONEncoder.default(self, obj)
 
 
 def labelize(string):
@@ -29,9 +43,9 @@ def labelize(string):
     }[string]
 
 
-def str_to_time(date):
+def date_to_jstime(date):
     """Parse a date in db format and return a js stamp"""
-    return int(1000 * mktime(datetime.strptime(date, '%Y-%m-%d').timetuple()))
+    return int(1000 * mktime(date.timetuple()))
 
 
 def date_to_time(date):
@@ -69,14 +83,13 @@ def top(dic, size=10):
 
 def transform_for_pie(results, site):
     """Transform result for pie display"""
-    visits = [{'label': visit['key'],
-               'data': visit['count']}
+    visits = [{'label': visit.key,
+               'data': visit.count}
               for visit in results]
-    all_visits = (Visit.all
+    all_visits = (Visit.query
                   .filter(on(site))
-                  .len()
-                  .execute())
-    other = all_visits - sum(value['data'] for value in visits)
+                  .count())
+    other = all_visits - sum(visit['data'] for visit in visits)
     if other:
         visits = visits + [{'label': 'Other', 'data': other}]
     return {'list': visits}
@@ -84,7 +97,7 @@ def transform_for_pie(results, site):
 
 def make_time_serie(results, criteria, from_date, to_date):
     """Create a serie with 0 days at 0 for Flot from request"""
-    visits = {str_to_time(visit['key']): visit['count'] for visit in results}
+    visits = {date_to_jstime(visit.key): visit.count for visit in results}
 
     for time in range(from_date, to_date, 1000 * 3600 * 24):
         visits[time] = visits.get(time, 0)
@@ -97,13 +110,13 @@ def make_time_serie(results, criteria, from_date, to_date):
 def make_serie(results, criteria, is_time=False):
     """Create a serie for Flot from request"""
     return {'label': labelize(criteria),
-            'data': [(visit['key'], visit['count'])
+            'data': [(visit.key, visit.count)
                      for visit in results]}
 
 
 def base_request(site, from_date, to_date):
     """Common request start"""
-    return (Visit.all
+    return (Visit.query
             .filter(on(site))
             .filter(between(from_date, to_date)))
 
@@ -146,7 +159,6 @@ def parse_referrer(referrer, with_query=False, host_only=False):
 
 def polish_visit(visit):
     """Transform a visit for nicer display"""
-    visit.date = visit.date.strftime('%Y-%m-%d %H:%M:%S')
     if visit.last_visit:
         visit.last_visit = date_to_time(visit.last_visit)
     if visit.lat:

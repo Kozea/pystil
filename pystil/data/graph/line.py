@@ -6,16 +6,20 @@
 """Treat line data"""
 
 
-from pystil.data.utils import make_time_serie, base_request
+from pystil.data.utils import make_time_serie, on, between
+from pystil.db import db, count, Visit, distinct
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
-    rq = base_request(site, from_date, to_date)
+    rq = (db.session
+          .query(Visit.day.label("key"),
+                 count(distinct(Visit.uuid)).label("count")
+                 if criteria == 'unique' else count("*").label("count"))
+          .filter(on(site))
+          .filter(between(from_date, to_date)))
+
     if criteria == 'new':
-        rq = rq.filter(c.last_visit == None)
-    if criteria == 'unique':
-        rq = (rq
-              .groupby({'day': c.day, 'uuid': c.uuid})
-              .map({'day': c.key.day, 'uuid': c.key.uuid}))
-    results = rq.groupby(c.day, count=c.len()).sort(c.key).execute()
+        rq = rq.filter(Visit.last_visit == None)
+
+    results = rq.group_by(Visit.day).order_by(Visit.day).all()
     return make_time_serie(results, criteria, from_date, to_date)

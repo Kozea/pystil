@@ -22,7 +22,7 @@ def register_common_routes(app, route):
                  .query(func.count(Visit.host).label('count'),
                         Visit.host.label('host'))
                  .group_by(Visit.host).order_by(desc('count')).all())
-        all_ = db.session.query(func.count('*')).select_from(Visit).scalar()
+        all_ = Visit.query.count()
 
         return render_template('index.jinja2', sites=sites, all_=all_)
 

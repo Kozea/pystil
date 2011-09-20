@@ -5,17 +5,22 @@
 
 """Treat map data"""
 
-
-from pystil.data.utils import base_request
+from pystil.db import db, Visit, count
+from pystil.data.utils import on, between
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
-    rq = base_request(site, from_date, to_date)
-    visits = list(rq
-                  .filter(c.country_code != None)
-                  .groupby({'country': c.country, 'code': c.country_code},
-                           count=c.len())
-                  .execute())
+    rq = (db.session
+          .query(Visit.country, Visit.country_code,
+                 count("*").label("count"))
+          .filter(on(site))
+          .filter(between(from_date, to_date))
+          .filter(Visit.country != None)
+          .filter(Visit.country_code != None)
+          .group_by(Visit.country_code, Visit.country))
+    visits = [{'country': visit.country,
+               'code': visit.country_code,
+               'count': visit.count} for visit in rq.all()]
     return {'list': visits,
                     'max': max(
                         [visit['count'] for visit in visits] + [0])}

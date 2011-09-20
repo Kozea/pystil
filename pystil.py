@@ -10,11 +10,13 @@ import sys
 
 config.freeze()
 
-if 'shell' in sys.argv:
+if 'soup' in sys.argv:
     from os import getenv
+    from sqlalchemy import create_engine
     from sqlalchemy.ext.sqlsoup import SqlSoup
     import code
-    db = SqlSoup(config.CONFIG["DB_URL"])
+    engine = create_engine(config.CONFIG["DB_URL"], echo=True)
+    db = SqlSoup(engine)
     Visit = db.visit
     Keys = db.keys
 

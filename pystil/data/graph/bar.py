@@ -5,11 +5,16 @@
 
 """Treat bar data"""
 
-from pystil.data.utils import base_request, make_serie
+from pystil.db import db, Visit, count
+from pystil.data.utils import make_serie, on, between
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
-    rq = base_request(site, from_date, to_date)
-    rq = (rq.filter(getattr(c, criteria) != None)
-          .groupby(getattr(c, criteria), count=c.len()))
-    return make_serie(rq.execute(), criteria)
+    rq = (db.session
+          .query(getattr(Visit, criteria).label("key"),
+                 count("*").label("count"))
+          .filter(on(site))
+          .filter(between(from_date, to_date))
+          .filter(getattr(Visit, criteria) != None)
+          .group_by(getattr(Visit, criteria)))
+    return make_serie(rq.all(), criteria)
