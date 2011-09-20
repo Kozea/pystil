@@ -84,7 +84,7 @@ class Visit(db.Model):
 
 
 class Keys(db.Model):
-    """This corn contains the auth keys"""
+    """This mapped lass contains the auth keys"""
 
     id = integer(pkey=True)
     key = string()

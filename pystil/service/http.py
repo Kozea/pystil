@@ -4,7 +4,6 @@ import pickle
 import pika
 import threading
 import re
-from .data import Message
 import uuid
 
 import pystil
@@ -29,6 +28,7 @@ class Application(object):
         self.delegate = delegate
 
     def __call__(self, environ, start_response):
+        from .data import Message
         myapp = threading.local()
         if environ['PATH_INFO'] == '/pystil.js':
             start_response('200 OK',

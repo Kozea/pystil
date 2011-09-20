@@ -28,26 +28,6 @@ def process_data(site, graph, criterion, from_date, to_date, step, stamp):
             return parse_referrer(key, host_only=True)
         reaggreg = host_only_referrer
 
-        # visits = []
-        # (rq
-        #  .filter(Visit.browser_name != None)
-        #  .filter(Visit.browser_version != None)
-        #  .map({'label': c.browser_name + ' ' + c.browser_version,
-        #        'data': 1})
-        #  .execute())
-        # version_visits = {}
-        # for visit in visits:
-        #     data = visit['data']
-        #     label = cut_browser_version(visit['label'])
-        #     if label in version_visits:
-        #         version_visits[label] += data
-        #     else:
-        #         version_visits[label] = data
-        # visits = [
-        #     {'label': key, 'data': value}
-        #     for key, value in top(version_visits)]
-        # return {'list': visits}
-
     rq = (db.session
           .query(criteria.label("key"),
                  count("*").label("count"))

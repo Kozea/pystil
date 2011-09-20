@@ -7,7 +7,7 @@
 
 from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qs
-from pystil.db import Visit
+from pystil.db import Visit, fields
 from datetime import date, datetime
 from time import mktime
 import re
@@ -170,8 +170,6 @@ def polish_visit(visit):
 
 def visit_to_dict(visit):
     visit_dict = {}
-    for key in Visit.__table__.columns.keys():
-        if key == 'query':
-            key = 'query_string'
+    for key in fields(Visit):
         visit_dict[key] = getattr(visit, key)
     return visit_dict

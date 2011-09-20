@@ -44,8 +44,8 @@ def app():
     handler = make_colored_stream_handler()
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)
-    getLogger('multicorn').addHandler(handler)
-    getLogger('multicorn').setLevel(INFO if app.debug else WARN)
+    getLogger('sqlalchemy').addHandler(handler)
+    getLogger('sqlalchemy').setLevel(INFO if app.debug else WARN)
 
     app.logger.handlers = []
     app.logger.addHandler(handler)

@@ -4,11 +4,11 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from flask import Response, request, send_file, abort
-from ..service.data import Message
 from ..service.http import render_js
 
 
 def register_public_routes(app):
+    from ..service.data import Message
     """Defines public routes"""
 
     @app.route('/pystil-<int:stamp>.gif')

@@ -6,6 +6,11 @@ import threading
 import re
 from flask import current_app
 from .. import config
+from sqlalchemy.ext.sqlsoup import SqlSoup
+from pystil.db import desc
+
+db = SqlSoup(config.CONFIG["DB_URL"])
+Visit = db.visit
 
 ipv4re = re.compile(r"(\d{1,3}(\.|$)){4}")
 
@@ -27,8 +32,6 @@ class Message(object):
         return gip_tl.gip
 
     def process(self):
-        from pystil.db import db, Visit
-        from sqlalchemy import desc
 
         def get(key, default=None):
             value = request_args.get(key, [default])[0]
@@ -46,28 +49,26 @@ class Message(object):
                 last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
             else:
                 last_visit = None
-            visit = Visit(uuid=uuid,
-                          host=get('k'),
-                          site=get('u'),
-                          client_tz_offset=get('z', 0),
-                          date=datetime.now(),
-                          last_visit=last_visit,
-                          ip=self.remote_addr,
-                          referrer=get('r'),
-                          size=get('s'),
-                          page=get('p'),
-                          hash=get('h'),
-                          query_string=get('q'),
-                          language=get('i'),
-                          browser_name=user_agent.browser,
-                          browser_version=user_agent.version,
-                          platform=user_agent.platform)
-            db.session.add(visit)
+            visit = {'uuid': uuid,
+                     'host': get('k'),
+                     'site': get('u'),
+                     'client_tz_offset': get('z', 0),
+                     'date': datetime.now(),
+                     'last_visit': last_visit,
+                     'ip': self.remote_addr,
+                     'referrer': get('r'),
+                     'size': get('s'),
+                     'page': get('p'),
+                     'hash': get('h'),
+                     'query_string': get('q'),
+                     'language': get('i'),
+                     'browser_name': user_agent.browser,
+                     'browser_version': user_agent.version,
+                     'platform': user_agent.platform}
             self.add_geolocalization(visit)
-            db.session.commit()
-
+            Visit.insert(**visit)
         elif kind == 'c':
-            visit = (Visit.query
+            visit = (Visit
                      .filter(Visit.uuid == uuid)
                      .order_by(desc(Visit.date))
                      .first())
@@ -80,7 +81,7 @@ class Message(object):
             return
 
     def add_geolocalization(self, visit):
-        ip = visit.ip
+        ip = visit['ip']
         lat = None
         lng = None
         country_code = None
@@ -107,8 +108,8 @@ class Message(object):
         else:
             country = 'ipv6'
             city = 'ipv6'
-        visit.country = country
-        visit.country_code = country_code
-        visit.city = city
-        visit.lat = lat
-        visit.lng = lng
+        visit['country'] = country
+        visit['country_code'] = country_code
+        visit['city'] = city
+        visit['lat'] = lat
+        visit['lng'] = lng
