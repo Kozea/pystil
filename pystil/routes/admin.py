@@ -5,31 +5,37 @@
 
 from flask import render_template, request, redirect, url_for
 from uuid import uuid4
+from sqlalchemy import func
+from pystil.db import db, distinct, Visit, Keys
 
 
 def register_admin_routes(app, route):
     """Defines admin routes"""
-    from pystil.db import Visit, Keys
     log = app.logger
 
     @route('/keys')
     def keys():
         """List the auth keys"""
-        keys = Keys.all.sort(c.host, c.key).execute()
-        hosts = Visit.all.map(c.host).distinct().sort().execute()
+        keys = Keys.query.order_by(Keys.host, Keys.key).all()
+        hosts = (db.session
+                 .query(func.array_agg(distinct(Visit.host)))
+                 .scalar())
         return render_template('keys.jinja2', keys=keys, hosts=hosts)
 
     @route('/keys/add', methods=("POST",))
     def add_key():
         """Add a key"""
         uuid = uuid4()
-        Keys.create({'host': request.values['host'], 'key': str(uuid)}).save()
+        key = Keys(host=request.values['host'], key=str(uuid))
+        db.session.add(key)
+        db.session.commit()
         return redirect(url_for('keys'))
 
     @route('/keys/<int:id>/rm', methods=("POST",))
     def rm_key(id):
         """Remove a key"""
-        key = Keys.all.filter(c.id == id).one(None).execute()
+        key = Keys.query.get(id)
         if key:
-            key.delete()
+            db.session.delete(key)
+            db.session.commit()
         return redirect(url_for('keys'))
