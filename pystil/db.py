@@ -69,7 +69,7 @@ class Visit(db.Model):
         browser_name + ' ' + split_part(browser_version, '.', 1) +
         case([
             (browser_name.in_(['opera', 'safari', 'chrome']), '')],
-            else_='.' + split_part(browser_version, '.', 1)
+            else_='.' + split_part(browser_version, '.', 2)
             ))
 
     day = column_property(
