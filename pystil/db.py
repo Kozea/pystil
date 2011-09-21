@@ -6,6 +6,7 @@ from flaskext.sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc
 from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import case
+from . import patchpsycopg
 
 db = SQLAlchemy()
 count = func.count
