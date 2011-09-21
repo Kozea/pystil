@@ -76,10 +76,8 @@ class Message(object):
                      .order_by(desc(Visit.date))
                      .first())
             if visit:
-                current_app.logger.error("got")
                 visit.time = get('t')
                 db.commit()
-                current_app.logger.error("and saved")
             else:
                 current_app.logger.error(uuid)
         else:
