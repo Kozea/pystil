@@ -10,6 +10,9 @@ from sqlalchemy.sql.expression import case
 db = SQLAlchemy()
 count = func.count
 distinct = func.distinct
+date_part = func.date_part
+date_trunc = func.date_trunc
+split_part = func.split_part
 
 
 def string():
@@ -52,6 +55,7 @@ class Visit(db.Model):
     platform = string()
     query_string = db.Column('query', db.String)
     referrer = string()
+    pretty_referrer = string()
     site = string()
     size = string()
     time = integer()
@@ -62,11 +66,18 @@ class Visit(db.Model):
     lng = decimal()
 
     browser_name_version = column_property(
-        browser_name + ' ' + browser_version)
+        browser_name + ' ' + split_part(browser_version, '.', 1) +
+        case([
+            (browser_name.in_(['opera', 'safari', 'chrome']), '')],
+            else_='.' + split_part(browser_version, '.', 1)
+            ))
+
     day = column_property(
-        func.date_trunc('day', date))
+        date_trunc('day', date))
+
     hour = column_property(
-        func.date_part('hour', date))
+        date_part('hour', date))
+
     spent_time = column_property(case(
             [
                 (time == None, None),

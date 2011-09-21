@@ -38,7 +38,7 @@ class @Last extends @Base
                 .append($('<td>').text(visit.country))
                 .append($('<td>').text(visit.city))
                 .append($('<td>').text(visit.page))
-                .append($('<td>').text(visit.referrer)))
+                .append($('<td>').text(visit.pretty_referrer)))
 
         setTimeout(
             () ->

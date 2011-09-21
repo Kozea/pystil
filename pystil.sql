@@ -19,6 +19,7 @@ CREATE TABLE visit
   platform character varying,
   query character varying,
   referrer character varying,
+  pretty_referrer character varying,
   site character varying,
   size character varying,
   "time" integer,

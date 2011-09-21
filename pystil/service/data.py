@@ -8,6 +8,8 @@ from flask import current_app
 from .. import config
 from sqlalchemy.ext.sqlsoup import SqlSoup
 from pystil.db import desc
+from pystil.data.utils import parse_referrer
+
 
 db = SqlSoup(config.CONFIG["DB_URL"])
 Visit = db.visit
@@ -57,6 +59,7 @@ class Message(object):
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
                      'referrer': get('r'),
+                     'pretty_referrer': parse_referrer(get('r')),
                      'size': get('s'),
                      'page': get('p'),
                      'hash': get('h'),
@@ -73,8 +76,10 @@ class Message(object):
                      .order_by(desc(Visit.date))
                      .first())
             if visit:
+                current_app.logger.error("got")
                 visit.time = get('t')
-                db.session.commit()
+                db.commit()
+                current_app.logger.error("and saved")
             else:
                 current_app.logger.error(uuid)
         else:
