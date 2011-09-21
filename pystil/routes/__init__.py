@@ -3,12 +3,12 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from flask import render_template, Response, abort
+from flask import render_template, Response
 import csstyle
 import os
 import pystil
-from pystil.db import db, Visit
-from sqlalchemy import func, desc
+from pystil.db import db, Visit, count, desc, array_agg, distinct, func
+from sqlalchemy.sql import tuple_
 
 
 def register_common_routes(app, route):
@@ -18,10 +18,24 @@ def register_common_routes(app, route):
     @route('/')
     def index():
         """List of sites"""
-        sites = (db.session
-                 .query(func.count(Visit.host).label('count'),
-                        Visit.host.label('host'))
-                 .group_by(Visit.host).order_by(desc('count')).all())
+        subquery = (db.session
+            .query(Visit.domain.label("superdomain"),
+                   Visit.subdomain.label("domain"), count(1).label("count"))
+            .group_by(Visit.domain, Visit.subdomain).order_by(desc('count'))
+            .subquery()
+            .alias())
+
+        sites = (
+            db.session
+            .query(subquery.c.superdomain.label('domain'),
+                   func.sum(subquery.c.count).label('count'),
+                   array_agg(
+                       tuple_(subquery.c.domain, subquery.c.count))
+                   .label("subdomains"))
+            .correlate(Visit)
+            .select_from(subquery)
+            .group_by(subquery.c.superdomain)).order_by(desc('count')).all()
+
         all_ = Visit.query.count()
 
         return render_template('index.jinja2', sites=sites, all_=all_)

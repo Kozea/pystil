@@ -18,13 +18,22 @@
           <td>All</td>
           <td><a href="{{ url_for('site', site='all') }}">Go</a></td>
         </tr>
-        {% for site in sites %}
-          {% if site and site.host %}
+        {% for site in sites recursive %}
+          {% if site and site.domain %}
             <tr>
               <td>{{ site.count }}</td>
-              <td>{{ site.host }}</td>
-              <td><a href="{{ url_for('site', site=site.host) }}">Go</a></td>
+              <td>{{ site.domain }}</td>
+              <td><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
             </tr>
+            {% if site.subdomains %}
+            <tr>
+              <table>
+                <tbody>
+                  {{ loop(site.subdomains) }}
+                </tbody>
+              </table>
+            </tr>
+            {% endif %}
           {% endif %}
         {% endfor %}
       </tbody>

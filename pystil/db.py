@@ -13,6 +13,10 @@ distinct = func.distinct
 date_part = func.date_part
 date_trunc = func.date_trunc
 split_part = func.split_part
+strpos = func.strpos
+substr = func.substr
+length = func.length
+array_agg = func.array_agg
 
 
 def string():
@@ -78,20 +82,32 @@ class Visit(db.Model):
     hour = column_property(
         date_part('hour', date))
 
-    spent_time = column_property(case(
-            [
-                (time == None, None),
-                (time < 1000, 0),
-                (time < 2000, 1),
-                (time < 5000, 2),
-                (time < 10000, 3),
-                (time < 20000, 4),
-                (time < 30000, 5),
-                (time < 60000, 6),
-                (time < 120000, 7),
-                (time < 300000, 8),
-                (time < 600000, 9)
-            ], else_=10))
+    spent_time = column_property(
+        case([
+            (time == None, None),
+            (time < 1000, 0),
+            (time < 2000, 1),
+            (time < 5000, 2),
+            (time < 10000, 3),
+            (time < 20000, 4),
+            (time < 30000, 5),
+            (time < 60000, 6),
+            (time < 120000, 7),
+            (time < 300000, 8),
+            (time < 600000, 9)
+        ], else_=10))
+
+    subdomain = column_property(
+        case([
+            (split_part(host, '.', 3) != '', split_part(host, '.', 1))
+        ], else_=None))
+
+    domain = column_property(
+        case([
+            (split_part(host, '.', 3) == '', host),
+        ], else_=substr(host,
+                        strpos(host, '.') + 1,
+                        length(host) - strpos(host, '.') + 1)))
 
 
 class Keys(db.Model):
