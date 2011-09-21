@@ -36,3 +36,11 @@ aside[data-graph=Pie] {
 .new-visit {
   color: orangered;
 }
+
+.domain {
+  font-weight: bold;
+}
+
+.subdomain {
+  color: #444;
+}

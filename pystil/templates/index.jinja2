@@ -13,20 +13,20 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr class="domain">
           <td>{{ all_ }}</td>
           <td>All</td>
           <td><a href="{{ url_for('site', site='all') }}">Go</a></td>
         </tr>
         {% for site in sites %}
           {% if site and site.domain %}
-            <tr>
+            <tr class="domain">
               <td>{{ site.count }}</td>
               <td>{{ site.domain }}</td>
               <td><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
             </tr>
             {% for domain, count in site.subdomains if domain %}
-              <tr>
+              <tr class="subdomain">
                 <td>{{ count }}</td>
                 <td>{{ domain }}</td>
                 <td><a href="{{ url_for('site', site=domain) }}">Go</a></td>

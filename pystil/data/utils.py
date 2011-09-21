@@ -63,7 +63,9 @@ def time_to_date(time):
 
 def on(host):
     """Generate a filter on a host """
-    return Visit.host == (host if host != 'all' else Visit.host)
+    if host == 'all':
+        return Visit.host == Visit.host
+    return Visit.host.like('%' + host)
 
 
 def between(from_date, to_date):
