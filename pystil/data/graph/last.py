@@ -6,7 +6,7 @@
 """Treat last visits data"""
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pystil.data.utils import on, polish_visit, date_to_time, visit_to_dict
 from pystil.db import db, Visit
 
@@ -20,10 +20,13 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
               .limit(10)
               .all())
 
-    visits.reverse()
+    last_stamp = date_to_time(
+        visits[0].date + timedelta(seconds=1)) if visits else stamp
 
+    visits.reverse()
+    print stamp, visits
     for visit in visits:
         polish_visit(visit)
 
     return {'list': [visit_to_dict(visit) for visit in visits],
-            'stamp': date_to_time(datetime.today())}
+            'stamp': last_stamp}

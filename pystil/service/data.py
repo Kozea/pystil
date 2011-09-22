@@ -70,6 +70,7 @@ class Message(object):
                      'platform': user_agent.platform}
             self.add_geolocalization(visit)
             Visit.insert(**visit)
+            db.commit()
         elif kind == 'c':
             visit = (Visit
                      .filter(Visit.uuid == uuid)

@@ -8,7 +8,7 @@
 from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qs
 from pystil.db import Visit, fields
-from datetime import date, datetime
+from datetime import date, datetime, time
 from time import mktime
 from decimal import Decimal
 import re
@@ -24,10 +24,12 @@ BROWSER_VERSION_NUMBERS = {
 class PystilEncoder(json.JSONEncoder):
 
     def default(self, obj):
-        if isinstance(obj, date):
-            return obj.strftime("%Y-%m-%d")
         if isinstance(obj, datetime):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
+        if isinstance(obj, time):
+            return obj.strftime("%H:%M:%S")
+        if isinstance(obj, date):
+            return obj.strftime("%Y-%m-%d")
         if isinstance(obj, str):
             return obj
         if isinstance(obj, Decimal):
@@ -44,11 +46,6 @@ def labelize(string):
         'spent_time': 'Time spent on site',
         'hour': 'Visits per hour'
     }[string]
-
-
-def date_to_jstime(date):
-    """Parse a date in db format and return a js stamp"""
-    return int(1000 * mktime(date.timetuple()))
 
 
 def date_to_time(date):
@@ -92,7 +89,7 @@ def transform_for_pie(results, site, reparse_referrer=False):
 
 def make_time_serie(results, criteria, from_date, to_date):
     """Create a serie with 0 days at 0 for Flot from request"""
-    visits = {date_to_jstime(visit.key): visit.count for visit in results}
+    visits = {date_to_time(visit.key): visit.count for visit in results}
 
     for time in range(from_date, to_date, 1000 * 3600 * 24):
         visits[time] = visits.get(time, 0)
@@ -142,6 +139,10 @@ def polish_visit(visit):
     """Transform a visit for nicer display"""
     if visit.last_visit:
         visit.last_visit = date_to_time(visit.last_visit)
+    if visit.referrer:
+        visit.referrer = parse_referrer(visit.referrer, True)
+    if visit.date.date() == date.today():
+        visit.date = visit.date.time()
 
 
 def visit_to_dict(visit):
