@@ -25,11 +25,11 @@
               <td>{{ site.domain }}</td>
               <td><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
             </tr>
-            {% for domain, count in site.subdomains if domain %}
+            {% for subdomain, count in site.subdomains if subdomain %}
               <tr class="subdomain">
                 <td>{{ count }}</td>
-                <td>{{ domain }}</td>
-                <td><a href="{{ url_for('site', site=domain) }}">Go</a></td>
+                <td>{{ subdomain }}</td>
+                <td><a href="{{ url_for('site', site=subdomain+'.'+site.domain) }}">Go</a></td>
               </tr>
             {% endfor %}
           {% endif %}

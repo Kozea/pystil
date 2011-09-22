@@ -8,7 +8,7 @@ import csstyle
 import os
 import pystil
 from pystil.db import db, Visit, count, desc, array_agg, distinct, func
-from sqlalchemy.sql import tuple_
+from sqlalchemy.sql import tuple_, literal_column
 
 
 def register_common_routes(app, route):
@@ -29,15 +29,14 @@ def register_common_routes(app, route):
             db.session
             .query(subquery.c.superdomain.label('domain'),
                    func.sum(subquery.c.count).label('count'),
-                   array_agg(
-                       tuple_(subquery.c.domain, subquery.c.count))
+                   literal_column(
+                       "array_agg((domain, count) ORDER BY count DESC)")
                    .label("subdomains"))
             .correlate(Visit)
             .select_from(subquery)
             .group_by(subquery.c.superdomain)).order_by(desc('count')).all()
 
         all_ = Visit.query.count()
-
         return render_template('index.jinja2', sites=sites, all_=all_)
 
     @route('/<site>')
