@@ -26,6 +26,8 @@ class PystilEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.strftime("%Y-%m-%d %H:%M:%S")
+        if isinstance(obj, timedelta):
+            return obj.seconds
         if isinstance(obj, time):
             return obj.strftime("%H:%M:%S")
         if isinstance(obj, date):

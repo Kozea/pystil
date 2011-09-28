@@ -3,6 +3,7 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 from flaskext.sqlalchemy import SQLAlchemy
+from datetime import timedelta
 from sqlalchemy import func, desc
 from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import case
@@ -63,7 +64,7 @@ class Visit(db.Model):
     pretty_referrer = string()
     site = string()
     size = string()
-    time = integer()
+    time = db.Column(db.Interval)
     country = string()
     country_code = string()
     city = string()
@@ -86,16 +87,16 @@ class Visit(db.Model):
     spent_time = column_property(
         case([
             (time == None, None),
-            (time < 1000, 0),
-            (time < 2000, 1),
-            (time < 5000, 2),
-            (time < 10000, 3),
-            (time < 20000, 4),
-            (time < 30000, 5),
-            (time < 60000, 6),
-            (time < 120000, 7),
-            (time < 300000, 8),
-            (time < 600000, 9)
+            (time < timedelta(seconds=1), 0),
+            (time < timedelta(seconds=2), 1),
+            (time < timedelta(seconds=5), 2),
+            (time < timedelta(seconds=10), 3),
+            (time < timedelta(seconds=20), 4),
+            (time < timedelta(seconds=30), 5),
+            (time < timedelta(seconds=60), 6),
+            (time < timedelta(seconds=120), 7),
+            (time < timedelta(seconds=300), 8),
+            (time < timedelta(seconds=600), 9)
         ], else_=10))
 
     subdomain = column_property(

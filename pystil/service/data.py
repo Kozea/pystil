@@ -1,5 +1,5 @@
 import urlparse
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.useragents import UserAgent
 from pygeoip import GeoIP, MMAP_CACHE
 import threading
@@ -77,7 +77,7 @@ class Message(object):
                      .order_by(desc(Visit.date))
                      .first())
             if visit:
-                visit.time = get('t')
+                visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
                 db.commit()
             else:
                 current_app.logger.error(uuid)
