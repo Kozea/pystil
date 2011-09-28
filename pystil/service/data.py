@@ -35,12 +35,12 @@ class Message(object):
 
     def process(self):
 
-        def get(key, default=None):
+        def get(key, default=None, encoding=None):
             value = request_args.get(key, [default])[0]
             if value and 'undefined' in value:
                 value = None
-            if isinstance(value, unicode):
-                value = value.encode('utf-8')
+            if value and encoding:
+                value = value.encode(encoding)
             return value
 
         request_args = urlparse.parse_qs(self.query)
@@ -63,7 +63,7 @@ class Message(object):
                      'referrer': get('r'),
                      'pretty_referrer': parse_referrer(get('r')),
                      'size': get('s'),
-                     'page': get('p'),
+                     'page': get('p', encoding='utf-8'),
                      'hash': get('h'),
                      'query_string': get('q'),
                      'language': get('i'),
