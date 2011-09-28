@@ -129,8 +129,9 @@ def parse_referrer(referrer, with_query=False, host_only=False,
         if search:
             # TODO Yahoo variable encoding
             if with_query:
-                return "Organic: %s %s" % (netloc, search[0].decode('utf-8'))
-            return "Organic: %s" % netloc
+                return (u"Organic: %s %s" % (
+                    netloc, search[0].decode('utf-8'))).encode('utf-8')
+            return (u"Organic: %s" % netloc).encode('utf-8')
         if host_only:
             return netloc
         return referrer
