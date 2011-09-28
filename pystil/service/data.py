@@ -39,6 +39,8 @@ class Message(object):
             value = request_args.get(key, [default])[0]
             if value and 'undefined' in value:
                 value = None
+            if value:
+                value = value.encode('utf-8')
             return value
 
         request_args = urlparse.parse_qs(self.query)
