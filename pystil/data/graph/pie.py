@@ -24,5 +24,5 @@ def process_data(site, graph, criterion, from_date, to_date, step, stamp):
           .filter(restrict)
           .group_by(criteria)
           .order_by(desc("count")))
-    return transform_for_pie(rq.limit(10).all(), site,
+    return transform_for_pie(rq.limit(10).all(), site, from_date, to_date,
                              criterion == 'pretty_referrer')

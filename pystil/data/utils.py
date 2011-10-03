@@ -73,7 +73,8 @@ def between(from_date, to_date):
             (Visit.date < time_to_date(to_date) + timedelta(1)))
 
 
-def transform_for_pie(results, site, reparse_referrer=False):
+def transform_for_pie(results, site, from_date, to_date,
+                      reparse_referrer=False):
     """Transform result for pie display"""
     visits = [{'label': (parse_referrer(visit.key, host_only=True,
                                         second_pass=True)
@@ -82,6 +83,7 @@ def transform_for_pie(results, site, reparse_referrer=False):
               for visit in results]
     all_visits = (Visit.query
                   .filter(on(site))
+                  .filter(between(from_date, to_date))
                   .count())
     other = all_visits - sum(visit['data'] for visit in visits)
     if other:
