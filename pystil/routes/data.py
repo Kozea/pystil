@@ -14,13 +14,15 @@ import json
 def jsonp(f):
     """Wraps JSONified output for JSONP"""
 
+    """Require user authorization"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         callback = request.args.get('callback', False)
         if callback:
-            content = str(callback) + '(' + str(f(*args, **kwargs).data) + ')'
+            content = str(callback) + '(' + json.dumps(
+                dict(*args, **kwargs)) + ')'
             return current_app.response_class(
-                content, mimetype='application/javascript')
+                content, mimetype='application/json')
         else:
             return f(*args, **kwargs)
     return decorated_function
