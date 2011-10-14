@@ -19,10 +19,9 @@ def jsonp(f):
     def decorated_function(*args, **kwargs):
         callback = request.args.get('callback', False)
         if callback:
-            content = str(callback) + '(' + json.dumps(
-                dict(*args, **kwargs)) + ')'
+            content = str(callback) + '(' + f(*args, **kwargs) + ')'
             return current_app.response_class(
-                content, mimetype='application/json')
+                content, mimetype='application/javascript')
         else:
             return f(*args, **kwargs)
     return decorated_function
