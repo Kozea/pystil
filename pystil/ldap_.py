@@ -52,7 +52,7 @@ def auth_route(app):
                     if uuid and site:
                         if (Keys.query
                             .filter(
-                                (site.like('%' + Keys.host)) &
+                                ('%s like host || %%' % site) &
                                 (Keys.key == uuid))
                             .first()):
                             return fun(*fargs, **fkwargs)
