@@ -6,6 +6,7 @@
 pystil - An elegant site web traffic analyzer
 """
 from flask import current_app, session, request, Response, abort
+from sqlalchemy.sql.expression import literal
 
 
 def auth_route(app):
@@ -52,7 +53,7 @@ def auth_route(app):
                     if uuid and site:
                         if (Keys.query
                             .filter(
-                                (Keys.host.like('%' + site)) &
+                                (literal(site).like('%' + Keys.host)) &
                                 (Keys.key == uuid))
                             .first()):
                             return fun(*fargs, **fkwargs)

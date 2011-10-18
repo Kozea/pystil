@@ -25,7 +25,7 @@ class @Base
     url: () ->
         if window.pystil_site
             ref = window.pystil_site
-            site = location.hostname
+            site = @elt.attr("data-site") or location.hostname
         else
             ref = ""
             site = location.pathname.split("/")[1] or "all"
