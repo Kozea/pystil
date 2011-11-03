@@ -33,5 +33,5 @@ class @Base
         if @stamp
             ref += "_at_#{@stamp}"
         else if window.fromDate and window.toDate
-            ref += "_from_#{window.fromDate.getTime()}_to_#{window.toDate.getTime()}"
+            ref += "_from_#{window.fromDate.getTime() - window.fromDate.getTimezoneOffset() * 60000}_to_#{window.toDate.getTime() - window.toDate.getTimezoneOffset() * 60000}"
         "#{ref}.json"

@@ -14,7 +14,7 @@ from pystil.db import db, Visit
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
     visits = (Visit.query
               .filter(on(site))
-              .filter(Visit.date > (datetime.fromtimestamp(
+              .filter(Visit.date > (datetime.utcfromtimestamp(
                   stamp / 1000) if stamp else datetime.min))
               .order_by(Visit.date.desc())
               .limit(10)
@@ -24,7 +24,6 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
         visits[0].date + timedelta(seconds=1)) if visits else stamp
 
     visits.reverse()
-    print stamp, visits
     for visit in visits:
         polish_visit(visit)
 

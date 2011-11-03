@@ -8,8 +8,7 @@
 from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qs
 from pystil.db import Visit, fields
-from datetime import date, datetime, time
-from time import mktime
+from datetime import date, time
 from calendar import timegm
 from decimal import Decimal
 import re
@@ -146,8 +145,7 @@ def polish_visit(visit):
         visit.last_visit = date_to_time(visit.last_visit)
     if visit.referrer:
         visit.referrer = parse_referrer(visit.referrer, True)
-    if visit.date.date() == date.today():
-        visit.date = visit.date.time()
+    visit.date = date_to_time(visit.date)
 
 
 def visit_to_dict(visit):

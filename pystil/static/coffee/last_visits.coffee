@@ -30,9 +30,16 @@ class @Last extends @Base
                 @tbody.children().last().remove()
 
         for visit in response.list
+            now = new Date()
+            date = new Date(visit.date)
+            if date.toLocaleDateString() == now.toLocaleDateString()
+                date = date.toLocaleTimeString()
+            else
+                date = date.toLocaleDateString() + ' - ' + date.toLocaleTimeString()
+
             @tbody
                 .prepend($('<tr>').addClass("new-visit")
-                .append($('<td>').text(visit.date))
+                .append($('<td>').text(date.toString()))
                 .append($('<td>').text(visit.host))
                 .append($('<td>').text(visit.ip))
                 .append($('<td>').text(visit.country))
