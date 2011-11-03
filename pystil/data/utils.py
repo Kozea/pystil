@@ -10,6 +10,7 @@ from urlparse import urlparse, parse_qs
 from pystil.db import Visit, fields
 from datetime import date, datetime, time
 from time import mktime
+from calendar import timegm
 from decimal import Decimal
 import re
 import json
@@ -52,7 +53,7 @@ def labelize(string):
 
 def date_to_time(date):
     """Convert a python date to js stamp"""
-    return int(1000 * mktime(date.timetuple()))
+    return int(1000 * timegm(date.timetuple()))
 
 
 def time_to_date(time):
