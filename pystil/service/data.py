@@ -23,7 +23,7 @@ class Message(object):
 
     def __init__(self, query, user_agent, remote_addr):
         self.query = query
-        self.stamp = datetime.now()
+        self.stamp = datetime.utcnow()
         self.user_agent = user_agent
         self.remote_addr = remote_addr
 
@@ -57,7 +57,7 @@ class Message(object):
                      'host': get('k'),
                      'site': get('u'),
                      'client_tz_offset': get('z', 0),
-                     'date': datetime.now(),
+                     'date': datetime.utcnow(),
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
                      'referrer': get('r'),
