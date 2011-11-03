@@ -6,7 +6,7 @@ Flask application default configuration module
 from sys import exit
 from werkzeug import ImmutableDict
 from imp import new_module
-from os.path import expanduser
+import os.path 
 
 FROZEN = False
 
@@ -24,7 +24,7 @@ CONFIG = {
     "DB_PORT": 5432,
     "THREADED": True,
     "LOG_FILE": None,
-    "IP_DB": 'ip.db',
+    "IP_DB": os.path.join(os.path.dirname(__file__), '..', 'ip.db'),
     "PUBLIC_ROUTES": True
 }
 
@@ -38,7 +38,7 @@ def freeze():
 
     # Load secrets into CONFIG from a file
     secrets = new_module('config')
-    secrets.__file__ = expanduser(CONFIG["SECRETS_FILE"])
+    secrets.__file__ = os.path.expanduser(CONFIG["SECRETS_FILE"])
     try:
         execfile(secrets.__file__, secrets.__dict__)
     except IOError, e:
