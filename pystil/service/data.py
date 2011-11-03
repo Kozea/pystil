@@ -81,8 +81,6 @@ class Message(object):
             if visit:
                 visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
                 db.commit()
-            else:
-                current_app.logger.error(uuid)
         else:
             return
 
