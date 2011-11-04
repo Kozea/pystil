@@ -18,5 +18,7 @@ if __name__ == '__main__':
     def callback(ch, method, properties, body):
         message = pickle.loads(body)
         message.process()
-    channel.basic_consume(callback, queue='pystil', no_ack=True)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    channel.basic_consume(callback, queue='pystil')
     channel.start_consuming()
