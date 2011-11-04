@@ -137,6 +137,15 @@ def parse_referrer(referrer, with_query=False, host_only=False,
     return "Direct"
 
 
+def parse_domain(referrer):
+    """Return the domain of the given referrer."""
+    if referrer:
+        up = urlparse(referrer)
+        netloc = up.netloc
+        return netloc or "Local"
+    return "Direct"
+
+
 def polish_visit(visit):
     """Transform a visit for nicer display"""
     if visit.last_visit:

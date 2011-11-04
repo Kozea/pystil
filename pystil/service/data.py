@@ -4,11 +4,10 @@ from werkzeug.useragents import UserAgent
 from pygeoip import GeoIP, MMAP_CACHE
 import threading
 import re
-from flask import current_app
 from .. import config
 from sqlalchemy.ext.sqlsoup import SqlSoup
 from pystil.db import desc
-from pystil.data.utils import parse_referrer
+from pystil.data.utils import parse_referrer, parse_domain
 
 
 db = SqlSoup(config.CONFIG["DB_URL"])
@@ -62,6 +61,8 @@ class Message(object):
                      'ip': self.remote_addr,
                      'referrer': get('r'),
                      'pretty_referrer': parse_referrer(
+                         get('r'), from_encoding='latin-1'),
+                     'referrer_domain': parse_domain(
                          get('r'), from_encoding='latin-1'),
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),

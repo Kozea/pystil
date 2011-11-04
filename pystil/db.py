@@ -62,6 +62,7 @@ class Visit(db.Model):
     query_string = db.Column('query', db.String)
     referrer = string()
     pretty_referrer = string()
+    referrer_domain = string()
     site = string()
     size = string()
     time = db.Column(db.Interval)
