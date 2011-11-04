@@ -114,7 +114,6 @@ def parse_referrer(referrer, with_query=False, host_only=False,
                    second_pass=False):
     """Return a pretty format for most search engines"""
     if referrer:
-        referrer = referrer.decode('latin1').encode('utf8')
         up = urlparse(referrer)
         netloc = up.netloc
         if not netloc:
@@ -125,7 +124,7 @@ def parse_referrer(referrer, with_query=False, host_only=False,
             return "Local"
 
         query = up.query
-        parsed = parse_qs(query.decode('latin1').encode('utf-8'))
+        parsed = parse_qs(query)
         search = parsed.get('q', parsed.get('p', parsed.get('rdata', None)))
         if search:
             # TODO Yahoo variable encoding

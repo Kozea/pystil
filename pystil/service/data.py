@@ -60,8 +60,9 @@ class Message(object):
                      'date': datetime.utcnow(),
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
-                     'referrer': get('r', from_encoding='latin-1'),
-                     'pretty_referrer': parse_referrer(get('r')),
+                     'referrer': get('r'),
+                     'pretty_referrer': parse_referrer(
+                         get('r'), from_encoding='latin-1'),
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),
                      'hash': get('h'),
