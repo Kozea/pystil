@@ -114,7 +114,7 @@ def parse_referrer(referrer, with_query=False, host_only=False,
                    second_pass=False):
     """Return a pretty format for most search engines"""
     if referrer:
-        up = urlparse(referrer)
+        up = urlparse(referrer.decode('latin1').encode('utf8'))
         netloc = up.netloc
         if not netloc:
             if with_query:
