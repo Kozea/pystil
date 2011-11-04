@@ -6,13 +6,6 @@ import pickle
 from pystil import config
 
 if __name__ == '__main__':
-    pid = os.fork()
-    if pid:
-        try:
-            open("/run/pystil.pid", 'w').write(str(pid))
-        finally:
-            sys.exit()
-
     sys.stdout = open(os.devnull, "w")
     sys.stderr = open("/var/log/pystil.err", "w")
 
