@@ -61,9 +61,9 @@ class Message(object):
                      'ip': self.remote_addr,
                      'referrer': get('r'),
                      'pretty_referrer': parse_referrer(
-                         get('r'), from_encoding='latin-1'),
+                         get('r', from_encoding='latin-1')),
                      'referrer_domain': parse_domain(
-                         get('r'), from_encoding='latin-1'),
+                         get('r', from_encoding='latin-1')),
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),
                      'hash': get('h'),
