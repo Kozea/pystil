@@ -124,7 +124,7 @@ def parse_referrer(referrer, with_query=False, host_only=False,
             return "Local"
 
         query = up.query
-        parsed = parse_qs(query.encode('utf-8'))
+        parsed = parse_qs(query.decode('latin1').encode('utf-8'))
         search = parsed.get('q', parsed.get('p', parsed.get('rdata', None)))
         if search:
             # TODO Yahoo variable encoding
