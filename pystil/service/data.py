@@ -60,7 +60,7 @@ class Message(object):
                      'date': datetime.utcnow(),
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
-                     'referrer': get('r'),
+                     'referrer': get('r', from_encoding='latin-1'),
                      'pretty_referrer': parse_referrer(get('r')),
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),
