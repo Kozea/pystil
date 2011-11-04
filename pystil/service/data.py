@@ -99,7 +99,7 @@ class Message(object):
                 city = 'Local'
                 country = 'Local'
             else:
-                location = self.gip.record_by_addr(ip)
+                location = self.gip.record_by_addr(ip) or {}
                 city = (location.get('city', 'Unknown')
                         .decode('iso-8859-1')
                         if location else 'Unknown')
