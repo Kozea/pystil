@@ -20,12 +20,25 @@
     {% endblock style %}
   </head>
   <body>
+    <header>
+      <h1>
+        <a href="/">Pystil</a>
+      </h1>
+    </header>
+    <aside class="links">
+      <ul>
+        <li><a href="{{ url_for('keys') }}">Manage secret keys</a></li>
+      </ul>
+    </aside>
     <section>
-      <header>
-        <img class="logo" src="{{url_for('static', filename='pystil.png')}}" />
-      </header>
       {% block article %}
       {% endblock article %}
     </section>
+  <footer>
+    <ul>
+      <li><a href="http://community.kozea.org/">A Kozea Project</a></li>
+      <li><a href="http://validator.w3.org/check?uri=referer">Optimized for Standards</a></li>
+    </ul>
+  </footer>
   </body>
 </html>

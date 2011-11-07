@@ -1,16 +1,132 @@
+@font-face { 
+  font-family:"Elevant"; 
+  src: url('static/font/Elevant.ttf'); 
+} 
+
+@font-face {
+  font-family: "Elevant";
+  src: url('static/font/Elevant bold.ttf');
+  font-weight: bold;
+}
+
+
+body  {
+  background: url(static/img/bg-top-right.png) no-repeat top right,
+              url(static/img/border-top.png) repeat-x 0 0, 
+              url(/static/img/bkgd.png) repeat top left;
+  font: 0.9em verdana, sans-serif;
+  margin: 0;
+}
+
 body a {
   color: #222;
   text-decoration: none;
   font-size: 1.1em;
-  border-bottom: 2px solid #ccc;
 }
 
+header h1 {
+  margin: 0;
+}
+
+
+header h1 a {
+  background: url(static/img/logo.png) no-repeat top left;
+  border: none;
+  color: transparent;
+  display: block;
+  height: 390px;
+  width: 500px;
+}
+
+
+section {
+  margin-top: 230px;
+  width: 100%;
+}
+
+article > * {
+  margin: 10px auto 20px;
+  width: 80%;
+}
+
+article input {
+  width: auto;
+}
+
+.sites table {
+  border-collapse: collapse;
+}
+
+.sites table tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sites table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.graph table tr td {
+  word-break: break-word;
+}
+
+table thead {
+ text-align: left; 
+}
+
+td.edit {
+  width: 22px;
+}
+
+td.edit a {
+  background: url(static/img/icon-go.png) no-repeat top left; 
+  color: transparent;
+  display: block;
+  height: 24px; 
+  width: 22px;
+}
+
+
 aside {
-  float: left;
-  height: 300px;
-  width: 45%;
-  font-family: monospace;
-  margin: 2.5%;
+  background: url(static/img/aside-top.png) no-repeat top center, 
+              url(static/img/aside-bottom.png) no-repeat bottom center;
+  margin: -300px 0 0 480px;
+  padding: 0.6em 0;
+}
+
+section aside {
+  background: none;
+  margin: 0 auto;
+}
+
+section aside table {
+  margin: 10px 10%;
+}
+
+aside ul {
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0;
+  padding: 0; 
+  text-align: center;
+}
+
+aside ul li {
+  display: inline-block;
+  list-style: none; 
+  padding: 5px 0;
+}
+
+aside ul li a {
+  color: #73716a;
+  font-family: "Elevant";
+  font-weight: bold;
+  font-size: 1.9em;
+  text-shadow: 1px 1px 1px rgba(81, 79, 71, 0.3);
+  transition: color 0.3s linear;
+}
+
+aside ul li a:hover, aside ul li a:focus {
+  color: #be3e3a;
+  transition: color 0.2 linear;
 }
 
 img.logo {
@@ -26,12 +142,7 @@ nav.links {
 }
 
 
-aside[data-graph=Last] {
-  width: 95%;
-  margin: 0 2.5%;
-}
-
-aside[data-graph=Pie] {
+article[data-graph=Pie] {
   width: 23%;
   margin: 1%;
 }
@@ -42,7 +153,7 @@ aside[data-graph=Pie] {
   background-repeat: no-repeat;
 }
 
-.sites, .last-visits {
+.last-visits {
   font-family: monospace;
   width: 45%;
   float: left;
@@ -64,4 +175,35 @@ aside[data-graph=Pie] {
 
 .subdomain {
   color: #444;
+}
+
+
+footer {
+  background: url(static/img/footer.png) repeat 0 center;
+  box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
+  margin-top: 20px;
+  text-align: center;
+}
+
+footer ul {
+  margin: 0;
+  padding: 8px 0;
+}
+
+footer ul li {
+  display: inline-block;
+}
+
+footer ul li a {
+  color: #8c7743;
+  font-size: 0.9em;
+  font-weight: bold;
+  margin: 0 5px; 
+  text-decoration: none;
+  transition: color 0.2s linear;
+}
+
+footer ul li a:hover, footer ul li a :focus {
+  color: #685422;
+  transition: color 0.4s linear;
 }

@@ -1,8 +1,8 @@
 {% extends "_layout.jinja2" %}
 
 {% block article %}
-  <nav class="links"><a href="{{ url_for('keys') }}">Manage secret keys</a></nav>
-  <aside class="graph" data-graph="Last" data-criteria="all"></aside>
+
+  <article class="graph" data-graph="Last" data-criteria="all"></article>
   <article class="sites">
     <table>
       <thead>
@@ -16,21 +16,21 @@
         <tr class="domain">
           <td>{{ all_ }}</td>
           <td>All</td>
-          <td><a href="{{ url_for('site', site='all') }}">Go</a></td>
+          <td class="edit"><a href="{{ url_for('site', site='all') }}">Go</a></td>
         </tr>
         {% for site in sites %}
           {% if site and site.domain %}
             <tr class="domain">
               <td>{{ site.count }}</td>
               <td>{{ site.domain }}</td>
-              <td><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
+              <td class="edit"><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
             </tr>
             {% for domain, count in site.subdomains if domain %}
               {% set full_domain = domain + '.' + site.domain %}
               <tr class="subdomain">
                 <td>{{ count }}</td>
                 <td>{{ domain }}</td>
-                <td><a href="{{ url_for('site', site=full_domain) }}">Go</a></td>
+                <td class="edit"><a href="{{ url_for('site', site=full_domain) }}">Go</a></td>
               </tr>
             {% endfor %}
           {% endif %}
