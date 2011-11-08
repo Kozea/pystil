@@ -25,20 +25,22 @@
         <a href="/">Pystil</a>
       </h1>
     </header>
-    <aside class="links">
+    <nav>
       <ul>
-        <li><a href="{{ url_for('keys') }}">Manage secret keys</a></li>
+        <li><a href="{{ url_for('keys') }}">Home</a></li>
+        <li><a href="{{ url_for('keys') }}">Sites</a></li>
+        <li><a href="{{ url_for('keys') }}">Secret keys</a></li>
       </ul>
-    </aside>
+    </nav>
     <section>
       {% block article %}
       {% endblock article %}
     </section>
-  <footer>
-    <ul>
-      <li><a href="http://community.kozea.org/">A Kozea Project</a></li>
-      <li><a href="http://validator.w3.org/check?uri=referer">Optimized for Standards</a></li>
-    </ul>
-  </footer>
+    <footer>
+      <ul>
+        <li><a href="http://community.kozea.org/">A Kozea Project</a></li>
+        <li><a href="http://validator.w3.org/check?uri=referer">Optimized for Standards</a></li>
+      </ul>
+    </footer>
   </body>
 </html>
