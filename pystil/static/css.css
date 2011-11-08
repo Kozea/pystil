@@ -176,6 +176,10 @@ article[data-graph=Pie] {
 }
 
 
+footer:after {
+
+}
+
 footer {
   background: url(static/img/footer.png) repeat 0 center;
   box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
