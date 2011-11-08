@@ -201,14 +201,6 @@ article[data-graph=Pie] {
   color: orangered;
 }
 
-.domain {
-  font-weight: bold;
-}
-
-.subdomain {
-  color: #444;
-}
-
 
 footer:after {
 
