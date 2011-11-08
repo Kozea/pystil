@@ -14,7 +14,7 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
     rq = (db.session
           .query(Visit.day.label("key"),
                  count(distinct(Visit.uuid)).label("count")
-                 if criteria == 'unique' else count("*").label("count"))
+                 if criteria == 'unique' else count(1).label("count"))
           .filter(on(site))
           .filter(between(from_date, to_date)))
 

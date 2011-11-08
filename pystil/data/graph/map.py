@@ -12,7 +12,7 @@ from pystil.data.utils import on, between
 def process_data(site, graph, criteria, from_date, to_date, step, stamp):
     rq = (db.session
           .query(Visit.country, Visit.country_code,
-                 count("*").label("count"))
+                 count(1).label("count"))
           .filter(on(site))
           .filter(between(from_date, to_date))
           .filter(Visit.country != None)

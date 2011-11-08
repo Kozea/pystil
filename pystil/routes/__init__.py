@@ -17,31 +17,37 @@ def register_common_routes(app, route):
 
     @route('/')
     def index():
-        all_ = Visit.query.count()
+        all_ = db.session.query(count(1)).select_from(Visit).scalar()
         return render_template('index.jinja2', all_=all_)
 
     @route('/sites')
     def sites():
         """List of sites"""
-        subquery = (db.session
-            .query(Visit.domain.label("superdomain"),
-                   Visit.subdomain.label("domain"), count(1).label("count"))
-            .group_by(Visit.domain, Visit.subdomain).order_by(desc('count'))
-            .subquery()
-            .alias())
+        # subquery = (db.session
+        #     .query(Visit.domain.label("superdomain"),
+        #            Visit.subdomain.label("domain"), count(1).label("count"))
+        #     .group_by(Visit.domain, Visit.subdomain).order_by(desc('count'))
+        #     .subquery()
+        #     .alias())
+
+        # sites = (
+        #     db.session
+        #     .query(subquery.c.superdomain.label('domain'),
+        #            func.sum(subquery.c.count).label('count'),
+        #            literal_column(
+        #                "array_agg((domain, count) ORDER BY count DESC)")
+        #            .label("subdomains"))
+        #     .correlate(Visit)
+        #     .select_from(subquery)
+        #     .group_by(subquery.c.superdomain)).order_by(desc('count'))[:10]
 
         sites = (
             db.session
-            .query(subquery.c.superdomain.label('domain'),
-                   func.sum(subquery.c.count).label('count'),
-                   literal_column(
-                       "array_agg((domain, count) ORDER BY count DESC)")
-                   .label("subdomains"))
-            .correlate(Visit)
-            .select_from(subquery)
-            .group_by(subquery.c.superdomain)).order_by(desc('count')).all()
-
-        all_ = Visit.query.count()
+            .query(Visit.domain, count(1).label('count'))
+            .group_by(Visit.domain)
+            .order_by(desc('count'))
+            .all())
+        all_ = db.session.query(count(1)).select_from(Visit).scalar()
         return render_template('sites.jinja2', sites=sites, all_=all_)
 
     @route('/<site>')
