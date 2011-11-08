@@ -45,8 +45,7 @@ def register_common_routes(app, route):
             db.session
             .query(Visit.domain, count(1).label('count'))
             .group_by(Visit.domain)
-            .order_by(desc('count'))
-            .all())
+            .order_by(desc('count')))[:20]
         all_ = db.session.query(count(1)).select_from(Visit).scalar()
         return render_template('sites.jinja2', sites=sites, all_=all_)
 

@@ -1,10 +1,10 @@
 {% extends "_layout.jinja2" %}
 
 {% block article %}
-  <header>
+  <article class="dates">
     <label for="from">From: </label><input id="from" type="text" class="datepicker" />
     <label for="to">To: </label><input id="to" type="text" class="datepicker" />
-  </header>
+  </article>
   <article id="graphs">
     <section class="graph" data-graph="Last" data-criteria="all"></section>
     <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
