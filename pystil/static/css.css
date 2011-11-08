@@ -13,7 +13,7 @@
 body  {
   background: url(static/img/bg-top-right.png) no-repeat top right,
               url(static/img/border-top.png) repeat-x 0 0, 
-              url(/static/img/bkgd.png) repeat top left;
+              url(/static/img/bkgd1.png) repeat top left;
   font: 0.9em verdana, sans-serif;
   margin: 0;
 }
@@ -38,19 +38,53 @@ header h1 a {
   width: 500px;
 }
 
-
 section {
-  margin-top: 230px;
+  margin-top: 250px;
   width: 100%;
 }
 
 section.graph {
-  height: 300px;
+  min-height: 320px;
+}
+
+section.graph > table {
+  background: url(static/img/bg-table.png) no-repeat bottom right;
+  width: 95%;
+  margin: 20px auto 30px;
+}
+
+section.graph .legend table {
+  background: none;  
+}
+
+section.graph table tr {
+  background: rgba(255, 255, 255, 0.4);
+  color: #7e7e7e;
+  height: 1.8em;
+}
+
+section.graph table tr:hover {
+  background: rgba(255, 255, 255, 0.7);
+  color: #343434;
+}
+
+section.graph table thead tr, section.graph table thead tr:hover, 
+section.graph .legend table tr, section.graph .legend table tr:hover{
+  background: none;
+  color: #7e7e7e;
 }
 
 article > * {
   margin: 10px auto 20px;
-  width: 80%;
+  width: 75%;
+}
+
+article h2 {
+  background: url(static/img/bg-h2.pnh) repeat-x bottom left;
+  color: #c51637;
+  font-family:"Elevant"; 
+  font-size: 2.4em;
+  border-bottom: 1px solid;
 }
 
 article input {
