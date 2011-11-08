@@ -43,10 +43,18 @@ section {
   width: 100%;
 }
 
-section.graph table {
+section.graph {
+  min-height: 320px;
+}
+
+section.graph > table {
   background: url(static/img/bg-table.png) no-repeat bottom right;
   width: 95%;
   margin: 20px auto 30px;
+}
+
+section.graph .legend table {
+  background: none;  
 }
 
 section.graph table tr {
@@ -60,7 +68,8 @@ section.graph table tr:hover {
   color: #343434;
 }
 
-section.graph table thead tr, section.graph table thead tr:hover {
+section.graph table thead tr, section.graph table thead tr:hover, 
+section.graph .legend table tr, section.graph .legend table tr:hover{
   background: none;
   color: #7e7e7e;
 }
