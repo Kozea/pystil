@@ -23,24 +23,6 @@ def register_common_routes(app, route):
     @route('/sites')
     def sites():
         """List of sites"""
-        # subquery = (db.session
-        #     .query(Visit.domain.label("superdomain"),
-        #            Visit.subdomain.label("domain"), count(1).label("count"))
-        #     .group_by(Visit.domain, Visit.subdomain).order_by(desc('count'))
-        #     .subquery()
-        #     .alias())
-
-        # sites = (
-        #     db.session
-        #     .query(subquery.c.superdomain.label('domain'),
-        #            func.sum(subquery.c.count).label('count'),
-        #            literal_column(
-        #                "array_agg((domain, count) ORDER BY count DESC)")
-        #            .label("subdomains"))
-        #     .correlate(Visit)
-        #     .select_from(subquery)
-        #     .group_by(subquery.c.superdomain)).order_by(desc('count'))[:10]
-
         sites = (
             db.session
             .query(Visit.domain, count(1).label('count'))
@@ -48,6 +30,17 @@ def register_common_routes(app, route):
             .order_by(desc('count')))[:20]
         all_ = db.session.query(count(1)).select_from(Visit).scalar()
         return render_template('sites.jinja2', sites=sites, all_=all_)
+
+    @route('/sites/<query>')
+    def sites_query(query):
+        """Sites matching query"""
+        sites = (
+            db.session
+            .query(Visit.host, count(1).label('count'))
+            .filter(Visit.host.like('%%%s%%' % query))
+            .group_by(Visit.host)
+            .order_by(desc('count')))[:20]
+        return render_template('sites_table.jinja2', sites=sites)
 
     @route('/<site>')
     def site(site):

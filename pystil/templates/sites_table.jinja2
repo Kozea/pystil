@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr>
+      <th>Visits</th>
+      <th>Domain</th>
+      <th>Stats</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for site in sites %}
+      {% if site and site.host %}
+        <tr class="domain">
+          <td>{{ site.count }}</td>
+          <td>{{ site.host }}</td>
+          <td class="edit"><a href="{{ url_for('site', site=site.host) }}">Go</a></td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>

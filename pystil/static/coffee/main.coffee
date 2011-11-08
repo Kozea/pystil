@@ -1,5 +1,7 @@
 $ () =>
     elts = []
+    xhr = null
+    requestIndex = 0
     $('.datepicker').datepicker(
         onSelect: (d, inst) =>
             @[inst.id + "Date"] = $.datepicker.parseDate('yy-mm-dd', d)
@@ -20,5 +22,21 @@ $ () =>
         elt = $ elt
         elts.push(new @[elt.attr('data-graph')](elt))
 
-
-
+    $('#filter').keyup (e) ->
+        $this = $ this
+        $results = $ 'section.results'
+        if !$this.val()
+            return
+        $results.html '<img src="/static/img/ajax.gif" />'
+        if xhr
+            xhr.abort
+        xhr = $.ajax
+            url: "/sites/#{$this.val()}"
+            dataType: "text"
+            rqIndex: ++requestIndex
+            success: (data) ->
+                if @rqIndex is requestIndex
+                    $results.html data
+            error: () ->
+                if @rqIndex is requestIndex
+                    $results.html ""
