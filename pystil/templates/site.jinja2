@@ -1,29 +1,29 @@
 {% extends "_layout.jinja2" %}
 
 {% block article %}
+  <header>
+    <label for="from">From: </label><input id="from" type="text" class="datepicker" />
+    <label for="to">To: </label><input id="to" type="text" class="datepicker" />
+  </header>
   <article id="graphs">
-    <header>
-      <label for="from">From: </label><input id="from" type="text" class="datepicker" />
-      <label for="to">To: </label><input id="to" type="text" class="datepicker" />
-    </header>
-    <aside class="graph" data-graph="Last" data-criteria="all"></aside>
-    <aside class="graph" data-graph="Line" data-criteria="new,unique,all"></aside>
-    <aside class="graph" data-graph="Bar" data-criteria="hour"></aside>
-    <aside class="graph" data-graph="Time" data-criteria="spent_time"></aside>
-    <aside class="graph" data-graph="Map" data-criteria="all"></aside>
+    <section class="graph" data-graph="Last" data-criteria="all"></section>
+    <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
+    <section class="graph" data-graph="Bar" data-criteria="hour"></section>
+    <section class="graph" data-graph="Time" data-criteria="spent_time"></section>
+    <section class="graph" data-graph="Map" data-criteria="all"></section>
     {% if site == 'all' %}
-      <aside class="graph" data-graph="Pie" data-criteria="host"></aside>
+      <section class="graph" data-graph="Pie" data-criteria="host"></section>
     {% else %}
-      <aside class="graph" data-graph="Pie" data-criteria="page"></aside>
-      <aside class="graph" data-graph="Pie" data-criteria="hash"></aside>
+      <section class="graph" data-graph="Pie" data-criteria="page"></section>
+      <section class="graph" data-graph="Pie" data-criteria="hash"></section>
     {% endif %}
-    <aside class="graph" data-graph="Pie" data-criteria="browser_name"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="browser_name_version"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="platform"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="country"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="referrer_domain"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="size"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="day"></aside>
-    <aside class="graph" data-graph="Pie" data-criteria="ip"></aside>
+    <section class="graph" data-graph="Pie" data-criteria="browser_name"></section>
+    <section class="graph" data-graph="Pie" data-criteria="browser_name_version"></section>
+    <section class="graph" data-graph="Pie" data-criteria="platform"></section>
+    <section class="graph" data-graph="Pie" data-criteria="country"></section>
+    <section class="graph" data-graph="Pie" data-criteria="referrer_domain"></section>
+    <section class="graph" data-graph="Pie" data-criteria="size"></section>
+    <section class="graph" data-graph="Pie" data-criteria="day"></section>
+    <section class="graph" data-graph="Pie" data-criteria="ip"></section>
   </article>
 {% endblock article %}

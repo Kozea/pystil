@@ -1,41 +1,42 @@
 {% extends "_layout.jinja2" %}
 
 {% block article %}
-
-  <article class="graph" data-graph="Last" data-criteria="all"></article>
-  <article class="sites">
-    <table>
-      <thead>
-        <tr>
-          <th>Visits</th>
-          <th>Domain</th>
-          <th>Stats</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="domain">
-          <td>{{ all_ }}</td>
-          <td>All</td>
-          <td class="edit"><a href="{{ url_for('site', site='all') }}">Go</a></td>
-        </tr>
-        {% for site in sites %}
-          {% if site and site.domain %}
-            <tr class="domain">
-              <td>{{ site.count }}</td>
-              <td>{{ site.domain }}</td>
-              <td class="edit"><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
-            </tr>
-            {% for domain, count in site.subdomains if domain %}
-              {% set full_domain = domain + '.' + site.domain %}
-              <tr class="subdomain">
-                <td>{{ count }}</td>
-                <td>{{ domain }}</td>
-                <td class="edit"><a href="{{ url_for('site', site=full_domain) }}">Go</a></td>
+  <article>
+    <section class="graph" data-graph="Last" data-criteria="all"></section>
+    <section class="sites">
+      <table>
+        <thead>
+          <tr>
+            <th>Visits</th>
+            <th>Domain</th>
+            <th>Stats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="domain">
+            <td>{{ all_ }}</td>
+            <td>All</td>
+            <td class="edit"><a href="{{ url_for('site', site='all') }}">Go</a></td>
+          </tr>
+          {% for site in sites %}
+            {% if site and site.domain %}
+              <tr class="domain">
+                <td>{{ site.count }}</td>
+                <td>{{ site.domain }}</td>
+                <td class="edit"><a href="{{ url_for('site', site=site.domain) }}">Go</a></td>
               </tr>
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
+              {% for domain, count in site.subdomains if domain %}
+                {% set full_domain = domain + '.' + site.domain %}
+                <tr class="subdomain">
+                  <td>{{ count }}</td>
+                  <td>{{ domain }}</td>
+                  <td class="edit"><a href="{{ url_for('site', site=full_domain) }}">Go</a></td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
   </article>
 {% endblock article %}

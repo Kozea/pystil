@@ -44,6 +44,10 @@ section {
   width: 100%;
 }
 
+section.graph {
+  height: 300px;
+}
+
 article > * {
   margin: 10px auto 20px;
   width: 80%;
@@ -86,7 +90,7 @@ td.edit a {
 }
 
 
-aside {
+nav {
   background: url(static/img/aside-top.png) no-repeat top center, 
               url(static/img/aside-bottom.png) no-repeat bottom center;
   margin: -300px 0 0 480px;
@@ -102,20 +106,20 @@ section aside table {
   margin: 10px 10%;
 }
 
-aside ul {
+nav ul {
   background: rgba(255, 255, 255, 0.25);
   margin: 0;
   padding: 0; 
   text-align: center;
 }
 
-aside ul li {
+nav ul li {
   display: inline-block;
   list-style: none; 
-  padding: 5px 0;
+  padding: 5px 10px;
 }
 
-aside ul li a {
+nav ul li a {
   color: #73716a;
   font-family: "Elevant";
   font-weight: bold;
@@ -124,7 +128,7 @@ aside ul li a {
   transition: color 0.3s linear;
 }
 
-aside ul li a:hover, aside ul li a:focus {
+nav ul li a:hover, nav ul li a:focus {
   color: #be3e3a;
   transition: color 0.2 linear;
 }
@@ -135,12 +139,6 @@ img.logo {
   right: 0;
   width: 450px;
 }
-
-nav.links {
-  width: 100%;
-  text-align: center;
-}
-
 
 article[data-graph=Pie] {
   width: 23%;
