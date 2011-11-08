@@ -18,8 +18,8 @@ def register_admin_routes(app, route):
         """List the auth keys"""
         keys = Keys.query.order_by(Keys.host, Keys.key).all()
         hosts = (db.session
-                 .query(func.array_agg(distinct(Visit.host)))
-                 .scalar())
+                 .query(distinct(Visit.host).label('host'))
+                 .all())
         return render_template('keys.jinja2', keys=keys, hosts=hosts)
 
     @route('/keys/add', methods=("POST",))

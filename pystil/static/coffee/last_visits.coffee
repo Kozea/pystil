@@ -52,7 +52,7 @@ class @Last extends @Base
                 $(".new-visit").each(
                     (i, elt) -> $(elt).removeClass("new-visit")
                 )
-        , 1000)
+        , 5000)
         @stamp = response.stamp
-        setTimeout(@ask_update, 1000)
+        setTimeout(@ask_update, 5000)
 

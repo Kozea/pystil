@@ -27,7 +27,7 @@
     <form method="post" action="{{ url_for('add_key') }}">
       <select name="host">
           {% for host in hosts %}
-            <option value="{{ host }}">{{ host }}</option>
+            <option value="{{ host.host }}">{{ host.host }}</option>
           {% endfor %}
       </select>
       <input type="submit" value="add" />

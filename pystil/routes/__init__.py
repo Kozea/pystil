@@ -17,6 +17,11 @@ def register_common_routes(app, route):
 
     @route('/')
     def index():
+        all_ = Visit.query.count()
+        return render_template('index.jinja2', all_=all_)
+
+    @route('/sites')
+    def sites():
         """List of sites"""
         subquery = (db.session
             .query(Visit.domain.label("superdomain"),
@@ -37,7 +42,7 @@ def register_common_routes(app, route):
             .group_by(subquery.c.superdomain)).order_by(desc('count')).all()
 
         all_ = Visit.query.count()
-        return render_template('index.jinja2', sites=sites, all_=all_)
+        return render_template('sites.jinja2', sites=sites, all_=all_)
 
     @route('/<site>')
     def site(site):
