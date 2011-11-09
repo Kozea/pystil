@@ -23,7 +23,7 @@ $ () =>
         $results = $ 'section.results'
         if !$this.val()
             return
-        $results.html '<img src="/static/img/ajax.gif" />'
+        $results.addClass 'loading'
         if xhr
             xhr.abort
         xhr = $.ajax
@@ -31,6 +31,7 @@ $ () =>
             dataType: "text"
             rqIndex: ++requestIndex
             success: (data) ->
+                $results.removeClass 'loading'
                 if @rqIndex is requestIndex
                     $results.html data
             error: () ->

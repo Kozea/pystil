@@ -136,10 +136,6 @@ nav {
   padding: 0.6em 0;
 }
 
-.tab {
-  transition: 1s;
-}
-
 section aside {
   background: none;
   margin: 0 auto;
