@@ -48,7 +48,6 @@ $ () =>
         $('.graph', @).each (i, e) ->
             load_graph($ e)
 
-    @tabs()
-
-    # for elt in $(".graph").filter(":visible")
-        # load_graph $ elt
+    if not @tabs().length
+        for elt in $(".graph").filter(":visible")
+            load_graph $ elt
