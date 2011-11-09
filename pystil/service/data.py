@@ -56,7 +56,7 @@ class Message(object):
                      'host': get('k'),
                      'site': get('u'),
                      'client_tz_offset': get('z', 0),
-                     'date': datetime.utcnow(),
+                     'date': self.stamp,
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
                      'referrer': get('r'),
