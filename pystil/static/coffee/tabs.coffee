@@ -31,8 +31,6 @@ $.fn.extend
 
             $tab.each (i, e) ->
                 sign =  i - $tab.index($new_tab_active)
-                # if sign != 0
-                    # sign =  sign / Math.abs(sign)
                 $(e).css left: sign * window.innerWidth
             $new_tab_active.tabshow()
             false
