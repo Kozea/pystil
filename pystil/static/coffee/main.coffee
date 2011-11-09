@@ -37,17 +37,18 @@ $ () =>
             error: () ->
                 if @rqIndex is requestIndex
                     $results.html ""
-    @tabs()
 
     load_graph = (elt) ->
         if not elt.data 'loaded'
             elts.push(new @[elt.attr('data-graph')](elt))
             elt.data 'loaded', true
 
+
     $('.tab').tabshow () ->
         $('.graph', @).each (i, e) ->
             load_graph($ e)
 
+    @tabs()
 
-    for elt in $(".graph").filter(":visible")
-        load_graph $ elt
+    # for elt in $(".graph").filter(":visible")
+        # load_graph $ elt

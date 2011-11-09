@@ -205,6 +205,15 @@ img.logo {
   color: orangered;
 }
 
+.tabs {
+  position: relative;
+}
+
+.tab {
+  position: absolute;
+  top: 50px;
+  transition: 1s;
+}
 
 footer:after {
 
