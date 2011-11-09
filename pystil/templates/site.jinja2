@@ -5,25 +5,47 @@
     <label for="from">From: </label><input id="from" type="text" class="datepicker" />
     <label for="to">To: </label><input id="to" type="text" class="datepicker" />
   </article>
-  <article id="graphs">
-    <section class="graph" data-graph="Last" data-criteria="all"></section>
-    <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
-    <section class="graph" data-graph="Bar" data-criteria="hour"></section>
-    <section class="graph" data-graph="Time" data-criteria="spent_time"></section>
-    <section class="graph" data-graph="Map" data-criteria="all"></section>
-    {% if site == 'all' %}
-      <section class="graph" data-graph="Pie" data-criteria="host"></section>
-    {% else %}
-      <section class="graph" data-graph="Pie" data-criteria="page"></section>
-      <section class="graph" data-graph="Pie" data-criteria="hash"></section>
-    {% endif %}
-    <section class="graph" data-graph="Pie" data-criteria="browser_name"></section>
-    <section class="graph" data-graph="Pie" data-criteria="browser_name_version"></section>
-    <section class="graph" data-graph="Pie" data-criteria="platform"></section>
-    <section class="graph" data-graph="Pie" data-criteria="country"></section>
-    <section class="graph" data-graph="Pie" data-criteria="referrer_domain"></section>
-    <section class="graph" data-graph="Pie" data-criteria="size"></section>
-    <section class="graph" data-graph="Pie" data-criteria="day"></section>
-    <section class="graph" data-graph="Pie" data-criteria="ip"></section>
+  <article id="graphs" class="tabs">
+    <nav>
+      <ul>
+        <li><a href="#visits">Visits</a></li>
+        <li><a href="#time">Time</a></li>
+        <li><a href="#map">Worldmap</a></li>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#visitor">Visitor</a></li>
+        <li><a href="#misc">Misc</a></li>
+      </ul>
+    </nav>
+    <section id="visits" class="tab">
+      <div class="graph" data-graph="Last" data-criteria="all"></div>
+      <div class="graph" data-graph="Line" data-criteria="new,unique,all"></div>
+    </section>
+    <section id="time" class="tab">
+      <div class="graph" data-graph="Bar" data-criteria="hour"></div>
+      <div class="graph" data-graph="Time" data-criteria="spent_time"></div>
+    </section>
+    <section id="map" class="tab">
+      <div class="graph" data-graph="Map" data-criteria="all"></div>
+    </section>
+    <section id="pages" class="tab">
+      {% if site == 'all' %}
+        <div class="graph" data-graph="Pie" data-criteria="host"></div>
+      {% else %}
+        <div class="graph" data-graph="Pie" data-criteria="page"></div>
+        <div class="graph" data-graph="Pie" data-criteria="hash"></div>
+      {% endif %}
+      <div class="graph" data-graph="Pie" data-criteria="referrer_domain"></div>
+    </section>
+    <section id="visitor" class="tab">
+      <div class="graph" data-graph="Pie" data-criteria="browser_name"></div>
+      <div class="graph" data-graph="Pie" data-criteria="browser_name_version"></div>
+      <div class="graph" data-graph="Pie" data-criteria="size"></div>
+      <div class="graph" data-graph="Pie" data-criteria="platform"></div>
+    </section>
+    <section id="misc" class="tab">
+      <div class="graph" data-graph="Pie" data-criteria="country"></div>
+      <div class="graph" data-graph="Pie" data-criteria="day"></div>
+      <div class="graph" data-graph="Pie" data-criteria="ip"></div>
+    </section>
   </article>
 {% endblock article %}

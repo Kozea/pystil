@@ -43,33 +43,39 @@ section {
   width: 100%;
 }
 
-section.graph {
+.graph {
+  width: 100%;
   min-height: 320px;
 }
 
-section.graph > table {
+.graph[data-graph=Pie] {
+  width: 23%;
+  margin: 1%;
+}
+
+.graph > table {
   background: url(static/img/bg-table.png) no-repeat bottom right;
   width: 95%;
   margin: 20px auto 30px;
 }
 
-section.graph .legend table {
+.graph .legend table {
   background: none;  
 }
 
-section.graph table tr {
+.graph table tr {
   background: rgba(255, 255, 255, 0.4);
   color: #7e7e7e;
   height: 1.8em;
 }
 
-section.graph table tr:hover {
+.graph table tr:hover {
   background: rgba(255, 255, 255, 0.7);
   color: #343434;
 }
 
-section.graph table thead tr, section.graph table thead tr:hover, 
-section.graph .legend table tr, section.graph .legend table tr:hover{
+.graph table thead tr, .graph table thead tr:hover, 
+.graph .legend table tr, .graph .legend table tr:hover{
   background: none;
   color: #7e7e7e;
 }
@@ -123,12 +129,15 @@ td.edit a {
   width: 22px;
 }
 
-
 nav {
   background: url(static/img/aside-top.png) no-repeat top center, 
               url(static/img/aside-bottom.png) no-repeat bottom center;
   margin: -300px 0 0 480px;
   padding: 0.6em 0;
+}
+
+.tab {
+  transition: 1s;
 }
 
 section aside {
@@ -162,6 +171,10 @@ nav ul li a {
   transition: color 0.3s linear;
 }
 
+nav ul li a.active {
+  color: #3ebe3a;
+}
+
 nav ul li a:hover, nav ul li a:focus {
   color: #be3e3a;
   transition: color 0.2 linear;
@@ -172,11 +185,6 @@ img.logo {
   top: 0;
   right: 0;
   width: 450px;
-}
-
-article[data-graph=Pie] {
-  width: 23%;
-  margin: 1%;
 }
 
 .loading {

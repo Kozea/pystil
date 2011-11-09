@@ -18,10 +18,6 @@ $ () =>
         @fromDate = $("#from").datepicker("getDate")
         @toDate = $("#to").datepicker("getDate")
 
-    for elt in $(".graph")
-        elt = $ elt
-        elts.push(new @[elt.attr('data-graph')](elt))
-
     $('#filter').keyup (e) ->
         $this = $ this
         $results = $ 'section.results'
@@ -40,3 +36,17 @@ $ () =>
             error: () ->
                 if @rqIndex is requestIndex
                     $results.html ""
+    @tabs()
+
+    load_graph = (elt) ->
+        if not elt.data 'loaded'
+            elts.push(new @[elt.attr('data-graph')](elt))
+            elt.data 'loaded', true
+
+    $('.tab').tabshow () ->
+        $('.graph', @).each (i, e) ->
+            load_graph($ e)
+
+
+    for elt in $(".graph").filter(":visible")
+        load_graph $ elt

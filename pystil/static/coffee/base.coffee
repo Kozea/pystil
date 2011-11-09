@@ -4,7 +4,7 @@ class @Base
         @elt.addClass 'loading'
         @criteria = @elt.attr("data-criteria").split(',')
         @remaining_criteria = @criteria.length
-        setTimeout(@fetch, 50)
+        setTimeout @fetch, 50
 
     fetch: () =>
         $.ajax
