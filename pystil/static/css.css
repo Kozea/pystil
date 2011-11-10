@@ -28,6 +28,7 @@ body  {
               url(/static/img/bkgd1.png) repeat top left;
   font: 0.9em verdana, sans-serif;
   margin: 0;
+  overflow-x: hidden;
 }
 
 body a {
@@ -233,11 +234,6 @@ td.edit a {
   width: 22px;
 }
 
-.tab {
-  transition: 1s;
-}
-
-
 
 section aside {
   background: none;
@@ -278,6 +274,15 @@ img.logo {
   color: orangered;
 }
 
+.tabs {
+  position: relative;
+}
+
+.tab {
+  position: absolute;
+  top: 50px;
+  transition: 1s;
+}
 
 
 /* 
@@ -291,6 +296,9 @@ footer {
   box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
   margin-top: 20px;
   text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 footer ul {
