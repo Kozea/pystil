@@ -280,10 +280,17 @@ img.logo {
 
 .tab {
   position: absolute;
-  top: 50px;
+  top: 150px;
   transition: 1s;
 }
 
+figcaption {
+  font-family: "Elevant"; 
+  color: #8c7743;
+  text-align: center;
+  font-style: italic;
+  font-size: 2em;
+}
 
 /* 
   ----------

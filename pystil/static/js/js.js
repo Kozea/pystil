@@ -3871,6 +3871,7 @@ More detail and specific examples can be found in the included HTML file.
 
 
 (function() {
+  var bgColors, colors;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }, __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; }, _this = this;
 
   this.Base = (function() {
@@ -3910,7 +3911,7 @@ More detail and specific examples can be found in the included HTML file.
       var ref, site;
       if (window.pystil_site) {
         ref = window.pystil_site;
-        site = this.elt.attr("data-site") || window.pystil_data_site || location.hostname;
+        site = this.elt.attr("data-site" || window.pystil_data_site || location.hostname);
       } else {
         ref = "";
         site = location.pathname.split("/")[1] || "all";
@@ -4007,6 +4008,10 @@ More detail and specific examples can be found in the included HTML file.
 
   }).call(this);
 
+  bgColors = ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"];
+
+  colors = ['red', 'green', 'blue'];
+
   this.Graph = (function() {
 
     __extends(Graph, this.Base);
@@ -4085,6 +4090,7 @@ More detail and specific examples can be found in the included HTML file.
     Line.prototype.type = 'line';
 
     Line.prototype.options = {
+      colors: colors,
       lines: {
         show: true,
         fill: true
@@ -4093,9 +4099,6 @@ More detail and specific examples can be found in the included HTML file.
         show: true,
         fill: true
       },
-      grid: {
-        hoverable: true
-      },
       xaxis: {
         mode: "time",
         timeformat: "%y-%0m-%0d",
@@ -4103,6 +4106,12 @@ More detail and specific examples can be found in the included HTML file.
       },
       yaxis: {
         tickDecimals: 0
+      },
+      grid: {
+        hoverable: true,
+        backgroundColor: {
+          colors: bgColors
+        }
       }
     };
 
@@ -4128,12 +4137,10 @@ More detail and specific examples can be found in the included HTML file.
     Bar.prototype.type = 'bar';
 
     Bar.prototype.options = {
+      colors: colors,
       bars: {
         show: true,
         fill: true
-      },
-      grid: {
-        hoverable: true
       },
       xaxis: {
         min: 0,
@@ -4143,6 +4150,12 @@ More detail and specific examples can be found in the included HTML file.
       },
       yaxis: {
         tickDecimals: 0
+      },
+      grid: {
+        hoverable: true,
+        backgroundColor: {
+          colors: bgColors
+        }
       }
     };
 
@@ -4166,18 +4179,22 @@ More detail and specific examples can be found in the included HTML file.
     }
 
     Time.prototype.options = {
+      colors: colors,
       bars: {
         show: true,
         fill: true
-      },
-      grid: {
-        hoverable: true
       },
       xaxis: {
         ticks: [[0, "0"], [1, "1s"], [2, "2s"], [3, "5s"], [4, "10s"], [5, "20s"], [6, "30s"], [7, "1min"], [8, "2min"], [9, "5min"], [10, "10min"], [11, "10+ min"]]
       },
       yaxis: {
         tickDecimals: 0
+      },
+      grid: {
+        hoverable: true,
+        backgroundColor: {
+          colors: bgColors
+        }
       }
     };
 
@@ -4203,6 +4220,7 @@ More detail and specific examples can be found in the included HTML file.
     Pie.prototype.type = 'pie';
 
     Pie.prototype.options = {
+      colors: colors,
       grid: {
         hoverable: true
       },

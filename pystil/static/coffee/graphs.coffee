@@ -1,3 +1,6 @@
+bgColors = ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"]
+colors = ['red', 'green', 'blue']
+
 class @Graph extends @Base
     constructor: (@elt) ->
         @data = []
@@ -47,20 +50,23 @@ class @Line extends @Graph
     type: 'line'
 
     options:
+        colors: colors
         lines:
              show: true
              fill: true
         points:
             show: true
             fill: true
-        grid:
-            hoverable: true
         xaxis:
             mode: "time"
             timeformat: "%y-%0m-%0d"
             labelAngle: 50
-        yaxis: tickDecimals: 0
-
+        yaxis:
+            tickDecimals: 0
+        grid:
+            hoverable: true
+            backgroundColor:
+                colors: bgColors
 
     tooltip: (item) ->
         y = item.datapoint[1]
@@ -72,17 +78,21 @@ class @Bar extends @Graph
     type: 'bar'
 
     options:
+        colors: colors
         bars:
             show: true
             fill: true
-        grid:
-            hoverable: true
         xaxis:
             min: 0
             max: 24
             ticks: 25
             tickDecimals: 0
-        yaxis: tickDecimals: 0
+        yaxis:
+            tickDecimals: 0
+        grid:
+            hoverable: true
+            backgroundColor:
+                colors: bgColors
 
     tooltip: (item) ->
         x = item.datapoint[0]
@@ -92,16 +102,20 @@ class @Bar extends @Graph
 
 class @Time extends @Bar
     options:
+        colors: colors
         bars:
             show: true
             fill: true
-        grid:
-            hoverable: true
         xaxis:
             ticks: [[0, "0"], [1, "1s"], [2, "2s"], [3, "5s"], [4, "10s"], [5, "20s"]
                     [6, "30s"], [7, "1min"], [8, "2min"], [9, "5min"], [10, "10min"]
                     [11, "10+ min"]]
-        yaxis: tickDecimals: 0
+        yaxis:
+            tickDecimals: 0
+        grid:
+            hoverable: true
+            backgroundColor:
+                colors: bgColors
 
     tooltip: (item) ->
         x = item.datapoint[0]
@@ -113,6 +127,7 @@ class @Pie extends @Graph
     type: 'pie'
 
     options:
+        colors: colors
         grid:
             hoverable: true
         series:
