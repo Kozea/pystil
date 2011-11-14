@@ -102,6 +102,15 @@ nav ul li a:hover, nav ul li a:focus {
   transition: color 0.2 linear;
 }
 
+article  nav {
+  margin: 0 0 0 -17%;
+  width: 15%;
+}
+
+article nav ul li {
+  display:block;
+}
+
 
 /* 
   -----------
@@ -127,6 +136,7 @@ article > * {
   margin: 10px 0 20px;
 }
 
+
 article h2 {
   background: url(static/img/bg-h2.png) repeat-x bottom left;
   color: #c51637;
@@ -143,6 +153,8 @@ article input {
 /* 
   - Section - 
 */
+
+/* - Graph - */
 .graph {
   width: 100%;
   min-height: 320px;
@@ -184,16 +196,29 @@ article input {
   word-break: break-word;
 }
 
+
+/* - sites - */
 .sites table {
   border-collapse: collapse;
 }
 
-.sites table tbody tr:nth-child(odd) {
+.sites table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.3);
 }
 
 .sites table tbody tr:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+.sites table thead tr {
+  background: rgba(255, 255, 255, 0.7);
+  height: 1.8em;
+}
+
+
+/* - Search - */
+.search {
+  margin : 0 0 25px 5%;
 }
 
 .search label {
@@ -202,17 +227,34 @@ article input {
 }
 
 .search input {
-  background: rgba(201, 190, 155, 0.5) url(static/img/icon-search.png) no-repeat 2px center;
+  background: rgba(201, 190, 155, 0.4) url(static/img/icon-search.png) no-repeat 2px center;
   border: 1px solid #bfb38c;
-  padding: 3px 2px 3px 25px;
-  width:15%;
+  border-radius: 3px;
+  color: black;
+  padding: 0.3em 2px 0.3em 25px;
+  width: 20%;
 }
 
 .search input:hover, 
 .search input:focus {
-  background: #c9be9b url(static/img/icon-search.png) no-repeat 2px center;
-
+  background: rgba(201, 190, 155, 0.8) url(static/img/icon-search.png) no-repeat 2px center;
 }
+
+input::-webkit-input-placeholder  { 
+  color: #7e6b2d; 
+}
+
+input:-moz-placeholder { 
+  color: #7e6b2d; 
+}
+
+
+/* - Sites results - */
+.sites.results table {
+  width: 90%;
+  margin: 10px 5%;
+}
+
 
 /* 
   - Table - 
