@@ -28,6 +28,7 @@ deps_files = [
     'jquery-ui.min'
     'jquery.flot'
     'jquery.flot.pie'
+    'curvedLines'
     'all'
 ]
 
