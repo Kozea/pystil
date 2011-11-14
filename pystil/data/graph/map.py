@@ -15,7 +15,7 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
     rq = (db.session
           .query(table.c.country, table.c.country_code,
                  count(1).label("count"))
-          .filter(on(site))
+          .filter(on(site, table))
           .filter(between(from_date, to_date, table))
           .group_by(table.c.country_code, table.c.country))
     visits = [{'country': visit.country,
