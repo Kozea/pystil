@@ -6,3 +6,5 @@ pystil/static/js/all.js
 pystil/static/js/all-deps.js
 pystil/static/js/tracker.js
 node_modules/
+pystil.egg-info
+venv

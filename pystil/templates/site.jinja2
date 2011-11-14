@@ -5,25 +5,96 @@
     <label for="from">From: </label><input id="from" type="text" class="datepicker" />
     <label for="to">To: </label><input id="to" type="text" class="datepicker" />
   </article>
-  <article id="graphs">
-    <section class="graph" data-graph="Last" data-criteria="all"></section>
-    <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
-    <section class="graph" data-graph="Bar" data-criteria="hour"></section>
-    <section class="graph" data-graph="Time" data-criteria="spent_time"></section>
-    <section class="graph" data-graph="Map" data-criteria="all"></section>
-    {% if site == 'all' %}
-      <section class="graph" data-graph="Pie" data-criteria="host"></section>
-    {% else %}
-      <section class="graph" data-graph="Pie" data-criteria="page"></section>
-      <section class="graph" data-graph="Pie" data-criteria="hash"></section>
-    {% endif %}
-    <section class="graph" data-graph="Pie" data-criteria="browser_name"></section>
-    <section class="graph" data-graph="Pie" data-criteria="browser_name_version"></section>
-    <section class="graph" data-graph="Pie" data-criteria="platform"></section>
-    <section class="graph" data-graph="Pie" data-criteria="country"></section>
-    <section class="graph" data-graph="Pie" data-criteria="referrer_domain"></section>
-    <section class="graph" data-graph="Pie" data-criteria="size"></section>
-    <section class="graph" data-graph="Pie" data-criteria="day"></section>
-    <section class="graph" data-graph="Pie" data-criteria="ip"></section>
+  <article id="graphs" class="tabs">
+    <h2>On site {{ site }}</h2>
+    <nav>
+      <ul>
+        <li><a href="#visits">Visits</a></li>
+        <li><a href="#time">Time</a></li>
+        <li><a href="#map">Worldmap</a></li>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#visitor">Visitor</a></li>
+        <li><a href="#misc">Misc</a></li>
+      </ul>
+    </nav>
+    <section id="visits" class="tab">
+      <figure>
+        <div class="graph" data-graph="Last" data-criteria="all"></div>
+        <figcaption>Real time last visits</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Line" data-criteria="new,unique,all"></div>
+        <figcaption>Stats by day</figcaption>
+      </figure>
+    </section>
+    <section id="time" class="tab">
+      <figure>
+        <div class="graph" data-graph="Bar" data-criteria="hour"></div>
+        <figcaption>Visits per hour</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Time" data-criteria="spent_time"></div>
+        <figcaption>Time spent on site</figcaption>
+      </figure>
+    </section>
+    <section id="map" class="tab">
+      <figure>
+        <div class="graph" data-graph="Map" data-criteria="all"></div>
+        <figcaption>World map of visits</figcaption>
+      </figure>
+    </section>
+    <section id="pages" class="tab">
+      {% if site == 'all' %}
+        <figure>
+          <div class="graph" data-graph="Pie" data-criteria="host"></div>
+          <figcaption>Top hosts</figcaption>
+        </figure>
+      {% else %}
+        <figure>
+          <div class="graph" data-graph="Pie" data-criteria="page"></div>
+          <figcaption>Most viewed pages</figcaption>
+        </figure>
+        <figure>
+          <div class="graph" data-graph="Pie" data-criteria="hash"></div>
+          <figcaption>Most viewed hashes</figcaption>
+        </figure>
+      {% endif %}
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="referrer_domain"></div>
+        <figcaption>Top referrers</figcaption>
+      </figure>
+    </section>
+    <section id="visitor" class="tab">
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="browser_name"></div>
+        <figcaption>Top browsers</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="browser_name_version"></div>
+        <figcaption>Top browser versions</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="size"></div>
+        <figcaption>Top screen sizes</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="platform"></div>
+        <figcaption>Top platforms</figcaption>
+      </figure>
+    </section>
+    <section id="misc" class="tab">
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="country"></div>
+        <figcaption>Top countries</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="day"></div>
+        <figcaption>Top days</figcaption>
+      </figure>
+      <figure>
+        <div class="graph" data-graph="Pie" data-criteria="ip"></div>
+        <figcaption>Top ip adresses</figcaption>
+      </figure>
+    </section>
   </article>
 {% endblock article %}

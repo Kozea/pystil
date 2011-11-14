@@ -19,6 +19,7 @@ coffee_files = [
     'map'
     'graphs'
     'last_visits'
+    'tabs'
     'main'
 ]
 
@@ -29,6 +30,13 @@ deps_files = [
     'jquery.flot.pie'
     'all'
 ]
+
+debug = false
+
+task 'watch-debug', 'Watch coffee files and build changes', ->
+    debug = true
+    invoke 'watch'
+
 
 task 'watch', 'Watch coffee files and build changes', ->
     invoke 'build'
@@ -47,6 +55,7 @@ task 'watch', 'Watch coffee files and build changes', ->
             invoke 'build:tracker'
             util.log "Watching for changes in #{coffee_dir}"
 
+
 task 'build:tracker', 'Build the tracker file to js', ->
     util.log "Building tracker"
     exec "coffee --output #{root}/js/ --compile #{coffee_dir}/#{pystil_coffee_file} ",
@@ -60,7 +69,7 @@ task 'uglify:tracker', 'Minify and obfuscate the tracker', ->
     util.log "Minifying #{pystil_js_file}"
     jsp = uglify.parser
     pro = uglify.uglify
-
+    util.log "jsp #{jsp}"
     fs.readFile pystil_js_file, 'utf8', (err, fileContents) ->
         ast = jsp.parse fileContents  # parse code and get the initial AST
         ast = pro.ast_mangle ast # get a new AST with mangled names
@@ -128,6 +137,11 @@ task 'deps', 'Include deps files', ->
                 invoke 'uglify'
 
 task 'uglify', 'Minify and obfuscate', ->
+    if debug
+        util.log "Moving #{js_with_deps_file} to #{min_file}"
+        fs.rename js_with_deps_file, min_file, (err, fileContents) -> util.log "Done"
+        return
+
     util.log "Minifying #{js_with_deps_file}"
     jsp = uglify.parser
     pro = uglify.uglify

@@ -18,16 +18,12 @@ $ () =>
         @fromDate = $("#from").datepicker("getDate")
         @toDate = $("#to").datepicker("getDate")
 
-    for elt in $(".graph")
-        elt = $ elt
-        elts.push(new @[elt.attr('data-graph')](elt))
-
     $('#filter').keyup (e) ->
         $this = $ this
         $results = $ 'section.results'
         if !$this.val()
             return
-        $results.html '<img src="/static/img/ajax.gif" />'
+        $results.addClass 'loading'
         if xhr
             xhr.abort
         xhr = $.ajax
@@ -35,8 +31,23 @@ $ () =>
             dataType: "text"
             rqIndex: ++requestIndex
             success: (data) ->
+                $results.removeClass 'loading'
                 if @rqIndex is requestIndex
                     $results.html data
             error: () ->
                 if @rqIndex is requestIndex
                     $results.html ""
+
+    load_graph = (elt) ->
+        if not elt.data 'loaded'
+            elts.push(new @[elt.attr('data-graph')](elt))
+            elt.data 'loaded', true
+
+
+    $('.tab').tabshow () ->
+        $('.graph', @).each (i, e) ->
+            load_graph($ e)
+
+    if not @tabs().length
+        for elt in $(".graph").filter(":visible")
+            load_graph $ elt

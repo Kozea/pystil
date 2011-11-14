@@ -3,9 +3,18 @@
 {% block article %}
   <article>
     <h2>Last visits</h2>
-    <section class="graph" data-graph="Last" data-criteria="all"></section>
-    <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
-    <section class="graph" data-graph="Pie" data-criteria="host"></section>
+    <figure>
+      <section class="graph" data-graph="Last" data-criteria="all"></section>
+      <figcaption>Real time last visits</figcaption>
+    </figure>
+    <figure>
+      <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
+      <figcaption>Stats per day</figcaption>
+    </figure>
+    <figure>
+      <section class="graph" data-graph="Pie" data-criteria="host"></section>
+      <figcaption>Top sites</figcaption>
+    </figure>
     <p>
       Total visits: {{ all_ }}
     </p>
