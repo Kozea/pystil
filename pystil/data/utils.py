@@ -4,13 +4,15 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 """Utility functions to help processing data"""
-
+from flask import current_app
 from datetime import datetime, timedelta
 from urlparse import urlparse, parse_qs
+from pystil import db as models
 from pystil.db import Visit, fields
 from datetime import date, time
 from calendar import timegm
 from decimal import Decimal
+from sqlalchemy.sql import literal, func
 import re
 import json
 
@@ -60,17 +62,17 @@ def time_to_date(time):
     return datetime.fromtimestamp(time / 1000)
 
 
-def on(host):
+def on(host, table=Visit.__table__):
     """Generate a filter on a host """
     if host == 'all':
-        return Visit.host == Visit.host
-    return Visit.host.like('%' + host)
+        return literal(True)
+    return table.c.host.like('%' + host)
 
 
-def between(from_date, to_date):
+def between(from_date, to_date, table=Visit.__table__):
     """Generate a filter between 2 dates"""
-    return ((time_to_date(from_date) <= Visit.date) &
-            (Visit.date < time_to_date(to_date) + timedelta(1)))
+    return ((time_to_date(from_date) <= table.c.date) &
+            (table.c.date < time_to_date(to_date) + timedelta(1)))
 
 
 def transform_for_pie(results, site, from_date, to_date,
@@ -160,3 +162,16 @@ def visit_to_dict(visit):
     for key in fields(Visit):
         visit_dict[key] = getattr(visit, key)
     return visit_dict
+
+
+def get_aggregate(criteria):
+    """Returns a tuple in the form (model, count_column).
+    Tries to look for an aggregate table suitable for the criteria
+    """
+    model = getattr(models, 'Agg_by_%s' % criteria, Visit)
+    if model == Visit:
+        current_app.logger.warn('No aggregates for criteria %s' % criteria)
+        count = func.count(1)
+    else:
+        count = func.sum('fact_count')
+    return model, count

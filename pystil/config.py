@@ -6,7 +6,7 @@ Flask application default configuration module
 from sys import exit
 from werkzeug import ImmutableDict
 from imp import new_module
-import os.path 
+import os.path
 
 FROZEN = False
 

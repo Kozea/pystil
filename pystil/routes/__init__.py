@@ -7,8 +7,8 @@ from flask import render_template, Response
 import csstyle
 import os
 import pystil
-from pystil.db import db, Visit, count, desc, array_agg, distinct, func
-from sqlalchemy.sql import tuple_, literal_column
+from pystil.db import db, Visit, count, desc
+from pystil.aggregates import get_attribute_and_count
 
 
 def register_common_routes(app, route):
@@ -23,12 +23,13 @@ def register_common_routes(app, route):
     @route('/sites')
     def sites():
         """List of sites"""
+        table, attr, countcol = get_attribute_and_count('domain')
         sites = (
             db.session
-            .query(Visit.domain, count(1).label('count'))
-            .group_by(Visit.domain)
-            .order_by(desc('count')))[:20]
-        all_ = db.session.query(count(1)).select_from(Visit).scalar()
+            .query(attr, countcol.label('count'))
+            .group_by(table)
+            .order_by(countcol))[:20]
+        all_ = db.session.query(countcol).scalar()
         return render_template('sites.jinja2', sites=sites, all_=all_)
 
     @route('/sites/<query>')

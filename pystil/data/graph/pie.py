@@ -5,24 +5,21 @@
 """Treat pie data"""
 
 
-from pystil.db import Visit, db, count, desc
+from pystil.db import db, desc
 from pystil.data.utils import transform_for_pie, on, between
+from pystil.aggregates import get_attribute_and_count
 
 
 def process_data(site, graph, criterion, from_date, to_date, step, stamp):
-    criteria = getattr(Visit, criterion)
+    table, criteria, count_col = get_attribute_and_count(criterion)
     restrict = criteria != None
-    if criterion == 'browser_name_version':
-        restrict = ((Visit.browser_name != None) &
-                    (Visit.browser_version != None))
-
     rq = (db.session
           .query(criteria.label("key"),
-                 count(1).label("count"))
-          .filter(on(site))
-          .filter(between(from_date, to_date))
+                 count_col.label("count"))
+          .filter(on(site, table))
+          .filter(between(from_date, to_date, table=table))
           .filter(restrict)
           .group_by(criteria)
-          .order_by(desc("count")))
+          .order_by(desc(count_col)))
     return transform_for_pie(rq.limit(10).all(), site, from_date, to_date,
                              criterion == 'pretty_referrer')
