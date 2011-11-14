@@ -117,6 +117,7 @@ class Visit(db.Model):
                         strpos(host, '.') + 1,
                         length(host) - strpos(host, '.') + 1)))
 
+
 class Keys(db.Model):
     """This mapped lass contains the auth keys"""
 

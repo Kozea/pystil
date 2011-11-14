@@ -163,9 +163,9 @@ def visit_to_dict(visit):
         visit_dict[key] = getattr(visit, key)
     return visit_dict
 
+
 def get_aggregate(criteria):
     """Returns a tuple in the form (model, count_column).
-    
     Tries to look for an aggregate table suitable for the criteria
     """
     model = getattr(models, 'Agg_by_%s' % criteria, Visit)
@@ -175,5 +175,3 @@ def get_aggregate(criteria):
     else:
         count = func.sum('fact_count')
     return model, count
-
-
