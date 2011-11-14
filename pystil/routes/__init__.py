@@ -27,8 +27,8 @@ def register_common_routes(app, route):
         sites = (
             db.session
             .query(attr, countcol.label('count'))
-            .group_by(table)
-            .order_by(countcol))[:20]
+            .group_by(attr)
+            .order_by(desc(countcol)))[:20]
         all_ = db.session.query(countcol).scalar()
         return render_template('sites.jinja2', sites=sites, all_=all_)
 
