@@ -1,16 +1,22 @@
 bgColors = ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"]
-colors = [
-    "#4c7ca5", # 4
-    "#4ca5a2", # 5
-    "#4ca55d", # 6
-    "#eac516", # 7
-    "#ea9316", # 8
-    "#bb6120", # 9
-    "#bb2020", # 10
-    "#af3151", # 0
-    "#a54ca1", # 1
-    "#854ca5", # 2
+pie_colors = [
+    "#4c7ca5" # 4
+    "#4ca5a2" # 5
+    "#4ca55d" # 6
+    "#eac516" # 7
+    "#ea9316" # 8
+    "#bb6120" # 9
+    "#bb2020" # 10
+    "#af3151" # 0
+    "#a54ca1" # 1
+    "#854ca5" # 2
     "#504ca5" # 3
+    ]
+
+colors = [
+    "#504ca5" # 3
+    "#4c7ca5" # 4
+    "#4ca5a2" # 5
     ]
 legendOpacity = 0.1
 
@@ -66,12 +72,12 @@ class @Line extends @Graph
         legend:
             backgroundOpacity: legendOpacity
         colors: colors
-        lines:
-             show: true
-             fill: true
+        series:
+            curvedLines:
+                active: true
+                show: true
         points:
             show: true
-            fill: true
         xaxis:
             mode: "time"
             timeformat: "%y-%0m-%0d"
@@ -148,7 +154,7 @@ class @Pie extends @Graph
     options:
         legend:
             backgroundOpacity: legendOpacity
-        colors: colors
+        colors: pie_colors
         grid:
             hoverable: true
         series:
