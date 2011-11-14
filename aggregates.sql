@@ -31,7 +31,7 @@ create or replace function create_aggregate_table(table_name varchar, attributes
 			where_clauses = where_clauses || columndef;
 		END LOOP;
 		where_clauses = where_clauses || 'visit.host is not null'::text;
-		preconds = preconds || 'NEW.host is not null';
+		preconds = preconds || 'NEW.host is not null'::text;
 		func_stmt = func_stmt || array_to_string(where_clauses, ' and ');
 		func_stmt = func_stmt || E' group by host, date_trunc(\'day\', date), ' || array_to_string(group_by_clauses, ', ');
 		func_stmt = func_stmt || ') ;';
