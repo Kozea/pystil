@@ -12,7 +12,10 @@ from pystil.aggregates import get_attribute_and_count
 
 def process_data(site, graph, criterion, from_date, to_date, step, stamp):
     table, criteria, count_col = get_attribute_and_count(criterion)
-    restrict = criteria != None
+    restrict = (criteria != None)
+    if criterion == 'browser_name_version':
+        restrict = ((table.c.browser_name != None) &
+                    (table.c.browser_version != None))
     rq = (db.session
           .query(criteria.label("key"),
                  count_col.label("count"))
