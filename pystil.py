@@ -8,6 +8,9 @@ pystil - An elegant site web traffic analyzer
 from pystil import app, config
 import sys
 
+if 'meat' in sys.argv:
+    config.CONFIG['DB_HOST'] = 'entrecote'
+
 config.freeze()
 
 if 'soup' in sys.argv:
