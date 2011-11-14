@@ -2,7 +2,7 @@ class @Base
 
     constructor: (@elt) ->
         @elt.addClass 'loading'
-        @criteria = @elt.attr("data-criteria").split(',')
+        @criteria = @elt.attr("data-criteria").split ','
         @remaining_criteria = @criteria.length
         setTimeout @fetch, 50
 
@@ -25,7 +25,7 @@ class @Base
     url: () ->
         if window.pystil_site
             ref = window.pystil_site
-            site = @elt.attr("data-site") or window.pystil_data_site  or location.hostname
+            site = @elt.attr "data-site" or window.pystil_data_site  or location.hostname
         else
             ref = ""
             site = location.pathname.split("/")[1] or "all"
