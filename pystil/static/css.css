@@ -65,7 +65,7 @@ header h1 a {
 */
 
 nav {
-  background: url(static/img/aside-top.png) no-repeat top center, 
+  background: url(static/img/aside-top.png) no-repeat top left, 
               url(static/img/aside-bottom.png) no-repeat bottom center;
   margin: -300px 0 0 480px;
   padding: 0.6em 0;
@@ -94,7 +94,7 @@ nav ul li a {
 }
 
 nav ul li a.active {
-  color: #3ebe3a;
+  color: #4ca5a2;
 }
 
 nav ul li a:hover, nav ul li a:focus {
@@ -103,12 +103,15 @@ nav ul li a:hover, nav ul li a:focus {
 }
 
 article  nav {
+  background: url(static/img/aside2-top.png) no-repeat top right, 
+              url(static/img/aside2-bottom.png) no-repeat bottom right;
   margin: 0 0 0 -17%;
-  width: 15%;
+  width: 13%;
 }
 
 article nav ul li {
-  display:block;
+  background: url(static/img/bg-h2.png) repeat-x bottom left;
+  display: block;
 }
 
 
@@ -121,6 +124,10 @@ article nav ul li {
 section {
   margin-top: 250px;
   width: 100%;
+}
+
+section section {
+  margin-top: 0;
 }
 
 
@@ -168,7 +175,6 @@ article input {
 .graph > table {
   background: url(static/img/bg-table.png) no-repeat bottom right;
   width: 100%;
-  margin: 20px auto 30px;
 }
 
 .graph .legend table {
@@ -215,6 +221,26 @@ article input {
   height: 1.8em;
 }
 
+/* - Date - */
+.dates label {
+  font-family: 'Elevant';
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #af9e73;
+}
+
+.dates input[type="text"] {
+  background: url(static/img/bg-form.png) no-repeat top left;  
+  border: 0;
+  color: #6d5d2c;
+  height: 45px;
+  padding: 2px 10px; 
+  width: 250px;
+}
+
+.dates input[type="text"]:focus, .dates input[type="text"]:hover {
+  outline:  none;
+}
 
 /* - Search - */
 .search {
@@ -256,6 +282,49 @@ input:-moz-placeholder {
 }
 
 
+/* - Dates - */
+.ui-datepicker {
+  border: 0;
+  border-radius: 0;
+  font-size: 0.9em;
+  margin: 0 0 0 8px;
+  padding: 15px 0;
+  width: 240px; 
+}
+
+.ui-widget-content {
+  background: #d8ceb0; 
+  width: 240px;
+}
+
+.ui-widget-content:hover,
+.ui-widget-content:focus {
+  outline: none;
+}
+
+
+.ui-widget-header {
+  background: rgba(255, 255, 255, 0.5);
+  border: 0; 
+  color: #4f4116;
+  outline: none;
+}
+
+.ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
+  border: none;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+  color: #4f4116;
+}
+
+
+ui-datepicker-calendar {
+  margin: 0 5px;
+}
+
+
+ 
 /* 
   - Table - 
 */
@@ -322,16 +391,29 @@ img.logo {
 
 .tab {
   position: absolute;
-  top: 150px;
+  top: 40px;
   transition: 1s;
 }
 
+
+figure {
+  background: url(static/img/bg-h2.png) repeat-x bottom left;
+  margin: 30px 0 10px;
+  overflow: auto;
+}
+
+figure:last-of-type{
+  background: none;
+}
+
+
 figcaption {
   font-family: "Elevant"; 
-  color: #8c7743;
+  color: #bb6120;
   text-align: center;
-  font-style: italic;
-  font-size: 2em;
+  font-size: 1.7em;
+  font-weight: bold;
+  margin: 0 auto 20px;
 }
 
 /* 
