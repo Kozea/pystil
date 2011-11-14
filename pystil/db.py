@@ -11,6 +11,7 @@ from . import patchpsycopg
 
 db = SQLAlchemy()
 count = func.count
+sum_ = func.sum
 distinct = func.distinct
 date_part = func.date_part
 date_trunc = func.date_trunc
@@ -21,8 +22,8 @@ length = func.length
 array_agg = func.array_agg
 
 
-def string():
-    return db.Column(db.String)
+def string(pkey=False):
+    return db.Column(db.String, primary_key=pkey)
 
 
 def integer(pkey=False):
@@ -35,6 +36,10 @@ def decimal():
 
 def datetime():
     return db.Column(db.DateTime)
+
+
+def date(pkey=False):
+    return db.Column(db.Date, primary_key=pkey)
 
 
 def fields(clazz):
@@ -111,7 +116,6 @@ class Visit(db.Model):
         ], else_=substr(host,
                         strpos(host, '.') + 1,
                         length(host) - strpos(host, '.') + 1)))
-
 
 class Keys(db.Model):
     """This mapped lass contains the auth keys"""
