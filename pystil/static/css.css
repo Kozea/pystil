@@ -29,7 +29,7 @@ body  {
   font: 0.9em verdana, sans-serif;
   margin: 0;
   min-height: 100%;
-  padding: 0 0 30px 0;
+  padding: 0;
   position: absolute;
   width: 100%;
   overflow-x: hidden;
@@ -91,9 +91,9 @@ nav ul li {
 nav ul li a {
   color: #73716a;
   font-family: "Elevant";
-  font-weight: bold;
   font-size: 1.9em;
   text-shadow: 1px 1px 1px rgba(81, 79, 71, 0.3);
+  font-weight: bold;
   transition: color 0.3s linear;
 }
 
@@ -127,14 +127,12 @@ article nav ul li {
 
 section {
   margin-top: 250px;
-  overflow: auto;
   width: 100%;
 }
 
 section section {
-  margin-top: 0;
+  margin: 0;
 }
-
 
 /* 
   - Article - 
@@ -168,13 +166,13 @@ article input {
 
 /* - Graph - */
 .graph {
-  width: 100%;
   min-height: 320px;
+  width: 100%;
 }
 
 .graph[data-graph=Pie] {
-  width: 50%;
   margin: 1% auto;
+  width: 50%;
 }
 
 .graph > table {
@@ -208,7 +206,7 @@ article input {
 }
 
 
-/* - sites - */
+/* - Sites - */
 .sites table {
   border-collapse: collapse;
 }
@@ -226,12 +224,13 @@ article input {
   height: 1.8em;
 }
 
+
 /* - Date - */
 .dates label {
+  color: #af9e73;
   font-family: 'Elevant';
   font-size: 1.5em;
   font-weight: bold;
-  color: #af9e73;
 }
 
 .dates input[type="text"] {
@@ -246,6 +245,7 @@ article input {
 .dates input[type="text"]:focus, .dates input[type="text"]:hover {
   outline:  none;
 }
+
 
 /* - Search - */
 .search {
@@ -283,7 +283,7 @@ input:-moz-placeholder {
 /* - Sites results - */
 .sites.results table {
   width: 90%;
-  margin: 10px 5%;
+  margin: 10px 5% 90px;
 }
 
 
@@ -307,7 +307,6 @@ input:-moz-placeholder {
   outline: none;
 }
 
-
 .ui-widget-header {
   background: rgba(255, 255, 255, 0.5);
   border: 0; 
@@ -323,11 +322,9 @@ input:-moz-placeholder {
   color: #4f4116;
 }
 
-
 ui-datepicker-calendar {
   margin: 0 5px;
 }
-
 
  
 /* 
@@ -363,8 +360,8 @@ section aside table {
 
 img.logo {
   position: absolute;
-  top: 0;
   right: 0;
+  top: 0;
   width: 450px;
 }
 
@@ -375,11 +372,11 @@ img.logo {
 }
 
 .last-visits {
-  font-family: monospace;
-  width: 45%;
   float: left;
+  font-family: monospace;
   margin: 1% 2.5%;
   overflow: auto;
+  width: 45%;
 }
 
 .last-visits tr {
@@ -413,12 +410,12 @@ figure:last-of-type{
 
 
 figcaption {
-  font-family: "Elevant"; 
   color: #bb6120;
-  text-align: center;
+  font-family: "Elevant"; 
   font-size: 1.7em;
   font-weight: bold;
   margin: 0 auto 20px;
+  text-align: center;
 }
 
 /* 
@@ -429,18 +426,18 @@ figcaption {
 
 footer {
   background: url(static/img/footer.png) repeat 0 center;
-  box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
-  margin-top: 20px;
-  height:30px;
-  text-align: center;
-  position: absolute;
   bottom: 0;
+  box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
+  height: 35px;
+  margin: 20px 0 0;
+  position: fixed;
   width: 100%;
 }
 
 footer ul {
   margin: 0;
   padding: 8px 0;
+  text-align: center;
 }
 
 footer ul li {
