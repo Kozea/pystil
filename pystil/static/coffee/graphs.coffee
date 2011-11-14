@@ -1,5 +1,9 @@
 bgColors = ["rgba(255, 255, 255, 0)", "rgba(255, 255, 255, 1)"]
-colors = ['red', 'green', 'blue']
+colors = [
+    "#af3151", "#a54ca1", "#854ca5", "#504ca5",
+    "#4c7ca5", "#4ca5a2", "#4ca55d", "#eac516",
+    "#ea9316", "#ea9316", "#bb2020"]
+legendOpacity = 0.1
 
 class @Graph extends @Base
     constructor: (@elt) ->
@@ -50,6 +54,8 @@ class @Line extends @Graph
     type: 'line'
 
     options:
+        legend:
+            backgroundOpacity: legendOpacity
         colors: colors
         lines:
              show: true
@@ -78,6 +84,8 @@ class @Bar extends @Graph
     type: 'bar'
 
     options:
+        legend:
+            backgroundOpacity: legendOpacity
         colors: colors
         bars:
             show: true
@@ -102,6 +110,8 @@ class @Bar extends @Graph
 
 class @Time extends @Bar
     options:
+        legend:
+            backgroundOpacity: legendOpacity
         colors: colors
         bars:
             show: true
@@ -127,6 +137,8 @@ class @Pie extends @Graph
     type: 'pie'
 
     options:
+        legend:
+            backgroundOpacity: legendOpacity
         colors: colors
         grid:
             hoverable: true
