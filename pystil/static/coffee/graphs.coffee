@@ -15,13 +15,13 @@ pie_colors = [
     ]
 
 line_colors = [
-    "#504ca5"
-    "#4c7ca5"
-    "#4ca5a2"
+    "#a6af44"
+    "#eac516"
+    "#ea7f16"
     ]
 
 bar_colors = [
-    "#a6af44"
+    "#49b4b0"
     ]
 
 legendOpacity = 0.1
@@ -82,6 +82,7 @@ class @Line extends @Graph
             curvedLines:
                 active: true
                 show: true
+                fill: true
         points:
             show: true
         xaxis:
