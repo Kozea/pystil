@@ -66,7 +66,7 @@ class Message(object):
                          get('r', from_encoding='latin-1')),
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),
-                     'hash': get('h'),
+                     'hash': get('h', from_encoding='latin-1'),
                      'query_string': get('q'),
                      'language': get('i'),
                      'browser_name': user_agent.browser,
