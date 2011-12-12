@@ -99,7 +99,7 @@ class @Line extends @Graph
     tooltip: (item) ->
         y = item.datapoint[1]
         d =  new Date item.datapoint[0]
-        y + " " + item.series.label.toLowerCase() + " on " + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
+        y + " " + item.series.label.toLowerCase() + @_(" on ") + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
 
 
 class @Bar extends @Graph
@@ -127,7 +127,7 @@ class @Bar extends @Graph
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
-        y + " visits at " + x + " h"
+        y + @_(" visits at ") + x + " h"
 
 
 class @Time extends @Bar
@@ -152,7 +152,7 @@ class @Time extends @Bar
     tooltip: (item) ->
         x = item.datapoint[0]
         y = item.datapoint[1]
-        y + " visits"
+        y + @_(" visits")
 
 
 class @Pie extends @Graph

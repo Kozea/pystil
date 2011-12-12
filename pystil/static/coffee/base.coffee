@@ -1,10 +1,18 @@
-class @Base
+i18n = fr:
+    ' on ': ' le '
+    'visits': 'visites'
+    ' visits at ': 'visites à '
 
+class @Base
     constructor: (@elt) ->
         @elt.addClass 'loading'
         @criteria = @elt.attr("data-criteria").split ','
+        @lang = @elt.attr('data-lang') or 'us'
         @remaining_criteria = @criteria.length
         setTimeout @fetch, 50
+
+    _: (text) ->
+        return i18n[@lang][text]
 
     fetch: () =>
         $.ajax
@@ -30,7 +38,7 @@ class @Base
             ref = ""
             site = location.pathname.split("/")[1] or "all"
         ref += "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
-        ref += "_in_#{@elt.attr('data-lang') or 'us'}"
+        ref += "_in_#{@lang}"
         if @stamp
             ref += "_at_#{@stamp}"
         else if window.fromDate and window.toDate
