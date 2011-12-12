@@ -25,11 +25,12 @@ class @Base
     url: () ->
         if window.pystil_site
             ref = window.pystil_site
-            site = @elt.attr("data-site") or window.pystil_data_site  or location.hostname
+            site = @elt.attr("data-site") or window.pystil_data_site or location.hostname
         else
             ref = ""
             site = location.pathname.split("/")[1] or "all"
         ref += "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
+        ref += "_in_#{@elt.attr('data-lang') or 'us'}"
         if @stamp
             ref += "_at_#{@stamp}"
         else if window.fromDate and window.toDate

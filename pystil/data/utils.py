@@ -41,8 +41,17 @@ class PystilEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def labelize(string):
+def labelize(string, lang):
     """return the label for a criteria"""
+    if lang == 'fr':
+        return {
+            'new': 'Nouvelles visites',
+            'unique': 'Visites',
+            'all': 'Pages vues',
+            'spent_time': u'Temps passé sur de site',
+            'hour': 'Visites par heure'
+        }[string]
+
     return {
         'new': 'New visits',
         'unique': 'Visits',
@@ -75,7 +84,7 @@ def between(from_date, to_date, table=Visit.__table__):
             (table.c.date < time_to_date(to_date) + timedelta(1)))
 
 
-def transform_for_pie(results, site, from_date, to_date,
+def transform_for_pie(results, site, from_date, to_date, lang,
                       reparse_referrer=False):
     """Transform result for pie display"""
     visits = [{'label': (parse_referrer(visit.key, host_only=True,
@@ -93,7 +102,7 @@ def transform_for_pie(results, site, from_date, to_date,
     return {'list': visits}
 
 
-def make_time_serie(results, criteria, from_date, to_date):
+def make_time_serie(results, criteria, from_date, to_date, lang):
     """Create a serie with 0 days at 0 for Flot from request"""
     visits = {date_to_time(visit.key): visit.count for visit in results}
 
@@ -101,13 +110,13 @@ def make_time_serie(results, criteria, from_date, to_date):
         visits[time] = visits.get(time, 0)
     data = visits.items()
     data.sort()
-    return {'label': labelize(criteria),
+    return {'label': labelize(criteria, lang),
             'data': data}
 
 
-def make_serie(results, criteria, is_time=False):
+def make_serie(results, criteria, lang, is_time=False):
     """Create a serie for Flot from request"""
-    return {'label': labelize(criteria),
+    return {'label': labelize(criteria, lang),
             'data': [(visit.key, visit.count)
                      for visit in results]}
 

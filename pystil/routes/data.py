@@ -5,7 +5,7 @@
 
 
 from datetime import datetime, date
-from flask import jsonify, request, current_app
+from flask import request, current_app
 from functools import wraps
 from pystil.data.utils import PystilEncoder
 import json
@@ -33,7 +33,7 @@ def register_data_routes(app, route):
     from pystil.data import process_data
     from pystil.data.utils import date_to_time
 
-    url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>' % (
+    url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>_in_<lang>' % (
         ('pie', 'bar', 'line', 'table', 'map', 'last'),
         tuple(fields(Visit)) + (
             'all', 'unique', 'new'))
@@ -49,12 +49,12 @@ def register_data_routes(app, route):
     @route('%s.json' % url_with_to)
     @route('%s.json' % url_with_step)
     @jsonp
-    def data(site, graph, criteria,
+    def data(site, graph, criteria, lang,
              from_date=None, to_date=None, step='day', stamp=0):
         today = date.today()
         month_start = datetime(today.year, today.month, 1)
         from_date = from_date or date_to_time(month_start)
         to_date = to_date or date_to_time(today)
         return json.dumps(process_data(
-            site, graph, criteria, from_date, to_date, step, stamp),
+            site, graph, criteria, from_date, to_date, step, stamp, lang),
                        cls=PystilEncoder)

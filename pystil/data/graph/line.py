@@ -10,7 +10,7 @@ from pystil.data.utils import make_time_serie, on, between
 from pystil.db import db, count, Visit, distinct
 
 
-def process_data(site, graph, criteria, from_date, to_date, step, stamp):
+def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
     rq = (db.session
           .query(Visit.day.label("key"),
                  count(distinct(Visit.uuid)).label("count")
@@ -22,4 +22,4 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
         rq = rq.filter(Visit.last_visit == None)
 
     results = rq.group_by(Visit.day).order_by(Visit.day).all()
-    return make_time_serie(results, criteria, from_date, to_date)
+    return make_time_serie(results, criteria, from_date, to_date, lang)

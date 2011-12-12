@@ -10,7 +10,7 @@ from pystil.data.utils import make_serie, on, between
 from pystil.aggregates import get_attribute_and_count
 
 
-def process_data(site, graph, criteria, from_date, to_date, step, stamp):
+def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
     table, key, count_col = get_attribute_and_count(criteria)
     rq = (db.session
           .query(key.label("key"),
@@ -18,4 +18,4 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp):
           .filter(on(site, table))
           .filter(between(from_date, to_date, table))
           .group_by(key))
-    return make_serie(rq.all(), criteria)
+    return make_serie(rq.all(), criteria, lang)
