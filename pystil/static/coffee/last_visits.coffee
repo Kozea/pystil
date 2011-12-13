@@ -25,11 +25,12 @@ class @Last extends @Base
             success: @update
 
     update: (response) =>
-        if response.list.length > 0
-            for i in [1..response.list.length]
-                @tbody.children().last().remove()
-
+        # if response.list.length > 0
+            # for i in [1..response.list.length]
+                # @tbody.children().last().remove()
+        console.log response.list
         for visit in response.list
+            console.log visit
             now = new Date()
             date = new Date(visit.date)
             if date.toLocaleDateString() == now.toLocaleDateString()
@@ -47,11 +48,14 @@ class @Last extends @Base
                 .append($('<td>').text(visit.page))
                 .append($('<td>').text(visit.referrer)))
 
+            if @tbody.children().length > 10
+                @tbody.children().last().remove()
+
         setTimeout(
             () ->
                 $(".new-visit").each(
                     (i, elt) -> $(elt).removeClass("new-visit")
                 )
-        , 5000)
+        , 3000)
         @stamp = response.stamp
-        setTimeout(@ask_update, 5)
+        setTimeout(@ask_update, 1)

@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-import os
-import sys
+#!/usr/bin/env python2
 import pika
 import pickle
 from pystil import config
@@ -18,16 +16,12 @@ if __name__ == '__main__':
     channel_out.queue_declare(queue='pystil_push')
 
     def callback(ch, method, properties, body):
-        print 'Got'
         message = pickle.loads(body)
         visit = message.process()
         if visit:
             channel_out.basic_publish(
                 exchange='', routing_key='pystil_push',
                 body=pickle.dumps(visit))
-            print 'Sent'
-        else:
-            print 'Not sent'
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_consume(callback, queue='pystil')

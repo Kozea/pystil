@@ -371,20 +371,12 @@ img.logo {
   background-repeat: no-repeat;
 }
 
-.last-visits {
-  float: left;
-  font-family: monospace;
-  margin: 1% 2.5%;
-  overflow: auto;
-  width: 45%;
-}
-
-.last-visits tr {
+.graph[data-graph=Last] tr {
   transition: 500ms;
 }
 
 .new-visit {
-  color: orangered;
+  color: orangered !important;
 }
 
 .tabs {

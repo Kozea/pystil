@@ -5,6 +5,7 @@ import gevent
 from gevent.event import Event
 
 POLLS = {}
+CACHE_SIZE = 20
 
 
 class Poll(object):
@@ -12,19 +13,24 @@ class Poll(object):
     def __init__(self, site):
         self.event = Event()
         self.visits = []
+        self._offset = 0
 
     def get(self, i):
-        self.event.wait()
-        return self.visits[i:], len(self.visits)
+        if i == len(self.visits) + self._offset:
+            self.event.wait()
+        i = max(i - self._offset, 0)
+        return self.visits[i:], len(self.visits) + self._offset
 
     def add(self, visit):
         self.visits.append(visit)
+        if len(self.visits) > CACHE_SIZE:
+            self.visits.pop(0)
+            self._offset += 1
         self.event.set()
         self.event.clear()
 
 
 def get_poll(site):
-    print 'getting site %s' % site
     if not POLLS.get(site):
         POLLS[site] = Poll(site)
     return POLLS[site]
