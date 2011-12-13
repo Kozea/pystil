@@ -8,6 +8,8 @@ pystil - An elegant site web traffic analyzer
 
 import os
 import sys
+import pika
+import gevent
 
 ROOT = os.path.dirname(__file__)
 
@@ -19,6 +21,7 @@ from pystil.routes.data import register_data_routes
 from pystil.routes.admin import register_admin_routes
 from pystil.routes.public import register_public_routes
 from pystil.db import db
+from gevent.event import Event
 
 
 def app():
@@ -45,7 +48,7 @@ def app():
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)
     getLogger('sqlalchemy').addHandler(handler)
-    getLogger('sqlalchemy').setLevel(INFO if app.debug else WARN)
+    getLogger('sqlalchemy').setLevel(WARN)
 
     app.logger.handlers = []
     app.logger.addHandler(handler)
@@ -58,8 +61,23 @@ def app():
     else:
         route = app.route
 
-    if app.config.get("PUBLIC_ROUTES", True):
-        register_public_routes(app)
+    event = app.event = Event()
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='pystil')
+    channel.exchange_declare(exchange='pystil', type='fanout')
+    channel.queue_bind(exchange='pystil', queue='pystil')
+
+    def callback(ch, method, properties, body):
+        print "A" * 1000
+        event.set()
+        event.clear()
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+
+    channel.basic_consume(callback, queue='pystil')
+    # Is it good or awful ?
+    gevent.spawn(channel.start_consuming)
 
     register_data_routes(app, route)
     register_common_routes(app, route)

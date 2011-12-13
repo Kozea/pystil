@@ -3,7 +3,7 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from flask import Response, request, send_file, abort
+from flask import Response, request, send_file, abort, current_app
 from ..service.http import render_js
 
 
@@ -19,6 +19,8 @@ def register_public_routes(app):
                 request.environ['HTTP_USER_AGENT'],
                 request.environ['REMOTE_ADDR'])
         message.process()
+        current_app.event.set()
+        current_app.event.clear()
         return gif
 
     @app.route('/pystil.js')

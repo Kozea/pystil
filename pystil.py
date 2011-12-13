@@ -37,9 +37,15 @@ if 'soup' in sys.argv:
     console.interact()
 elif 'rabbit' in sys.argv:
     print "Developping with a rabbit"
-    from werkzeug.serving import run_simple
     from pystil.service.http import Application
-    run_simple('0.0.0.0', 12345, Application(app()),
-            use_reloader=True, use_debugger=True)
+    from gevent import monkey
+    monkey.patch_all()
+    import gevent.wsgi
+    ws = gevent.wsgi.WSGIServer(('', 1789), Application(app()))
+    ws.serve_forever()
 else:
-    app().run(host='0.0.0.0', port=12345, debug=True)
+    from gevent import monkey
+    monkey.patch_all()
+    import gevent.wsgi
+    ws = gevent.wsgi.WSGIServer(('', 1789), app())
+    ws.serve_forever()

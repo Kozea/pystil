@@ -54,5 +54,4 @@ class @Last extends @Base
                 )
         , 5000)
         @stamp = response.stamp
-        setTimeout(@ask_update, 5000)
-
+        setTimeout(@ask_update, 5)

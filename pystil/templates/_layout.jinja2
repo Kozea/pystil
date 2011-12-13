@@ -8,7 +8,7 @@
       <script type="text/javascript">
         (function() {
         var d=document,t='script',p=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        p.type='text/javascript';p.async=true;p.src="{{ url_for('pystil_js') }}";s.parentNode.insertBefore(p,s);
+        p.type='text/javascript';p.async=true;p.src="/pystil.js";s.parentNode.insertBefore(p,s);
         })();
       </script>
       <script src="{{ url_for('static', filename='js/js.js') }}"></script>

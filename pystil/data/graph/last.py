@@ -8,10 +8,14 @@
 
 from datetime import datetime, timedelta
 from pystil.data.utils import on, polish_visit, date_to_time, visit_to_dict
-from pystil.db import db, Visit
+from pystil.db import Visit
+from flask import current_app
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
+    if stamp != 0:
+        current_app.event.wait()
+
     visits = (Visit.query
               .filter(on(site))
               .filter(Visit.date > (datetime.utcfromtimestamp(
