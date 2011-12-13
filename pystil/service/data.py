@@ -75,7 +75,8 @@ class Message(object):
             self.add_geolocalization(visit)
             Visit.insert(**visit)
             db.commit()
-        elif kind == 'c':
+            return visit
+        if kind == 'c':
             visit = (Visit
                      .filter(Visit.uuid == uuid)
                      .order_by(desc(Visit.date))
@@ -83,8 +84,6 @@ class Message(object):
             if visit:
                 visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
                 db.commit()
-        else:
-            return
 
     def add_geolocalization(self, visit):
         ip = visit['ip']

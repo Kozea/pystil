@@ -8,9 +8,6 @@ pystil - An elegant site web traffic analyzer
 from pystil import app, config
 import sys
 
-if 'meat' in sys.argv:
-    config.CONFIG['DB_HOST'] = 'entrecote'
-
 config.freeze()
 
 if 'soup' in sys.argv:
@@ -35,17 +32,10 @@ if 'soup' in sys.argv:
     if getenv("PYTHONSTARTUP"):
         execfile(getenv("PYTHONSTARTUP"))
     console.interact()
-elif 'rabbit' in sys.argv:
-    print "Developping with a rabbit"
+else:
     from pystil.service.http import Application
     from gevent import monkey
     monkey.patch_all()
     import gevent.wsgi
     ws = gevent.wsgi.WSGIServer(('', 1789), Application(app()))
-    ws.serve_forever()
-else:
-    from gevent import monkey
-    monkey.patch_all()
-    import gevent.wsgi
-    ws = gevent.wsgi.WSGIServer(('', 1789), app())
     ws.serve_forever()

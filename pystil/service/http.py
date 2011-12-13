@@ -41,12 +41,10 @@ class Application(object):
                 myapp.connection = pika.BlockingConnection(params)
                 myapp.channel = myapp.connection.channel()
                 myapp.channel.queue_declare(queue='pystil')
-                myapp.channel.exchange_declare(exchange='pystil',
-                                               type='fanout')
             message = Message(environ['QUERY_STRING'],
                               environ['HTTP_USER_AGENT'],
                     environ['REMOTE_ADDR'])
-            myapp.channel.basic_publish(exchange='pystil',
+            myapp.channel.basic_publish(exchange='',
                 routing_key='pystil',
                 body=pickle.dumps(message))
             return gif_content

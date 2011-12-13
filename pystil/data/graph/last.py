@@ -13,23 +13,24 @@ from flask import current_app
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
-    if stamp != 0:
-        current_app.event.wait()
-
-    visits = (Visit.query
+    if stamp == 0:
+        visits = (Visit.query
               .filter(on(site))
               .filter(Visit.date > (datetime.utcfromtimestamp(
                   stamp / 1000) if stamp else datetime.min))
               .order_by(Visit.date.desc())
               .limit(10)
               .all())
+        last_stamp = date_to_time(
+            visits[0].date + timedelta(seconds=1)) if visits else stamp
 
-    last_stamp = date_to_time(
-        visits[0].date + timedelta(seconds=1)) if visits else stamp
+        visits.reverse()
+        for visit in visits:
+            polish_visit(visit_to_dict(visit))
 
-    visits.reverse()
-    for visit in visits:
-        polish_visit(visit)
-
-    return {'list': [visit_to_dict(visit) for visit in visits],
-            'stamp': last_stamp}
+        return {'list': [visit_to_dict(visit) for visit in visits],
+                'stamp': last_stamp}
+    else:
+        current_app.event.wait()
+        return {'list': [current_app.event.visits[-1]],
+                'stamp': 1}

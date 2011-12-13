@@ -10,17 +10,24 @@ if __name__ == '__main__':
     # sys.stderr = open("/var/log/pystil.err", "w")
 
     config.freeze()
-    connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue='pystil')
-    channel.exchange_declare(exchange='pystil', type='fanout')
-    channel.queue_bind(exchange='pystil', queue='pystil')
+    channel_out = connection.channel()
+    channel_out.queue_declare(queue='pystil_push')
 
     def callback(ch, method, properties, body):
         print 'Got'
         message = pickle.loads(body)
-        message.process()
+        visit = message.process()
+        if visit:
+            channel_out.basic_publish(
+                exchange='', routing_key='pystil_push',
+                body=pickle.dumps(visit))
+            print 'Sent'
+        else:
+            print 'Not sent'
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_consume(callback, queue='pystil')

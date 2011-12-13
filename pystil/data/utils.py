@@ -159,11 +159,12 @@ def parse_domain(referrer):
 
 def polish_visit(visit):
     """Transform a visit for nicer display"""
-    if visit.last_visit:
-        visit.last_visit = date_to_time(visit.last_visit)
-    if visit.referrer:
-        visit.referrer = parse_referrer(visit.referrer, True)
-    visit.date = date_to_time(visit.date)
+    if visit['last_visit']:
+        visit['last_visit'] = date_to_time(visit['last_visit'])
+    if visit['referrer']:
+        visit['referrer'] = parse_referrer(visit['referrer'], True)
+    visit['date'] = date_to_time(visit['date'])
+    return visit
 
 
 def visit_to_dict(visit):

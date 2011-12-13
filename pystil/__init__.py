@@ -8,6 +8,7 @@ pystil - An elegant site web traffic analyzer
 
 import os
 import sys
+import pickle
 import pika
 import gevent
 
@@ -62,20 +63,22 @@ def app():
         route = app.route
 
     event = app.event = Event()
+    event.visits = []
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
-    channel.queue_declare(queue='pystil')
-    channel.exchange_declare(exchange='pystil', type='fanout')
-    channel.queue_bind(exchange='pystil', queue='pystil')
+    channel.queue_declare(queue='pystil_push')
 
     def callback(ch, method, properties, body):
-        print "A" * 1000
+        print "And got !!!"
+        from pystil.data.utils import polish_visit
+        visit = pickle.loads(body)
+        event.visits.append(polish_visit(visit))
         event.set()
         event.clear()
         ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    channel.basic_consume(callback, queue='pystil')
+    channel.basic_consume(callback, queue='pystil_push')
     # Is it good or awful ?
     gevent.spawn(channel.start_consuming)
 
