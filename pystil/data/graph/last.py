@@ -6,14 +6,15 @@
 """Treat last visits data"""
 
 
-from datetime import datetime, timedelta
-from pystil.data.utils import on, polish_visit, date_to_time, visit_to_dict
+from datetime import datetime
+from pystil.data.utils import on, polish_visit, visit_to_dict
 from pystil.db import Visit
-from flask import current_app
+from pystil.events import get_poll
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
-    if stamp == 0:
+    poll = get_poll(site)
+    if stamp == None:
         visits = (Visit.query
               .filter(on(site))
               .filter(Visit.date > (datetime.utcfromtimestamp(
@@ -21,16 +22,11 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
               .order_by(Visit.date.desc())
               .limit(10)
               .all())
-        last_stamp = date_to_time(
-            visits[0].date + timedelta(seconds=1)) if visits else stamp
 
         visits.reverse()
-        for visit in visits:
-            polish_visit(visit_to_dict(visit))
-
-        return {'list': [visit_to_dict(visit) for visit in visits],
-                'stamp': last_stamp}
+        visits = [polish_visit(visit_to_dict(visit)) for visit in visits]
+        stamp = len(poll.visits)
     else:
-        current_app.event.wait()
-        return {'list': [current_app.event.visits[-1]],
-                'stamp': 1}
+        visits, stamp = poll.get(stamp)
+
+    return {'list': visits, 'stamp': stamp}

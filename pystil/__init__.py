@@ -8,9 +8,6 @@ pystil - An elegant site web traffic analyzer
 
 import os
 import sys
-import pickle
-import pika
-import gevent
 
 ROOT = os.path.dirname(__file__)
 
@@ -20,9 +17,8 @@ from log_colorizer import make_colored_stream_handler
 from pystil.routes import register_common_routes
 from pystil.routes.data import register_data_routes
 from pystil.routes.admin import register_admin_routes
-from pystil.routes.public import register_public_routes
 from pystil.db import db
-from gevent.event import Event
+from pystil.events import init_events
 
 
 def app():
@@ -62,26 +58,7 @@ def app():
     else:
         route = app.route
 
-    event = app.event = Event()
-    event.visits = []
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-    channel.queue_declare(queue='pystil_push')
-
-    def callback(ch, method, properties, body):
-        print "And got !!!"
-        from pystil.data.utils import polish_visit
-        visit = pickle.loads(body)
-        event.visits.append(polish_visit(visit))
-        event.set()
-        event.clear()
-        ch.basic_ack(delivery_tag=method.delivery_tag)
-
-    channel.basic_consume(callback, queue='pystil_push')
-    # Is it good or awful ?
-    gevent.spawn(channel.start_consuming)
-
+    init_events(app)
     register_data_routes(app, route)
     register_common_routes(app, route)
     register_admin_routes(app, route)

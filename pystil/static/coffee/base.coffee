@@ -39,8 +39,8 @@ class @Base
             site = location.pathname.split("/")[1] or "all"
         ref += "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
         ref += "_in_#{@lang}"
-        if @stamp
+        if @stamp != undefined and @stamp != -1
             ref += "_at_#{@stamp}"
-        else if window.fromDate and window.toDate
+        else if window.fromDate and window.toDate and @stamp != -1
             ref += "_from_#{window.fromDate.getTime() - window.fromDate.getTimezoneOffset() * 60000}_to_#{window.toDate.getTime() - window.toDate.getTimezoneOffset() * 60000}"
         "#{ref}.json"

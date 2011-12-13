@@ -2,7 +2,7 @@ class @Last extends @Base
     type: 'last'
 
     constructor: (@elt) ->
-        @stamp = 0
+        @stamp = -1
         super
         @elt.append(table = $('<table>')
                 .append($('<thead>')

@@ -50,7 +50,7 @@ def register_data_routes(app, route):
     @route('%s.json' % url_with_step)
     @jsonp
     def data(site, graph, criteria, lang,
-             from_date=None, to_date=None, step='day', stamp=0):
+             from_date=None, to_date=None, step='day', stamp=None):
         today = date.today()
         month_start = datetime(today.year, today.month, 1)
         from_date = from_date or date_to_time(month_start)
