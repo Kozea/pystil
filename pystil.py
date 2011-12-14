@@ -6,6 +6,7 @@
 pystil - An elegant site web traffic analyzer
 """
 from pystil import app, config
+import werkzeug.contrib
 import sys
 
 config.freeze()
@@ -37,5 +38,6 @@ else:
     from gevent import monkey
     monkey.patch_all()
     import gevent.wsgi
-    ws = gevent.wsgi.WSGIServer(('', 1789), Application(app()))
+    application = Application(werkzeug.contrib.fixers.ProxyFix(app()))
+    ws = gevent.wsgi.WSGIServer(('', 1789), application)
     ws.serve_forever()
