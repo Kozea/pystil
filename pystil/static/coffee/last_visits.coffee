@@ -28,9 +28,7 @@ class @Last extends @Base
         # if response.list.length > 0
             # for i in [1..response.list.length]
                 # @tbody.children().last().remove()
-        console.log response.list
         for visit in response.list
-            console.log visit
             now = new Date()
             date = new Date(visit.date)
             if date.toLocaleDateString() == now.toLocaleDateString()

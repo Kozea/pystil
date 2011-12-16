@@ -12,7 +12,7 @@ class @Base
         setTimeout @fetch, 50
 
     _: (text) ->
-        return i18n[@lang][text]
+        return if i18n[@lang] then i18n[@lang][text] else text
 
     fetch: () =>
         $.ajax
