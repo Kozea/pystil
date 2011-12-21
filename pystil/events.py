@@ -44,11 +44,7 @@ def init_events(app):
     channel.queue_declare(queue='pystil_push')
 
     def callback(ch, method, properties, body):
-        stdout = sys.stdout
-        stderr = sys.stderr
-        sys.stdout = open("pystil_push.out", "a")
-        sys.stderr = open("pystil_push.err", "a")
-        print "Got a message"
+        app.logger.info('Got a message')
         from pystil.data.utils import polish_visit
         visit = pickle.loads(body)
         site = visit['host']
@@ -66,9 +62,9 @@ def init_events(app):
         all = get_poll('all')
         all.add(visit)
         ch.basic_ack(delivery_tag=method.delivery_tag)
-        sys.stdout = stdout
-        sys.stderr = stderr
+        app.logger.info('Message acknowledged')
 
     channel.basic_consume(callback, queue='pystil_push')
+    app.logger.info('Spawning blocking consume')
     # Is it good or awful ?
     gevent.spawn(channel.start_consuming)
