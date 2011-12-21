@@ -39,7 +39,7 @@ def app():
 
     if app.config["LOG_FILE"]:
         basicConfig(filename=app.config["LOG_FILE"],
-                            filemode='w', level=DEBUG)
+                            filemode='w', level=INFO)
 
     handler = make_colored_stream_handler()
     getLogger('werkzeug').addHandler(handler)
