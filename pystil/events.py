@@ -44,25 +44,28 @@ def init_events(app):
     channel.queue_declare(queue='pystil_push')
 
     def callback(ch, method, properties, body):
-        app.logger.info('Got a message')
+        app.logger.debug('Got a message')
         from pystil.data.utils import polish_visit
-        visit = pickle.loads(body)
-        site = visit['host']
-        visit = polish_visit(visit)
-        # Release site event
-        poll = get_poll(site)
-        poll.add(visit)
-        # If there is a subdomain release the super domain
-        parts = site.split('.')
-        if len(parts) > 2:
-            supersite = '.'.join([parts[-2], parts[-1]])
-            superpoll = get_poll(supersite)
-            superpoll.add(visit)
-        # Release all event
-        all = get_poll('all')
-        all.add(visit)
-        ch.basic_ack(delivery_tag=method.delivery_tag)
-        app.logger.info('Message acknowledged')
+        try:
+            visit = pickle.loads(body)
+            site = visit['host']
+            visit = polish_visit(visit)
+            # Release site event
+            poll = get_poll(site)
+            poll.add(visit)
+            # If there is a subdomain release the super domain
+            parts = site.split('.')
+            if len(parts) > 2:
+                supersite = '.'.join([parts[-2], parts[-1]])
+                superpoll = get_poll(supersite)
+                superpoll.add(visit)
+            # Release all event
+            all = get_poll('all')
+            all.add(visit)
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            app.logger.debug('Message acknowledged')
+        except Exception:
+            app.logger.exception('Push callback crashed')
 
     channel.basic_consume(callback, queue='pystil_push')
     app.logger.info('Spawning blocking consume')
