@@ -45,7 +45,7 @@ def app():
     getLogger('werkzeug').addHandler(handler)
     getLogger('werkzeug').setLevel(INFO)
     getLogger('sqlalchemy').addHandler(handler)
-    getLogger('sqlalchemy').setLevel(INFO)
+    getLogger('sqlalchemy').setLevel(WARN)
 
     app.logger.handlers = []
     app.logger.addHandler(handler)
