@@ -7,7 +7,7 @@ class @Last extends @Base
         @elt.append(table = $('<table>')
                 .append($('<thead>')
                     .append(tr = $('<tr>'))))
-        @keys = @elt.attr('data-columns').split(',') or ['date', 'site' , 'ip', 'country', 'city', 'page', 'referrer']
+        @keys = if @elt.attr('data-columns') then @elt.attr('data-columns').split(/, ?/) else ['date', 'site' , 'ip', 'country', 'city', 'page', 'referrer']
         for col in @keys
             tr.append($('<th>').text(col.capitalize()))
         table.append(@tbody = $('<tbody>'))
