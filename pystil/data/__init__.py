@@ -5,7 +5,7 @@
 
 """This module process the data to display various graphs"""
 
-from pystil.data.graph import pie, bar, last, line, map
+from pystil.data.graph import pie, bar, last, line, map, top
 
 SWITCH = {
     'bar': bar.process_data,
@@ -13,6 +13,7 @@ SWITCH = {
     'line': line.process_data,
     'map': map.process_data,
     'pie': pie.process_data,
+    'top': top.process_data
 }
 
 

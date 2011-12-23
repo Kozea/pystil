@@ -18,7 +18,8 @@ coffee_files = [
     'base'
     'map'
     'graphs'
-    'last_visits'
+    'last'
+    'top'
     'tabs'
     'main'
 ]

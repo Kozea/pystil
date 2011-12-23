@@ -34,7 +34,7 @@ def register_data_routes(app, route):
     from pystil.data.utils import date_to_time
 
     url_base = '/<string:site>/<any%r:graph>_by_<any%r:criteria>_in_<lang>' % (
-        ('pie', 'bar', 'line', 'table', 'map', 'last'),
+        ('pie', 'bar', 'line', 'table', 'map', 'last', 'top'),
         tuple(fields(Visit)) + (
             'all', 'unique', 'new'))
     url_with_at = '%s_at_<int:stamp>' % url_base
