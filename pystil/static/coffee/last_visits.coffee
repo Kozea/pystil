@@ -7,8 +7,9 @@ class @Last extends @Base
         @elt.append(table = $('<table>')
                 .append($('<thead>')
                     .append(tr = $('<tr>'))))
-        for col in ["Date", "Site", "Ip", "Country", "City", "Page", "Referrer"]
-            tr.append($('<th>').text(col))
+        @keys = @elt.attr('data-columns').split(',') or ['date', 'site' , 'ip', 'country', 'city', 'page', 'referrer']
+        for col in @keys
+            tr.append($('<th>').text(col.capitalize()))
         table.append(@tbody = $('<tbody>'))
 
     reply: (response) =>
@@ -25,26 +26,17 @@ class @Last extends @Base
             success: @update
 
     update: (response) =>
-        # if response.list.length > 0
-            # for i in [1..response.list.length]
-                # @tbody.children().last().remove()
         for visit in response.list
             now = new Date()
-            date = new Date(visit.date)
-            if date.toLocaleDateString() == now.toLocaleDateString()
-                date = date.toLocaleTimeString()
+            visit.date = new Date(visit.date)
+            if visit.date.toLocaleDateString() == now.toLocaleDateString()
+                visit.date = visit.date.toLocaleTimeString()
             else
-                date = date.toLocaleDateString() + ' - ' + date.toLocaleTimeString()
-
-            @tbody
-                .prepend($('<tr>').addClass("new-visit")
-                .append($('<td>').text(date.toString()))
-                .append($('<td>').text(visit.host))
-                .append($('<td>').text(visit.ip))
-                .append($('<td>').text(visit.country))
-                .append($('<td>').text(visit.city))
-                .append($('<td>').text(visit.page))
-                .append($('<td>').text(visit.referrer)))
+                visit.date = visit.date.toLocaleDateString() + ' - ' + visit.date.toLocaleTimeString()
+            visit.date = visit.date.toString()
+            @tbody.prepend(tr = $('<tr>').addClass("new-visit"))
+            for col in @keys
+                tr.append($('<td>').text(visit[col]))
 
             if @tbody.children().length > 10
                 @tbody.children().last().remove()
