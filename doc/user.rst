@@ -117,4 +117,28 @@ Logging
 
 .. warning::
    TODO
-   
+
+Running
+=======
+
+Introduction
+------------
+
+Pystil contains two main applications : 
+- the web application that provides the data viewer, the admin 
+interface and the files to include in the webapp you want to analyze.
+- a data feeder that reads "visits" message and store it in the db. 
+
+Web application
+---------------
+
+From the pystil directory, simply launch::
+
+  ./bin/webapp.py
+
+Data feeder
+-----------
+
+From the pystil directory, simply launch::
+  
+  ./bin/datafeed.py
