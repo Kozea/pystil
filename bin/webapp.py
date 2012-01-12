@@ -5,9 +5,16 @@
 """
 pystil - An elegant site web traffic analyzer
 """
+
+import os
+import sys
+current_dir = os.path.dirname( os.path.abspath( __file__ ) )
+pystil_parent_path = os.path.abspath( current_dir + "/.." )
+if pystil_parent_path not in sys.path:
+    sys.path.append( pystil_parent_path)
+
 from pystil import app, config
 import werkzeug.contrib.fixers
-import sys
 
 config.freeze()
 
