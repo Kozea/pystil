@@ -18,33 +18,10 @@ import werkzeug.contrib.fixers
 
 config.freeze()
 
-if 'soup' in sys.argv:
-    from os import getenv
-    from sqlalchemy import create_engine
-    from sqlalchemy.ext.sqlsoup import SqlSoup
-    import code
-    engine = create_engine(config.CONFIG["DB_URL"], echo=True)
-    db = SqlSoup(engine)
-    Visit = db.visit
-    Keys = db.keys
-
-    class FunkyConsole(code.InteractiveConsole):
-
-        def showtraceback(self):
-            import pdb
-            import sys
-            code.InteractiveConsole.showtraceback(self)
-            pdb.post_mortem(sys.exc_info()[2])
-
-    console = FunkyConsole(locals=globals())
-    if getenv("PYTHONSTARTUP"):
-        execfile(getenv("PYTHONSTARTUP"))
-    console.interact()
-else:
-    from pystil.service.http import Application
-    from gevent import monkey
-    monkey.patch_all()
-    import gevent.wsgi
-    application = werkzeug.contrib.fixers.ProxyFix(Application(app()))
-    ws = gevent.wsgi.WSGIServer(('', 1789), application)
-    ws.serve_forever()
+from pystil.service.http import Application
+from gevent import monkey
+monkey.patch_all()
+import gevent.wsgi
+application = werkzeug.contrib.fixers.ProxyFix(Application(app()))
+ws = gevent.wsgi.WSGIServer(('', 1789), application)
+ws.serve_forever()
