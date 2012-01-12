@@ -1,8 +1,9 @@
---CREATE ROLE pystil LOGIN ENCRYPTED PASSWORD 'md55aca61e57e322fd4708dda71f56eab22' VALID UNTIL 'infinity';
---CREATE DATABASE pystil WITH ENCODING='UTF8' OWNER=pystil TEMPLATE=template0 CONNECTION LIMIT=-1;
+CREATE ROLE pystil LOGIN PASSWORD 'pystil' VALID UNTIL 'infinity';
+CREATE DATABASE pystil WITH ENCODING='UTF8' OWNER=pystil TEMPLATE=template0 CONNECTION LIMIT=-1;
+
+\connect pystil;
 
 -- Table: visit
-
 DROP TABLE IF EXISTS visit;
 
 CREATE TABLE visit
@@ -65,3 +66,6 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE keys OWNER TO pystil;
+
+
+\i aggregates.sql
