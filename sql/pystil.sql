@@ -1,12 +1,14 @@
-CREATE ROLE pystil LOGIN ENCRYPTED PASSWORD 'md55aca61e57e322fd4708dda71f56eab22' VALID UNTIL 'infinity';
+CREATE ROLE pystil LOGIN PASSWORD 'pystil' VALID UNTIL 'infinity';
 CREATE DATABASE pystil WITH ENCODING='UTF8' OWNER=pystil TEMPLATE=template0 CONNECTION LIMIT=-1;
 
--- Table: visit
+\connect pystil;
 
--- DROP TABLE visit;
+-- Table: visit
+DROP TABLE IF EXISTS visit;
 
 CREATE TABLE visit
 (
+  id serial,
   browser_name character varying,
   browser_version character varying,
   date timestamp without time zone,
@@ -19,10 +21,11 @@ CREATE TABLE visit
   platform character varying,
   query character varying,
   referrer character varying,
+  referrer_domain character varying,
   pretty_referrer character varying,
   site character varying,
   size character varying,
-  "time" integer,
+  "time" interval,
   uuid character varying NOT NULL,
   client_tz_offset integer,
   country character varying,
@@ -30,16 +33,17 @@ CREATE TABLE visit
   city character varying,
   lat numeric,
   lng numeric,
-  CONSTRAINT visit_pkey PRIMARY KEY (uuid)
+  CONSTRAINT pk PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
 );
+
 ALTER TABLE visit OWNER TO pystil;
 
 -- Index: btrees
 
--- DROP INDEX btrees;
+DROP INDEX IF EXISTS btrees;
 
 CREATE INDEX btrees
   ON visit
@@ -49,7 +53,7 @@ CREATE INDEX btrees
 
 -- Table: keys
 
--- DROP TABLE keys;
+DROP TABLE IF EXISTS keys;
 
 CREATE TABLE keys
 (
@@ -62,3 +66,6 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE keys OWNER TO pystil;
+
+
+\i aggregates.sql
