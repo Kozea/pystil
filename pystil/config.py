@@ -16,6 +16,7 @@ CONFIG = {
     "DEBUG": True,
     "TESTING": True,
     "BIND": "0.0.0.0",
+    "PORT": 1789,
     "SECRET_KEY": None,
     "DB_BACKEND": "postgresql",
     "DB_HOST": "localhost",

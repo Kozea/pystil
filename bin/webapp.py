@@ -23,5 +23,5 @@ from gevent import monkey
 monkey.patch_all()
 import gevent.wsgi
 application = werkzeug.contrib.fixers.ProxyFix(Application(app()))
-ws = gevent.wsgi.WSGIServer(('', 1789), application)
+ws = gevent.wsgi.WSGIServer(('', config.CONFIG['PORT']), application)
 ws.serve_forever()
