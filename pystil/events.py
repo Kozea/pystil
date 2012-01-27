@@ -48,7 +48,7 @@ def init_events(app):
         from pystil.data.utils import polish_visit
         try:
             visit = pickle.loads(body)
-            site = visit['host']
+            site = visit['host'] or 'local'
             visit = polish_visit(visit)
             # Release site event
             poll = get_poll(site)
