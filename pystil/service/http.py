@@ -5,7 +5,6 @@ import pika
 import threading
 import re
 import uuid
-
 import pystil
 
 
@@ -40,12 +39,13 @@ class Application(object):
                 params = pika.ConnectionParameters(host='localhost')
                 myapp.connection = pika.BlockingConnection(params)
                 myapp.channel = myapp.connection.channel()
-                myapp.channel.queue_declare(queue='pystil')
+                myapp.channel.queue_declare(
+                    queue=pystil.config.CONFIG['PYSTIL_INSTANCE'])
             message = Message(environ['QUERY_STRING'],
                               environ['HTTP_USER_AGENT'],
                     environ['REMOTE_ADDR'])
             myapp.channel.basic_publish(exchange='',
-                routing_key='pystil',
+                routing_key=pystil.config.CONFIG['PYSTIL_INSTANCE'],
                 body=pickle.dumps(message))
             return gif_content
         else:

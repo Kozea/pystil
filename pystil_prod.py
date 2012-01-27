@@ -1,14 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from pystil import app, config
 import werkzeug.contrib.fixers
 import os
 
-
-config.CONFIG["SECRETS_FILE"] = '/var/www/.pystil-secrets'
+config.CONFIG["SECRETS_FILE"] = (
+    '/var/www/.%s-secrets' % config.CONFIG["PYSTIL_INSTANCE"])
 config.CONFIG["DEBUG"] = False
 config.CONFIG["TESTING"] = False
 config.CONFIG["IP_DB"] = os.path.join(os.path.dirname(__file__), 'ip.db')
-config.CONFIG["LOG_FILE"] = '/var/log/lighttpd/pystil.log'
+config.CONFIG["LOG_FILE"] = (
+    '/var/log/lighttpd/%s.log' % config.CONFIG["PYSTIL_INSTANCE"])
 config.freeze()
 
 from pystil.service.http import Application

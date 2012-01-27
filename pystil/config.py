@@ -9,9 +9,10 @@ from imp import new_module
 import os.path
 
 FROZEN = False
-
+INSTANCE = os.environ.get('PYSTIL_INSTANCE', 'pystil')
 CONFIG = {
-    "SECRETS_FILE": '~/.pystil-secrets',
+    "PYSTIL_INSTANCE": INSTANCE,
+    "SECRETS_FILE": '~/.%s-secrets' % INSTANCE,
     "DEBUG": True,
     "TESTING": True,
     "BIND": "0.0.0.0",
@@ -19,7 +20,7 @@ CONFIG = {
     "DB_BACKEND": "postgresql",
     "DB_HOST": "localhost",
     "DB_NAME": None,
-    "DB_USER": "pystil",
+    "DB_USER": INSTANCE,
     "DB_PASSWORD": None,
     "DB_PORT": 5432,
     "THREADED": True,

@@ -41,7 +41,7 @@ def init_events(app):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
-    channel.queue_declare(queue='pystil_push')
+    channel.queue_declare(queue='%s_push' % app.config['PYSTIL_INSTANCE'])
 
     def callback(ch, method, properties, body):
         app.logger.debug('Got a message')
@@ -67,7 +67,8 @@ def init_events(app):
         except Exception:
             app.logger.exception('Push callback crashed')
 
-    channel.basic_consume(callback, queue='pystil_push')
+    channel.basic_consume(
+        callback, queue='%s_push' % app.config['PYSTIL_INSTANCE'])
     app.logger.info('Spawning blocking consume')
     # Is it good or awful ?
     gevent.spawn(channel.start_consuming)

@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011 by Florian Mounier, Kozea
+# This file is part of pystil, licensed under a 3-clause BSD license.
+"""
+pystil - console - A sql soup database inspector
+"""
 
 import os
 import sys
-current_dir = os.path.dirname( os.path.abspath( __file__ ) )
-pystil_parent_path = os.path.abspath( current_dir + "/.." )
+current_dir = os.path.dirname(os.path.abspath(__file__))
+pystil_parent_path = os.path.abspath(current_dir + "/..")
 if pystil_parent_path not in sys.path:
-    sys.path.append( pystil_parent_path)
+    sys.path.append(pystil_parent_path)
 
-from pystil import app, config
-import werkzeug.contrib.fixers
-
+from pystil import config
 config.freeze()
 
 from os import getenv
@@ -21,6 +24,7 @@ engine = create_engine(config.CONFIG["DB_URL"], echo=True)
 db = SqlSoup(engine)
 Visit = db.visit
 Keys = db.keys
+
 
 class FunkyConsole(code.InteractiveConsole):
     def showtraceback(self):
