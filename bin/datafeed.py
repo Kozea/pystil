@@ -1,4 +1,12 @@
 #!/usr/bin/env python2
+
+import os
+import sys
+current_dir = os.path.dirname( os.path.abspath( __file__ ) )
+pystil_parent_path = os.path.abspath( current_dir + "/.." )
+if pystil_parent_path not in sys.path:
+    sys.path.append( pystil_parent_path)
+
 import pika
 import pickle
 from pystil import config

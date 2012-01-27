@@ -1,6 +1,13 @@
 drop schema if exists agg cascade;
 create schema agg;
 
+GRANT ALL ON SCHEMA agg TO pystil;
+
+CREATE EXTENSION IF NOT EXISTS hstore;
+
+CREATE FUNCTION int2interval (x integer) returns interval as $$ select $1*'1 sec'::interval $$ language sql;
+CREATE CAST (integer as interval) with function int2interval (integer) as implicit;
+
 create or replace function create_aggregate_table(table_name varchar, attributes text[], columndefs hstore, pkeys text[]) returns void as $create_aggregate_table$
 	DECLARE 
 		func_stmt text;
@@ -166,3 +173,16 @@ select create_aggregate_table('by_hour', ARRAY['hour'],
   ARRAY['hour']);
 
 select create_aggregate_table('by_uuid', ARRAY['uuid'], NULL, ARRAY['uuid']);
+
+grant all on agg.by_domain to pystil;
+grant all on agg.by_browser to pystil;
+grant all on agg.by_ip to pystil;
+grant all on agg.by_geo to pystil;
+grant all on agg.by_platform to pystil;
+grant all on agg.by_referrer to pystil;
+grant all on agg.by_size to pystil;
+grant all on agg.by_page to pystil;
+grant all on agg.by_hour to pystil;
+grant all on agg.by_uuid to pystil;
+
+
