@@ -8,7 +8,7 @@ $.fn.extend
                 $.event.trigger "tabshow", evt, e, false
 
 @tabs = () =>
-    $('.tabs').each (i, elt) ->
+    $('.pystil-tabs').each (i, elt) ->
         $lnks = $ 'ul li a', elt
         $tab = $ '.tab', elt
 
