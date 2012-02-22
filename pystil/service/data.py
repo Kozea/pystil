@@ -17,6 +17,15 @@ ipv4re = re.compile(r"(\d{1,3}(\.|$)){4}")
 
 gip_tl = threading.local()
 
+def try_decode(astring):
+    """Try decoding a string in various encodings, with a fallback to good old
+    ascii."""
+    for encoding in ('latin', 'utf8'):
+        try:
+            return astring.decode(encoding)
+        except UnicodeDecodeError:
+            pass
+    return astring.decode('ascii', 'ignore')
 
 class Message(object):
 
@@ -38,8 +47,11 @@ class Message(object):
             value = request_args.get(key, [default])[0]
             if value and 'undefined' in value:
                 value = None
-            if value and from_encoding:
-                value = value.decode(from_encoding).encode('utf-8')
+            if value:
+                if from_encoding:
+                    value = value.decode(from_encoding).encode('utf-8')
+                else:
+                    value = try_decode(value).encode('utf-8')
             return value
 
         request_args = urlparse.parse_qs(self.query)
