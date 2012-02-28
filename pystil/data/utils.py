@@ -140,7 +140,7 @@ def parse_referrer(referrer, with_query=False, host_only=False,
         if search:
             # TODO Yahoo variable encoding
             if with_query:
-                return u"Organic: %s %s" % (netloc, search[0].decode('utf-8'))
+                return u"Organic: %s %s" % (netloc, try_decode(search[0]))
             return u"Organic: %s" % netloc
         if host_only:
             return netloc
@@ -185,3 +185,14 @@ def get_aggregate(criteria):
     else:
         count = func.sum('fact_count')
     return model, count
+
+
+def try_decode(astring):
+    """Try decoding a string in various encodings, with a fallback to good old
+    ascii."""
+    for encoding in ('utf8', 'latin'):
+        try:
+            return astring.decode(encoding)
+        except UnicodeDecodeError:
+            pass
+    return astring.decode('ascii', 'ignore')

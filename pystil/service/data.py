@@ -7,7 +7,7 @@ import re
 from .. import config
 from sqlalchemy.ext.sqlsoup import SqlSoup
 from pystil.db import desc
-from pystil.data.utils import parse_referrer, parse_domain
+from pystil.data.utils import parse_referrer, parse_domain, try_decode
 
 
 db = SqlSoup(config.CONFIG["DB_URL"])
@@ -17,15 +17,6 @@ ipv4re = re.compile(r"(\d{1,3}(\.|$)){4}")
 
 gip_tl = threading.local()
 
-def try_decode(astring):
-    """Try decoding a string in various encodings, with a fallback to good old
-    ascii."""
-    for encoding in ('latin', 'utf8'):
-        try:
-            return astring.decode(encoding)
-        except UnicodeDecodeError:
-            pass
-    return astring.decode('ascii', 'ignore')
 
 class Message(object):
 
