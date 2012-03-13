@@ -165,7 +165,9 @@ select create_aggregate_table('by_referrer', ARRAY['referrer', 'pretty_referrer'
 
 select create_aggregate_table('by_size', ARRAY['size'], NULL, ARRAY['size']);
 
-select create_aggregate_table('by_page', ARRAY['page', 'hash'], NULL, ARRAY['page', 'hash']);
+select create_aggregate_table('by_page', ARRAY['page'], NULL, ARRAY['page']);
+
+select create_aggregate_table('by_hash', ARRAY['page', 'hash'], NULL, ARRAY['page', 'hash']);
 
 select create_aggregate_table('by_hour', ARRAY['hour'], 
   'hour'=> $$
@@ -182,7 +184,6 @@ grant all on agg.by_platform to pystil;
 grant all on agg.by_referrer to pystil;
 grant all on agg.by_size to pystil;
 grant all on agg.by_page to pystil;
+grant all on agg.by_hash to pystil;
 grant all on agg.by_hour to pystil;
 grant all on agg.by_uuid to pystil;
-
-
