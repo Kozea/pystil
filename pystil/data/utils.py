@@ -105,8 +105,8 @@ def transform_for_pie(results, site, from_date, to_date, lang,
 def make_time_serie(results, criteria, from_date, to_date, lang):
     """Create a serie with 0 days at 0 for Flot from request"""
     visits = {date_to_time(visit.key): visit.count for visit in results}
-
-    for time in range(from_date, to_date, 1000 * 3600 * 24):
+    day_in_ms = 1000 * 3600 * 24
+    for time in range(from_date, to_date + day_in_ms, day_in_ms):
         visits[time] = visits.get(time, 0)
     data = visits.items()
     data.sort()

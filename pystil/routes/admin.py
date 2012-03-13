@@ -5,13 +5,11 @@
 
 from flask import render_template, request, redirect, url_for
 from uuid import uuid4
-from sqlalchemy import func
 from pystil.db import db, distinct, Visit, Keys
 
 
 def register_admin_routes(app, route):
     """Defines admin routes"""
-    log = app.logger
 
     @route('/keys')
     def keys():
