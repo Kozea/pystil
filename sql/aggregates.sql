@@ -19,7 +19,7 @@ create or replace function create_aggregate_table(table_name varchar, attributes
 	BEGIN
 		func_stmt = 'CREATE TABLE agg.' || table_name || ' as (' || $$
 		  SELECT host,
-		  date_trunc('day', date) as date,
+		  date_trunc('day', date)::date as date,
 		$$ ;
 		FOREACH attribute in ARRAY attributes LOOP
 		    columndef = coalesce(columndefs -> attribute, attribute);
