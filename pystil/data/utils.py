@@ -84,29 +84,11 @@ def between(from_date, to_date, table=Visit.__table__):
             (table.c.date < time_to_date(to_date) + timedelta(1)))
 
 
-def transform_for_pie(results, site, from_date, to_date, lang,
-                      reparse_referrer=False):
-    """Transform result for pie display"""
-    visits = [{'label': (parse_referrer(visit.key, host_only=True,
-                                        second_pass=True)
-                         if reparse_referrer else visit.key),
-               'data': visit.count}
-              for visit in results]
-    all_visits = (Visit.query
-                  .filter(on(site))
-                  .filter(between(from_date, to_date))
-                  .count())
-    other = all_visits - sum(visit['data'] for visit in visits)
-    if other:
-        visits = visits + [{'label': 'Other', 'data': other}]
-    return {'list': visits}
-
-
 def make_time_serie(results, criteria, from_date, to_date, lang):
     """Create a serie with 0 days at 0 for Flot from request"""
     visits = {date_to_time(visit.key): visit.count for visit in results}
-
-    for time in range(from_date, to_date, 1000 * 3600 * 24):
+    day_in_ms = 1000 * 3600 * 24
+    for time in range(from_date, to_date + day_in_ms, day_in_ms):
         visits[time] = visits.get(time, 0)
     data = visits.items()
     data.sort()
