@@ -36,7 +36,7 @@ class @Last extends @Base
             visit.date = visit.date.toString()
             @tbody.prepend(tr = $('<tr>').addClass("new-visit"))
             for col in @keys
-                tr.append($('<td>').text(visit[col]))
+                tr.append($('<td>').text(visit[col] or ''))
 
             if @tbody.children().length > 10
                 @tbody.children().last().remove()

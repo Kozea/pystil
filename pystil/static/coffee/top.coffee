@@ -22,5 +22,5 @@ class @Top extends @Base
     update: (response) =>
         for host in response.list
             @tbody.append($('<tr>')
-                .append($('<td>').text(host.key))
+                .append($('<td>').text(host.key or '∅'))
                 .append($('<td>').text(host.count)))
