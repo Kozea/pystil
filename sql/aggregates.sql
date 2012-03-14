@@ -93,6 +93,9 @@ create or replace function agg.create_upsert_func(tablename varchar, precond var
 		-- Building the update 'where' clause, iterating over idcolumns.
 		FOREACH columnname in ARRAY idcolumns  LOOP
 		  columndef = coalesce(columndefs -> columnname, 'NEW.' || columnname);
+          IF (columnname = 'date'::text) THEN
+            columndef = E'date_trunc(\'day\', date)';
+          END IF;
 		  whereclauses = whereclauses || ( columnname || '=' || columndef);
  		END LOOP;
 		func_stmt = func_stmt || array_to_string(whereclauses, ' and ') || ';';
