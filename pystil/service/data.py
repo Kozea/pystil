@@ -61,7 +61,7 @@ class Message(object):
             visit = {'uuid': uuid,
                      'host': get('k'),
                      'site': get('u'),
-                     'client_tz_offset': int(get('z', 0)),
+                     'client_tz_offset': int(float(get('z', 0))),
                      'date': self.stamp,
                      'last_visit': last_visit,
                      'ip': self.remote_addr,
