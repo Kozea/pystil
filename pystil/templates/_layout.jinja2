@@ -16,7 +16,8 @@
 
     {% block style %}
       <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.16/themes/ui-lightness/jquery-ui.css" type="text/css" />
-      <link rel="stylesheet" href="{{ url_for('css') }}" type="text/css" />
+      <link rel="stylesheet" href="{{ url_for(static, filename='prefixfree.min.js') }}" type="text/css" />
+      <link rel="stylesheet" href="{{ url_for(static, filename='css.css') }}" type="text/css" />
     {% endblock style %}
   </head>
   <body>
