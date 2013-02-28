@@ -6,12 +6,12 @@
 
 @font-face { 
   font-family:"Elevant"; 
-  src: url('static/font/Elevant.ttf'); 
+  src: url('/static/font/Elevant.ttf'); 
 } 
 
 @font-face {
   font-family: "Elevant";
-  src: url('static/font/Elevant bold.ttf');
+  src: url('/static/font/Elevant bold.ttf');
   font-weight: bold;
 }
 
@@ -23,8 +23,8 @@
 */
 
 body  {
-  background: url(static/img/bg-top-right.png) no-repeat top right,
-              url(static/img/border-top.png) repeat-x 0 0, 
+  background: url(/static/img/bg-top-right.png) no-repeat top right,
+              url(/static/img/border-top.png) repeat-x 0 0, 
               url(/static/img/bkgd1.png) repeat top left;
   font: 0.9em verdana, sans-serif;
   margin: 0;
@@ -53,7 +53,7 @@ header h1 {
 */
 
 header h1 a {
-  background: url(static/img/logo.png) no-repeat top left;
+  background: url(/static/img/logo.png) no-repeat top left;
   border: none;
   color: transparent;
   display: block;
@@ -69,8 +69,8 @@ header h1 a {
 */
 
 nav {
-  background: url(static/img/aside-top.png) no-repeat top left, 
-              url(static/img/aside-bottom.png) no-repeat bottom center;
+  background: url(/static/img/aside-top.png) no-repeat top left, 
+              url(/static/img/aside-bottom.png) no-repeat bottom center;
   margin: -300px 0 0 480px;
   padding: 0.6em 0;
 }
@@ -107,14 +107,14 @@ nav ul li a:hover, nav ul li a:focus {
 }
 
 article  nav {
-  background: url(static/img/aside2-top.png) no-repeat top right, 
-              url(static/img/aside2-bottom.png) no-repeat bottom right;
+  background: url(/static/img/aside2-top.png) no-repeat top right, 
+              url(/static/img/aside2-bottom.png) no-repeat bottom right;
   margin: 0 0 0 -17%;
   width: 13%;
 }
 
 article nav ul li {
-  background: url(static/img/bg-h2.png) repeat-x bottom left;
+  background: url(/static/img/bg-h2.png) repeat-x bottom left;
   display: block;
 }
 
@@ -148,7 +148,7 @@ article > * {
 
 
 article h2 {
-  background: url(static/img/bg-h2.png) repeat-x bottom left;
+  background: url(/static/img/bg-h2.png) repeat-x bottom left;
   color: #c51637;
   font-family:"Elevant"; 
   font-size: 2.4em;
@@ -176,7 +176,7 @@ article input {
 }
 
 .graph > table {
-  background: url(static/img/bg-table.png) no-repeat bottom right;
+  background: url(/static/img/bg-table.png) no-repeat bottom right;
   width: 100%;
 }
 
@@ -234,7 +234,7 @@ article input {
 }
 
 .dates input[type="text"] {
-  background: url(static/img/bg-form.png) no-repeat top left;  
+  background: url(/static/img/bg-form.png) no-repeat top left;  
   border: 0;
   color: #6d5d2c;
   height: 45px;
@@ -258,7 +258,7 @@ article input {
 }
 
 .search input {
-  background: rgba(201, 190, 155, 0.4) url(static/img/icon-search.png) no-repeat 2px center;
+  background: rgba(201, 190, 155, 0.4) url(/static/img/icon-search.png) no-repeat 2px center;
   border: 1px solid #bfb38c;
   border-radius: 3px;
   color: black;
@@ -268,7 +268,7 @@ article input {
 
 .search input:hover, 
 .search input:focus {
-  background: rgba(201, 190, 155, 0.8) url(static/img/icon-search.png) no-repeat 2px center;
+  background: rgba(201, 190, 155, 0.8) url(/static/img/icon-search.png) no-repeat 2px center;
 }
 
 input::-webkit-input-placeholder  { 
@@ -340,7 +340,7 @@ td.edit {
 }
 
 td.edit a {
-  background: url(static/img/icon-go.png) no-repeat top left; 
+  background: url(/static/img/icon-go.png) no-repeat top left; 
   color: transparent;
   display: block;
   height: 24px; 
@@ -366,7 +366,7 @@ img.logo {
 }
 
 .loading {
-  background-image: url('/static/ajaxloader.gif');
+  background-image: url(/static/ajaxloader.gif);
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -391,7 +391,7 @@ img.logo {
 
 
 figure {
-  background: url(static/img/bg-h2.png) repeat-x bottom left;
+  background: url(/static/img/bg-h2.png) repeat-x bottom left;
   margin: 30px 0 10px;
   overflow: auto;
 }
@@ -417,7 +417,7 @@ figcaption {
 */
 
 footer {
-  background: url(static/img/footer.png) repeat 0 center;
+  background: url(/static/img/footer.png) repeat 0 center;
   bottom: 0;
   box-shadow: -5px 0 8px rgba(145, 130, 80, 0.5);
   height: 35px;
