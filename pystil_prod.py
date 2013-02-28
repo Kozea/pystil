@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 from pystil import app, config
 import werkzeug.contrib.fixers
 import os
