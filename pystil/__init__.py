@@ -6,60 +6,75 @@
 pystil - An elegant site web traffic analyzer
 """
 
-import os
-import sys
-
-ROOT = os.path.dirname(__file__)
-
-from flask import Flask
-from logging import getLogger, INFO, WARN, DEBUG, basicConfig
-from log_colorizer import make_colored_stream_handler
-from pystil.routes import register_common_routes
-from pystil.routes.data import register_data_routes
-from pystil.routes.admin import register_admin_routes
-from pystil.db import db
-from pystil.events import init_events
+from tornado.options import define
 
 
-def app():
-    """Create Flask app"""
-    static_folder = os.path.join(ROOT, 'static')
-    template_folder = os.path.join(ROOT, 'templates')
-    from pystil import config
+define("port", default="1789", help="Pystil port")
+define("db_host", default="localhost", help="Pystil db host")
+define("db_name", default="pystil", help="Pystil db name")
+define("db_user", default="pystil", help="Pystil db user")
+define("db_password", default="pystil", help="Pystil db password")
+define("db_port", default=5432, help="Pystil db port")
+define("debug", default=True, help="Debug mode")
 
-    if not config.FROZEN:
-        print "Config MUST be frozen before pystil init"
-        sys.exit(1)
-    app = Flask(__name__,
-                static_folder=static_folder,
-                template_folder=template_folder)
-    app.config.update(config.CONFIG)
-    app.config['SQLALCHEMY_DATABASE_URI'] = config.CONFIG["DB_URL"]
-    db.init_app(app)
+# Import for db init
+from pystil.routes.data import *
+from pystil.routes import *
 
-    if app.config["LOG_FILE"]:
-        basicConfig(filename=app.config["LOG_FILE"],
-                            filemode='w', level=INFO)
+# import os
+# import sys
 
-    handler = make_colored_stream_handler()
-    getLogger('werkzeug').addHandler(handler)
-    getLogger('werkzeug').setLevel(INFO)
-    getLogger('sqlalchemy').addHandler(handler)
-    getLogger('sqlalchemy').setLevel(WARN)
+# ROOT = os.path.dirname(__file__)
 
-    app.logger.handlers = []
-    app.logger.addHandler(handler)
+# from flask import Flask
+# from logging import getLogger, INFO, WARN, DEBUG, basicConfig
+# from log_colorizer import make_colored_stream_handler
+# from pystil.routes import register_common_routes
+# from pystil.routes.data import register_data_routes
+# from pystil.routes.admin import register_admin_routes
+# from pystil.db import db
+# from pystil.events import init_events
 
-    if (not app.config.get("DEBUG", True) and
-        app.config.get("LDAP_HOST", False) and
-        app.config.get("LDAP_PATH", False)):
-        from pystil.ldap_ import auth_route
-        route = auth_route(app)
-    else:
-        route = app.route
 
-    init_events(app)
-    register_data_routes(app, route)
-    register_common_routes(app, route)
-    register_admin_routes(app, route)
-    return app
+# def app():
+#     """Create Flask app"""
+#     static_folder = os.path.join(ROOT, 'static')
+#     template_folder = os.path.join(ROOT, 'templates')
+#     from pystil import config
+
+#     if not config.FROZEN:
+#         print "Config MUST be frozen before pystil init"
+#         sys.exit(1)
+#     app = Flask(__name__,
+#                 static_folder=static_folder,
+#                 template_folder=template_folder)
+#     app.config.update(config.CONFIG)
+#     app.config['SQLALCHEMY_DATABASE_URI'] = config.CONFIG["DB_URL"]
+#     db.init_app(app)
+
+#     if app.config["LOG_FILE"]:
+#         basicConfig(filename=app.config["LOG_FILE"],
+#                             filemode='w', level=INFO)
+
+#     handler = make_colored_stream_handler()
+#     getLogger('werkzeug').addHandler(handler)
+#     getLogger('werkzeug').setLevel(INFO)
+#     getLogger('sqlalchemy').addHandler(handler)
+#     getLogger('sqlalchemy').setLevel(WARN)
+
+#     app.logger.handlers = []
+#     app.logger.addHandler(handler)
+
+#     if (not app.config.get("DEBUG", True) and
+#         app.config.get("LDAP_HOST", False) and
+#         app.config.get("LDAP_PATH", False)):
+#         from pystil.ldap_ import auth_route
+#         route = auth_route(app)
+#     else:
+#         route = app.route
+
+#     init_events(app)
+#     register_data_routes(app, route)
+#     register_common_routes(app, route)
+#     register_admin_routes(app, route)
+#     return app

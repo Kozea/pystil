@@ -1,5 +1,10 @@
-from pystil.db import db, Visit, count, sum_
-from flask import current_app
+from functools import reduce
+from pystil.db import Visit, count, sum_
+from pystil.context import pystil
+
+db = pystil.db
+metadata = pystil.db_metadata
+engine = pystil.db_engine
 
 
 class memoized(object):
@@ -17,7 +22,7 @@ class memoized(object):
 
 @memoized
 def init_if_needed():
-    db.metadata.reflect(bind=db.get_engine(current_app), schema='agg')
+    metadata.reflect(bind=engine, schema='agg')
 
 
 def key_with_min_value(item1, item2):
@@ -34,7 +39,7 @@ def get_aggregate_table(attr_name):
     """Return the best aggregate table for the given attribute"""
     init_if_needed()
     scores = {}
-    for tablename, table in db.metadata.tables.items():
+    for tablename, table in metadata.tables.items():
         if table.schema == 'agg' and hasattr(table.c, attr_name):
             scores[table] = len(table.c)
     # Magic number 9999: if the table has more than 50 columns, it is probably
@@ -54,7 +59,7 @@ def get_attribute_and_count(attr_name):
     table = get_aggregate_table(attr_name)
     if table is None:
         table = Visit.__table__
-        current_app.logger.warn('No aggregate table found for %s' % attr_name)
+        pystil.log.warn('No aggregate table found for %s' % attr_name)
         countcol = count(1)
         attr = getattr(Visit, attr_name)
     else:

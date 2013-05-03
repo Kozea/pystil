@@ -5,13 +5,13 @@
 
 """Treat line data"""
 
-
+from pystil.context import pystil
 from pystil.data.utils import make_time_serie, on, between
-from pystil.db import db, count, Visit, distinct
+from pystil.db import count, Visit, distinct
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
-    rq = (db.session
+    rq = (pystil.db
           .query(Visit.day.label("key"),
                  count(distinct(Visit.uuid)).label("count")
                  if criteria == 'unique' else count(1).label("count"))

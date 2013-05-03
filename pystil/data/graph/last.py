@@ -5,7 +5,6 @@
 
 """Treat last visits data"""
 
-
 from datetime import datetime
 from pystil.data.utils import on, polish_visit, visit_to_dict
 from pystil.db import Visit
@@ -13,6 +12,8 @@ from pystil.events import get_poll
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
+    return {}
+
     poll = get_poll(site)
     if stamp == None:
         visits = (Visit.query

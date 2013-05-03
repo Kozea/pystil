@@ -11,18 +11,18 @@ class @Base
         @remaining_criteria = @criteria.length
         setTimeout @fetch, 50
 
-    _: (text) ->
+    _: (text) =>
         return if i18n[@lang] then i18n[@lang][text] else text
 
-    fetch: () =>
+    fetch: =>
         $.ajax
-            url: @url()
-            method: 'GET'
-            data: if window.pystil_key then uuid: window.pystil_key else undefined
+            url: (window.pystil_site or '') + '/data'
+            type: 'POST'
+            data: @post_data()
             dataType: if window.pystil_site then 'jsonp' else 'json'
             success: @reply
 
-    clear: () ->
+    clear: =>
         @remaining_criteria = @criteria.length
 
     reply: (response) =>
@@ -30,17 +30,12 @@ class @Base
         if @remaining_criteria > 0
             @fetch()
 
-    url: () ->
-        if window.pystil_site
-            ref = window.pystil_site
-            site = @elt.attr("data-site") or window.pystil_data_site or location.hostname
-        else
-            ref = ""
-            site = location.pathname.split("/")[1] or "all"
-        ref += "/#{site}/#{@type}_by_#{@criteria[--@remaining_criteria]}"
-        ref += "_in_#{@lang}"
-        if @stamp != undefined and @stamp != -1
-            ref += "_at_#{@stamp}"
-        else if window.fromDate and window.toDate and @stamp != -1
-            ref += "_from_#{window.fromDate.getTime() - window.fromDate.getTimezoneOffset() * 60000}_to_#{window.toDate.getTime() - window.toDate.getTimezoneOffset() * 60000}"
-        "#{ref}.json"
+    post_data: =>
+        site: if not window.pystil_site then location.pathname.split("/")[2] or "all" else @elt.attr("data-site") or window.pystil_data_site or location.hostname
+        graph: @type
+        criteria: @criteria[--@remaining_criteria]
+        lang: @lang
+        stamp: if @stamp and @stamp != -1 then @stamp else undefined
+        from: if window.fromDate and @stamp != -1 then window.fromDate.getTime() - window.fromDate.getTimezoneOffset() * 60000 else undefined
+        to: if window.toDate and @stamp != -1 then window.toDate.getTime() - window.toDate.getTimezoneOffset() * 60000 else undefined
+        uuid: window.pystil_key

@@ -5,14 +5,15 @@
 
 """Treat map data"""
 
-from pystil.db import db, count
+from pystil.context import pystil
+from pystil.db import count
 from pystil.data.utils import on, between
 from pystil.aggregates import get_attribute_and_count
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
     table, criteria, count_col = get_attribute_and_count('country_code')
-    rq = (db.session
+    rq = (pystil.db
           .query(table.c.country, table.c.country_code,
                  count(1).label("count"))
           .filter(on(site, table))

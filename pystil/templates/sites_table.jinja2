@@ -12,9 +12,9 @@
         <tr>
           <td>{{ site.count }}</td>
           <td>{{ site.host }}</td>
-          <td class="edit"><a href="{{ url_for('site', site=site.host) }}">Go</a></td>
+          <td class="edit"><a href="{{ reverse_url('Site', site.host) }}">Go</a></td>
         </tr>
-      {% endif %}
-    {% endfor %}
+      {% end %}
+    {% end %}
   </tbody>
 </table>

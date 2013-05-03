@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
-from flaskext.sqlalchemy import SQLAlchemy
 from datetime import timedelta
-from sqlalchemy import func, desc
+from sqlalchemy import func
 from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import case
-from . import patchpsycopg
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import (
+    Column, Integer, String, Numeric, DateTime, Date, Interval)
 
-db = SQLAlchemy()
+Base = declarative_base()
 count = func.count
 sum_ = func.sum
 distinct = func.distinct
@@ -23,23 +24,23 @@ array_agg = func.array_agg
 
 
 def string(pkey=False):
-    return db.Column(db.String, primary_key=pkey)
+    return Column(String, primary_key=pkey)
 
 
 def integer(pkey=False):
-    return db.Column(db.Integer, primary_key=pkey)
+    return Column(Integer, primary_key=pkey)
 
 
 def decimal():
-    return db.Column(db.Numeric)
+    return Column(Numeric)
 
 
 def datetime():
-    return db.Column(db.DateTime)
+    return Column(DateTime)
 
 
 def date(pkey=False):
-    return db.Column(db.Date, primary_key=pkey)
+    return Column(Date, primary_key=pkey)
 
 
 def fields(clazz):
@@ -48,8 +49,9 @@ def fields(clazz):
             if not field.startswith("_")]
 
 
-class Visit(db.Model):
+class Visit(Base):
     """This mapped class contains the visits"""
+    __tablename__ = 'visit'
 
     id = integer(pkey=True)
     uuid = string()
@@ -64,13 +66,13 @@ class Visit(db.Model):
     language = string()
     page = string()
     platform = string()
-    query_string = db.Column('query', db.String)
+    query_string = Column('query', String)
     referrer = string()
     pretty_referrer = string()
     referrer_domain = string()
     site = string()
     size = string()
-    time = db.Column(db.Interval)
+    time = Column(Interval)
     country = string()
     country_code = string()
     city = string()
@@ -79,10 +81,10 @@ class Visit(db.Model):
 
     browser_name_version = column_property(
         browser_name + ' ' + split_part(browser_version, '.', 1) +
-        case([
-            (browser_name.in_(['opera', 'safari', 'chrome']), '')],
+        case([(
+            browser_name.in_(['opera', 'safari', 'chrome']), '')],
             else_='.' + split_part(browser_version, '.', 2)
-            ))
+        ))
 
     day = column_property(
         date_trunc('day', date))
@@ -118,9 +120,13 @@ class Visit(db.Model):
                         length(host) - strpos(host, '.') + 1)))
 
 
-class Keys(db.Model):
+class Keys(Base):
     """This mapped lass contains the auth keys"""
+    __tablename__ = 'keys'
 
     id = integer(pkey=True)
     key = string()
     host = string()
+
+
+metadata = Base.metadata

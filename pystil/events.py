@@ -1,9 +1,9 @@
 
 import pickle
 import sys
-import pika
-import gevent
-from gevent.event import Event
+# import pika
+# import gevent
+# from gevent.event import Event
 
 POLLS = {}
 CACHE_SIZE = 20

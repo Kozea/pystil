@@ -4,10 +4,9 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 """Utility functions to help processing data"""
-from flask import current_app
 from datetime import datetime, timedelta
-from urlparse import urlparse, parse_qs
-from pystil import db as models
+from urllib.parse import urlparse, parse_qs
+from pystil.context import pystil
 from pystil.db import Visit, fields
 from datetime import date, time
 from calendar import timegm
@@ -90,7 +89,7 @@ def make_time_serie(results, criteria, from_date, to_date, lang):
     day_in_ms = 1000 * 3600 * 24
     for time in range(from_date, to_date + day_in_ms, day_in_ms):
         visits[time] = visits.get(time, 0)
-    data = visits.items()
+    data = list(visits.items())
     data.sort()
     return {'label': labelize(criteria, lang),
             'data': data}
@@ -160,9 +159,9 @@ def get_aggregate(criteria):
     """Returns a tuple in the form (model, count_column).
     Tries to look for an aggregate table suitable for the criteria
     """
-    model = getattr(models, 'Agg_by_%s' % criteria, Visit)
+    model = getattr(pystil.db, 'Agg_by_%s' % criteria, Visit)
     if model == Visit:
-        current_app.logger.warn('No aggregates for criteria %s' % criteria)
+        pystil.log.warn('No aggregates for criteria %s' % criteria)
         count = func.count(1)
     else:
         count = func.sum('fact_count')

@@ -20,8 +20,8 @@ class @Last extends @Base
         @remaining_criteria = 1  # Fix this
         $.ajax
             url: @url()
-            method: 'GET'
-            data: if window.pystil_key then uuid: window.pystil_key else undefined
+            type: 'POST'
+            data: @post_data()
             dataType: if window.pystil_site then 'jsonp' else 'json'
             success: @update
 

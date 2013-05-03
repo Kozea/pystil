@@ -3,9 +3,10 @@
 # Copyright (C) 2011 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 """Treat pie data"""
-from pystil.db import db, desc
+from pystil.context import pystil
 from pystil.data.utils import on, between, parse_referrer
 from pystil.aggregates import get_attribute_and_count
+from sqlalchemy import desc
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
@@ -14,7 +15,7 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
     if criteria == 'browser_name_version':
         restrict = ((table.c.browser_name != None) &
                     (table.c.browser_version != None))
-    rq = (db.session
+    rq = (pystil.db
           .query(criterion.label("key"),
                  count_col.label("count"))
           .filter(on(site, table))
@@ -28,7 +29,7 @@ def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
         if criteria == 'pretty_referrer' else visit.key),
                'data': visit.count}
               for visit in results]
-    all_visits = (db.session
+    all_visits = (pystil.db
                   .query(count_col.label("all"))
                   .filter(on(site, table))
                   .filter(between(from_date, to_date, table=table))

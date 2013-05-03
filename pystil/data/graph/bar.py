@@ -4,15 +4,14 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 """Treat bar data"""
-
-from pystil.db import db
+from pystil.context import pystil
 from pystil.data.utils import make_serie, on, between
 from pystil.aggregates import get_attribute_and_count
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):
     table, key, count_col = get_attribute_and_count(criteria)
-    rq = (db.session
+    rq = (pystil.db
           .query(key.label("key"),
                  count_col.label("count"))
           .filter(on(site, table))
