@@ -4,19 +4,21 @@
     <title>pystil - An elegant website traffic analyzer</title>
     {% block script %}
       <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-      <!--[if lte IE 8]><script src="{{ static_url('js/excanvas.min.js') }}"></script><![endif]-->
+
       <script type="text/javascript">
         (function() {
         var d=document,t='script',p=d.createElement(t),s=d.getElementsByTagName(t)[0];
         p.type='text/javascript';p.async=true;p.src="/pystil.js";s.parentNode.insertBefore(p,s);
         })();
       </script>
-      <script src="{{ static_url('js/js.js') }}"></script>
+
+      <script src="{{ static_url('js/jquery-2.0.0.js') }}"></script>
+      <script src="{{ static_url('js/charts.js') }}"></script>
+      <script src="{{ static_url('js/tabs.js') }}"></script>
     {% end %}
 
     {% block style %}
-      <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.16/themes/ui-lightness/jquery-ui.css" type="text/css" />
-      <link rel="stylesheet" href="{{ static_url('css.css') }}" type="text/css" />
+      <link rel="stylesheet" href="{{ static_url('stylesheets/style.css') }}" type="text/css" />
     {% end %}
   </head>
   <body>

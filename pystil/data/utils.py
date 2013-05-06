@@ -60,6 +60,42 @@ def labelize(string, lang):
     }[string]
 
 
+def titlize(string, lang):
+    """return the label for a criteria"""
+    if lang == 'fr':
+        return {
+            'all': 'Statistiques par jour',
+            'host': 'Top sites',
+            'page': 'Pages les plus vues',
+            'hash': 'Hashs les plus vus',
+            'referrer_domain': 'Top référeurs',
+            'hour': 'Visites par heure',
+            'browser_name': 'Top navigateurs',
+            'browser_name_version': 'Top version de navigateur',
+            'size': "Top tailles d'écran",
+            'platform': 'Top plateforme',
+            'country': 'Top pays',
+            'day': 'Top jours',
+            'ip': 'Top adresses IP',
+        }[string]
+
+    return {
+        'all': 'Stats by day',
+        'host': 'Top sites',
+        'page': 'Most viewed pages',
+        'hash': 'Most viewed hashes',
+        'referrer_domain': 'Best referrers',
+        'hour': 'Visits per hour',
+        'browser_name': 'Top browsers',
+        'browser_name_version': 'Top browser versions',
+        'size': 'Top screen sizes',
+        'platform': 'Top platforms',
+        'country': 'Top countries',
+        'day': 'Top days',
+        'ip': 'Top IP addresses'
+    }[string]
+
+
 def date_to_time(date):
     """Convert a python date to js stamp"""
     return int(1000 * timegm(date.timetuple()))

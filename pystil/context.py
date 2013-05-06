@@ -20,7 +20,7 @@ def monkey_patch():
 
     RequestHandler._execute = _wdb_execute
 
-monkey_patch()
+# monkey_patch()
 
 
 class Pystil(Application):

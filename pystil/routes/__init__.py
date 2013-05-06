@@ -12,8 +12,7 @@ from sqlalchemy import desc
 @url(r'/')
 class Index(Hdr):
     def get(self):
-        all_ = self.db.query(count(1)).select_from(Visit).scalar()
-        self.render('index.jinja2', all_=all_)
+        self.render('index.jinja2')
 
 
 @url(r'/sites')

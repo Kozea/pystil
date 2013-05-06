@@ -7,7 +7,7 @@ $.fn.extend
                 evt = $.Event "tabshow", target: e
                 $.event.trigger "tabshow", evt, e, false
 
-@tabs = () =>
+$ ->
     $('.pystil-tabs').each (i, elt) ->
         $lnks = $ 'ul li a', elt
         $tab = $ '.tab', elt
@@ -15,7 +15,7 @@ $.fn.extend
         $lnks.first().addClass 'active'
         $tab.first().addClass('active').tabshow().css left: 0
 
-        $tab.not($tab.first()).css left: window.innerWidth
+        $tab.not($tab.first()).hide().css left: window.innerWidth
 
         $lnks.click (evt) ->
             $old_tab_active = $ '.tab.active', elt
@@ -29,8 +29,10 @@ $.fn.extend
             $new_tab_active.addClass 'active'
             $new_lnk_active.addClass 'active'
 
+            $new_tab_active.show()
             $tab.each (i, e) ->
                 sign =  i - $tab.index($new_tab_active)
                 $(e).css left: sign * window.innerWidth
             $new_tab_active.tabshow()
             false
+

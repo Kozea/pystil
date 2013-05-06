@@ -3,20 +3,15 @@
 {% block article %}
   <article>
     <h2>Last visits</h2>
+    {# <figure> #}
+    {#   <section class="graph" data-graph="Last" data-criteria="all"></section> #}
+    {#   <figcaption>Real time last visits</figcaption> #}
+    {# <figure> #}
     <figure>
-      <section class="graph" data-graph="Last" data-criteria="all"></section>
-      <figcaption>Real time last visits</figcaption>
+      <embed type="image/svg+xml" src="/data/load/Line/all.svg" data-type="Line" data-criteria="all" data-site="all" />
     </figure>
     <figure>
-      <section class="graph" data-graph="Line" data-criteria="new,unique,all"></section>
-      <figcaption>Stats per day</figcaption>
+      <embed type="image/svg+xml" src="/data/load/Pie/host.svg" data-type="Pie" data-criteria="host" data-site="all" />
     </figure>
-    <figure>
-      <section class="graph" data-graph="Pie" data-criteria="host"></section>
-      <figcaption>Top sites</figcaption>
-    </figure>
-    <p>
-      Total visits: {{ all_ }}
-    </p>
   </article>
 {% end %}

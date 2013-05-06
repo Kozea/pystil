@@ -18,86 +18,78 @@
       </ul>
     </nav>
     <section id="visits" class="tab">
+      {# <figure> #}
+      {#   <div class="graph" data-graph="Last" data-criteria="all"></div> #}
+      {#   <figcaption>Real time last visits</figcaption> #}
+      {# </figure> #}
       <figure>
-        <div class="graph" data-graph="Last" data-criteria="all"></div>
-        <figcaption>Real time last visits</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Line/all.svg" data-type="Line" data-criteria="all" data-site="{{ site }}" />
       </figure>
-      <figure>
-        <div class="graph" data-graph="Line" data-criteria="new,unique,all"></div>
-        <figcaption>Stats by day</figcaption>
-      </figure>
-      <figure>
-        <div class="graph" data-graph="Top" data-criteria="subdomain"></div>
-        <figcaption>Top subdomains</figcaption>
-      </figure>
+      {# <figure> #}
+      {#   <div class="graph" data-graph="Top" data-criteria="subdomain"></div> #}
+      {#   <figcaption>Top subdomains</figcaption> #}
+      {# </figure> #}
     </section>
     <section id="time" class="tab">
       <figure>
-        <div class="graph" data-graph="Bar" data-criteria="hour"></div>
-        <figcaption>Visits per hour</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Bar/hour.svg" data-type="Bar" data-criteria="hour" data-site="{{ site }}" />
       </figure>
-      <figure>
-        <div class="graph" data-graph="Time" data-criteria="spent_time"></div>
-        <figcaption>Time spent on site</figcaption>
-      </figure>
+      {# <figure> #}
+      {#   <div class="graph" data-graph="Time" data-criteria="spent_time"></div> #}
+      {#   <figcaption>Time spent on site</figcaption> #}
+      {# </figure> #}
     </section>
     <section id="map" class="tab">
-      <figure>
-        <div class="graph" data-graph="Map" data-criteria="all"></div>
-        <figcaption>World map of visits</figcaption>
-      </figure>
+      {# <figure> #}
+      {#   <div class="graph" data-graph="Map" data-criteria="all"></div> #}
+      {#   <figcaption>World map of visits</figcaption> #}
+      {# </figure> #}
     </section>
     <section id="pages" class="tab">
       {% if site == 'all' %}
         <figure>
-          <div class="graph" data-graph="Pie" data-criteria="host"></div>
-          <figcaption>Top hosts</figcaption>
+          <embed type="image/svg+xml" src="/data/load/Pie/host.svg" data-type="Pie" data-criteria="host" data-site="all" />
         </figure>
       {% else %}
         <figure>
-          <div class="graph" data-graph="Pie" data-criteria="page"></div>
-          <figcaption>Most viewed pages</figcaption>
+          <embed type="image/svg+xml" src="/data/load/Pie/page.svg" data-type="Pie" data-criteria="page" data-site="{{ site }}" />
         </figure>
         <figure>
-          <div class="graph" data-graph="Pie" data-criteria="hash"></div>
-          <figcaption>Most viewed hashes</figcaption>
+          <embed type="image/svg+xml" src="/data/load/Pie/hash.svg" data-type="Pie" data-criteria="hash" data-site="{{ site }}" />
         </figure>
       {% end %}
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="referrer_domain"></div>
-        <figcaption>Top referrers</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/referrer_domain.svg" data-type="Pie" data-criteria="referrer_domain" data-site="{{ site }}" />
       </figure>
     </section>
     <section id="visitor" class="tab">
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="browser_name"></div>
-        <figcaption>Top browsers</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/browser_name.svg" data-type="Pie" data-criteria="browser_name" data-site="{{ site }}" />
       </figure>
+
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="browser_name_version"></div>
-        <figcaption>Top browser versions</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/browser_name_version.svg" data-type="Pie" data-criteria="browser_name_version" data-site="{{ site }}" />
       </figure>
+
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="size"></div>
-        <figcaption>Top screen sizes</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/size.svg" data-type="Pie" data-criteria="size" data-site="{{ site }}" />
       </figure>
+
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="platform"></div>
-        <figcaption>Top platforms</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/platform.svg" data-type="Pie" data-criteria="platform" data-site="{{ site }}" />
       </figure>
     </section>
     <section id="misc" class="tab">
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="country"></div>
-        <figcaption>Top countries</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/country.svg" data-type="Pie" data-criteria="country" data-site="{{ site }}" />
       </figure>
+
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="day"></div>
-        <figcaption>Top days</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/day.svg" data-type="Pie" data-criteria="day" data-site="{{ site }}" />
       </figure>
+
       <figure>
-        <div class="graph" data-graph="Pie" data-criteria="ip"></div>
-        <figcaption>Top ip adresses</figcaption>
+        <embed type="image/svg+xml" src="/data/load/Pie/ip.svg" data-type="Pie" data-criteria="ip" data-site="{{ site }}" />
       </figure>
     </section>
   </article>

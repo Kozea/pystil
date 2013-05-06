@@ -1,0 +1,284 @@
+@import compass/css3
++font-face("Elevant", font-files("Elevant.woff", "Elevant.ttf", "Elevant.svg"), "Elevant.eot", 400)
++font-face("Elevant", font-files("ElevantBold.woff", "ElevantBold.ttf", "ElevantBold.svg"), "ElevantBold.eot", 700)
+
+
+body
+  background: image-url('bg-top-right.png') no-repeat top right, image-url('border-top.png') repeat-x 0 0, image-url('bkgd1.png') repeat top left
+  font: 0.9em verdana, sans-serif
+  margin: 0
+  min-height: 100%
+  padding: 0
+  position: absolute
+  width: 100%
+  overflow-x: hidden
+  a
+    color: #222
+    text-decoration: none
+    font-size: 1.1em
+
+header h1
+  margin: 0
+  a
+    background: image-url('logo.png') no-repeat top left
+    border: none
+    color: transparent
+    display: block
+    height: 390px
+    width: 500px
+
+nav
+  background: image-url('aside-top.png') no-repeat top left, image-url('aside-bottom.png') no-repeat bottom center
+  margin: -300px 0 0 480px
+  padding: 0.6em 0
+  ul
+    background: rgba(255, 255, 255, 0.25)
+    margin: 0
+    padding: 0
+    text-align: center
+    li
+      display: inline-block
+      list-style: none
+      padding: 5px 10px
+      a
+        color: #73716a
+        font-family: "Elevant"
+        font-size: 1.9em
+        text-shadow: 1px 1px 1px rgba(81, 79, 71, 0.3)
+        font-weight: bold
+        +transition(color 0.3s linear)
+        &.active
+          color: #4ca5a2
+        &:hover, &:focus
+          color: #be3e3a
+          +transition(color 0.2 linear)
+
+article nav
+  background: image-url('aside2-top.png') no-repeat top right, image-url('aside2-bottom.png') no-repeat bottom right
+  margin: 0 0 0 -17%
+  width: 13%
+  ul li
+    background: image-url('bg-h2.png') repeat-x bottom left
+    display: block
+
+section
+  margin-top: 250px
+  width: 100%
+  section
+    margin: 0
+
+
+article
+  margin: 0 auto
+  width: 75%
+  > *
+    margin: 10px 0 20px
+  h2
+    background: image-url('bg-h2.png') repeat-x bottom left
+    color: #c51637
+    font-family: "Elevant"
+    font-size: 2.4em
+    padding: 0 15px
+  input
+    width: auto
+
+.graph
+  min-height: 320px
+  width: 100%
+  &[data-graph=Pie]
+    margin: 1% auto
+    width: 50%
+  > table
+    background: image-url('bg-table.png') no-repeat bottom right
+    width: 100%
+  .legend table
+    background: none
+  table
+    tr
+      background: rgba(255, 255, 255, 0.4)
+      color: #7e7e7e
+      height: 1.8em
+      &:hover
+        background: rgba(255, 255, 255, 0.7)
+        color: #343434
+    thead tr
+      background: none
+      color: #7e7e7e
+      &:hover
+        background: none
+        color: #7e7e7e
+  .legend table tr
+    background: none
+    color: #7e7e7e
+    &:hover
+      background: none
+      color: #7e7e7e
+  table tr td
+    word-break: break-word
+
+.sites table
+  border-collapse: collapse
+  tbody tr
+    &:nth-child(even)
+      background: rgba(255, 255, 255, 0.3)
+    &:hover
+      background: rgba(255, 255, 255, 0.5)
+  thead tr
+    background: rgba(255, 255, 255, 0.7)
+    height: 1.8em
+
+.dates
+  label
+    color: #af9e73
+    font-family: 'Elevant'
+    font-size: 1.5em
+    font-weight: bold
+  input[type="text"]
+    background: image-url('bg-form.png') no-repeat top left
+    border: 0
+    color: #6d5d2c
+    height: 45px
+    padding: 2px 10px
+    width: 250px
+    &:focus, &:hover
+      outline: none
+
+.search
+  margin: 0 0 25px 5%
+  label
+    color: transparent
+    font-size: 0
+  input
+    background: rgba(201, 190, 155, 0.4) image-url('icon-search.png') no-repeat 2px center
+    border: 1px solid #bfb38c
+    border-radius: 3px
+    color: black
+    padding: 0.3em 2px 0.3em 25px
+    width: 20%
+    &:hover, &:focus
+      background: rgba(201, 190, 155, 0.8) image-url('icon-search.png') no-repeat 2px center
+
+input
+  &::-webkit-input-placeholder, &:-moz-placeholder
+    color: #7e6b2d
+
+
+.sites.results table
+  width: 90%
+  margin: 10px 5% 90px
+
+
+.ui-datepicker
+  border: 0
+  border-radius: 0
+  font-size: 0.9em
+  margin: 0 0 0 8px
+  padding: 15px 0
+  width: 240px
+
+.ui-widget-content
+  background: #d8ceb0
+  width: 240px
+  &:hover, &:focus
+    outline: none
+
+.ui-widget-header
+  background: rgba(255, 255, 255, 0.5)
+  border: 0
+  color: #4f4116
+  outline: none
+
+.ui-datepicker
+  .ui-datepicker-prev, .ui-datepicker-next
+    border: none
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+  color: #4f4116
+
+ui-datepicker-calendar
+  margin: 0 5px
+
+
+table thead
+  text-align: left
+
+td.edit
+  width: 22px
+  a
+    background: image-url('icon-go.png') no-repeat top left
+    color: transparent
+    display: block
+    height: 24px
+    width: 22px
+
+section aside
+  background: none
+  margin: 0 auto
+  table
+    margin: 10px 10%
+
+img.logo
+  position: absolute
+  right: 0
+  top: 0
+  width: 450px
+
+.loading
+  background-image: image-url('ajaxloader.gif')
+  background-position: center
+  background-repeat: no-repeat
+
+.graph[data-graph=Last] tr
+  +transition(500ms)
+
+.new-visit
+  color: orangered !important
+
+.pystil-tabs
+  position: relative
+
+.tab
+  position: absolute
+  top: 40px
+  +transition(1s)
+
+figure
+  background: image-url('bg-h2.png') repeat-x bottom left
+  margin: 30px 0 10px
+  overflow: auto
+  &:last-of-type
+    background: none
+
+figcaption
+  color: #bb6120
+  font-family: "Elevant"
+  font-size: 1.7em
+  font-weight: bold
+  margin: 0 auto 20px
+  text-align: center
+
+
+footer
+  background: image-url('footer.png') repeat 0 center
+  bottom: 0
+  +box-shadow(-5px 0 8px rgba(145, 130, 80, 0.5))
+  height: 35px
+  margin: 20px 0 0
+  position: fixed
+  width: 100%
+  ul
+    margin: 0
+    padding: 8px 0
+    text-align: center
+    li
+      display: inline-block
+      a
+        color: #8c7743
+        font-size: 0.9em
+        font-weight: bold
+        margin: 0 5px
+        text-decoration: none
+        +transition(color 0.2s linear)
+        &:hover, :focus
+          color: #685422
+          +transition(color 0.4s linear)
