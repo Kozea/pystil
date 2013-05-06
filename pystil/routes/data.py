@@ -43,7 +43,21 @@ PystilStyle = Style(
     ))
 
 
-@url(r'/data/(\w+)/(\w+)/(\w+).svg')
+@url(r'/load/data/([^/]+)/([^/]+)/([^/]+).svg')
+class LoadData(Hdr):
+    def get(self, site, type_, criteria):
+        self.set_header("Content-Type", "image/svg+xml")
+        chart = getattr(pygal, type_)(
+            fill=True,
+            style=PystilStyle,
+            width=1000,
+            height=400)
+        chart.no_data_text = 'Loading'
+        chart.title = titlize(criteria, 'us')
+        self.write(chart.render())
+
+
+@url(r'/data/([^/]+)/([^/]+)/([^/]+).svg')
 class Data(Hdr):
     def get(self, site, type_, criteria):
         self.set_header("Content-Type", "image/svg+xml")
@@ -55,13 +69,6 @@ class Data(Hdr):
             width=1000,
             height=400,
             legend_at_bottom=type_ != 'Pie')
-        if site == 'load':
-            chart.no_data_text = 'Loading'
-            chart.title = titlize(criteria, 'us')
-            chart.interpolate = None
-            chart.add('', [])
-            self.write(chart.render())
-            return
 
         from_date = date_to_time(date.today() - timedelta(days=31))
         to_date = date_to_time(date.today())

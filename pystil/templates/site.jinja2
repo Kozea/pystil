@@ -23,7 +23,7 @@
       {#   <figcaption>Real time last visits</figcaption> #}
       {# </figure> #}
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Line/all.svg" data-type="Line" data-criteria="all" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Line/all.svg" />
       </figure>
       {# <figure> #}
       {#   <div class="graph" data-graph="Top" data-criteria="subdomain"></div> #}
@@ -32,7 +32,7 @@
     </section>
     <section id="time" class="tab">
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Bar/hour.svg" data-type="Bar" data-criteria="hour" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Bar/hour.svg" />
       </figure>
       {# <figure> #}
       {#   <div class="graph" data-graph="Time" data-criteria="spent_time"></div> #}
@@ -48,48 +48,48 @@
     <section id="pages" class="tab">
       {% if site == 'all' %}
         <figure>
-          <embed type="image/svg+xml" src="/data/load/Pie/host.svg" data-type="Pie" data-criteria="host" data-site="all" />
+          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/host.svg" />
         </figure>
       {% else %}
         <figure>
-          <embed type="image/svg+xml" src="/data/load/Pie/page.svg" data-type="Pie" data-criteria="page" data-site="{{ site }}" />
+          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/page.svg" />
         </figure>
         <figure>
-          <embed type="image/svg+xml" src="/data/load/Pie/hash.svg" data-type="Pie" data-criteria="hash" data-site="{{ site }}" />
+          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/hash.svg" />
         </figure>
       {% end %}
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/referrer_domain.svg" data-type="Pie" data-criteria="referrer_domain" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/referrer_domain.svg" />
       </figure>
     </section>
     <section id="visitor" class="tab">
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/browser_name.svg" data-type="Pie" data-criteria="browser_name" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/browser_name.svg" />
       </figure>
 
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/browser_name_version.svg" data-type="Pie" data-criteria="browser_name_version" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/browser_name_version.svg" />
       </figure>
 
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/size.svg" data-type="Pie" data-criteria="size" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/size.svg" />
       </figure>
 
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/platform.svg" data-type="Pie" data-criteria="platform" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/platform.svg" />
       </figure>
     </section>
     <section id="misc" class="tab">
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/country.svg" data-type="Pie" data-criteria="country" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/country.svg" />
       </figure>
 
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/day.svg" data-type="Pie" data-criteria="day" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/day.svg" />
       </figure>
 
       <figure>
-        <embed type="image/svg+xml" src="/data/load/Pie/ip.svg" data-type="Pie" data-criteria="ip" data-site="{{ site }}" />
+        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/ip.svg" />
       </figure>
     </section>
   </article>
