@@ -15,7 +15,8 @@ $ ->
         $lnks.first().addClass 'active'
         $tab.first().addClass('active').tabshow().css left: 0
 
-        $tab.not($tab.first()).hide().css left: window.innerWidth
+        $tab.not($tab.first()).each (i) ->
+            $(@).hide().css left: i * window.innerWidth
 
         $lnks.click (evt) ->
             $old_tab_active = $ '.tab.active', elt

@@ -213,3 +213,62 @@ def try_decode(astring):
         except UnicodeDecodeError:
             pass
     return astring.decode('ascii', 'ignore')
+
+
+# Stripped down user agent parsing from werkzeug
+PLATFORMS = [(b, re.compile(a, re.I)) for a, b in (
+    ('iphone|ios', 'iphone'),
+    (r'darwin|mac|os\s*x', 'macos'),
+    ('win', 'windows'),
+    (r'android', 'android'),
+    (r'x11|lin(\b|ux)?', 'linux'),
+    ('(sun|i86)os', 'solaris'),
+    (r'nintendo\s+wii', 'wii'),
+    ('irix', 'irix'),
+    ('hp-?ux', 'hpux'),
+    ('aix', 'aix'),
+    ('sco|unix_sv', 'sco'),
+    ('bsd', 'bsd'),
+    ('amiga', 'amiga')
+)]
+
+BROWSERS = [(
+    b, re.compile(r'(?:%s)[/\sa-z(]*(\d+[.\da-z]+)?(?i)' % a)
+) for a, b in (
+    ('googlebot', 'google'),
+    ('msnbot', 'msn'),
+    ('yahoo', 'yahoo'),
+    ('ask jeeves', 'ask'),
+    (r'aol|america\s+online\s+browser', 'aol'),
+    ('opera', 'opera'),
+    ('chrome', 'chrome'),
+    ('firefox|firebird|phoenix|iceweasel', 'firefox'),
+    ('galeon', 'galeon'),
+    ('safari', 'safari'),
+    ('webkit', 'webkit'),
+    ('camino', 'camino'),
+    ('konqueror', 'konqueror'),
+    ('k-meleon', 'kmeleon'),
+    ('netscape', 'netscape'),
+    (r'msie|microsoft\s+internet\s+explorer', 'msie'),
+    ('lynx', 'lynx'),
+    ('links', 'links'),
+    ('seamonkey|mozilla', 'seamonkey')
+)]
+
+
+def parse_ua(user_agent):
+    for platform, regex in PLATFORMS:
+        match = regex.search(user_agent)
+        if match is not None:
+            break
+    else:
+        platform = None
+    for browser, regex in BROWSERS:
+        match = regex.search(user_agent)
+        if match is not None:
+            version = match.group(1)
+            break
+    else:
+        browser = version = None
+    return platform, browser, version

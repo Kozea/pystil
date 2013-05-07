@@ -40,10 +40,9 @@
       {# </figure> #}
     </section>
     <section id="map" class="tab">
-      {# <figure> #}
-      {#   <div class="graph" data-graph="Map" data-criteria="all"></div> #}
-      {#   <figcaption>World map of visits</figcaption> #}
-      {# </figure> #}
+      <figure>
+        <embed type="image/svg+xml" src="/data/{{ site }}/map.svg" />
+      </figure>
     </section>
     <section id="pages" class="tab">
       {% if site == 'all' %}

@@ -1,7 +1,10 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-from tornado.web import RequestHandler, Application, url as unnamed_url
+from tornado.web import (
+    RequestHandler,
+    StaticFileHandler,
+    Application, url as unnamed_url)
 from tornado.options import options
 from logging import getLogger
 from pystil.db import metadata
@@ -36,6 +39,7 @@ class Pystil(Application):
         self.db_engine = create_engine(db_url, echo=False)
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
+        getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):

@@ -19,6 +19,7 @@ define("debug", default=True, help="Debug mode")
 
 # Import for db init
 from pystil.routes.data import *
+from pystil.routes.map import *
 from pystil.routes import *
 
 # import os

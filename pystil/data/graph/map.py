@@ -9,6 +9,10 @@ from pystil.context import pystil
 from pystil.db import count
 from pystil.data.utils import on, between
 from pystil.aggregates import get_attribute_and_count
+import os
+
+# with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'map.svg')) as map_file:
+#     MAP = map_file.read()
 
 
 def process_data(site, graph, criteria, from_date, to_date, step, stamp, lang):

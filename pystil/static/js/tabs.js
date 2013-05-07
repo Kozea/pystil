@@ -27,8 +27,10 @@
       $tab.first().addClass('active').tabshow().css({
         left: 0
       });
-      $tab.not($tab.first()).hide().css({
-        left: window.innerWidth
+      $tab.not($tab.first()).each(function(i) {
+        return $(this).hide().css({
+          left: i * window.innerWidth
+        });
       });
       return $lnks.click(function(evt) {
         var $new_lnk_active, $new_tab_active, $old_lnk_active, $old_tab_active;
