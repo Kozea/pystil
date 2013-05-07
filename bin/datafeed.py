@@ -18,8 +18,8 @@ import pickle
 from pystil import config
 
 if __name__ == '__main__':
-    # sys.stdout = open(os.devnull, "w")
-    # sys.stderr = open("/var/log/pystil.err", "w")
+    sys.stdout = open(os.devnull, "w")
+    sys.stderr = open("/var/log/pystil.err", "w")
     pystil_instance = os.environ.get('PYSTIL_INSTANCE', 'pystil')
     config.freeze()
     connection = pika.BlockingConnection(

@@ -52,13 +52,16 @@ class Message(object):
         if kind == 'o':
             last_visit = get('l')
             if last_visit and 'undefined' not in last_visit:
-                last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
+                try:
+                    last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
+                except ValueError:
+                    last_visit = None
             else:
                 last_visit = None
             visit = {'uuid': uuid,
                      'host': get('k'),
                      'site': get('u'),
-                     'client_tz_offset': get('z', 0),
+                     'client_tz_offset': int(float(get('z', 0))),
                      'date': self.stamp,
                      'last_visit': last_visit,
                      'ip': self.remote_addr,

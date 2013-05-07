@@ -93,6 +93,9 @@ create or replace function agg.create_upsert_func(tablename varchar, precond var
 		-- Building the update 'where' clause, iterating over idcolumns.
 		FOREACH columnname in ARRAY idcolumns  LOOP
 		  columndef = coalesce(columndefs -> columnname, 'NEW.' || columnname);
+          IF (columnname = 'date'::text) THEN
+            columndef = E'date_trunc(\'day\', NEW.date)';
+          END IF;
 		  whereclauses = whereclauses || ( columnname || '=' || columndef);
  		END LOOP;
 		func_stmt = func_stmt || array_to_string(whereclauses, ' and ') || ';';
@@ -133,12 +136,12 @@ $create_upsert_func$ language plpgsql;
 
 select create_aggregate_table('by_domain', 
   ARRAY['domain', 'subdomain'], 
-  ('domain'=> $$(case 
+  hstore('domain',  $$(case 
   				WHEN split_part(NEW.host, '.', 3) = '' 
 				  then NEW.host
   				ELSE substr(NEW.host, strpos(NEW.host, '.') + 1, length(NEW.host) - strpos(NEW.host, '.') + 1) 
   			 END)$$) ||
-    ('subdomain'=> $$(case 
+    hstore('subdomain', $$(case 
 					WHEN split_part(NEW.host, '.', 3) != ''
 					  THEN split_part(NEW.host, '.', 1)
   					 ELSE NULL END)$$),
@@ -146,12 +149,12 @@ select create_aggregate_table('by_domain',
 
 select create_aggregate_table('by_browser', 
   ARRAY['browser_name', 'browser_version', 'browser_name_version'], 
-  'browser_name_version'=> $$(
+  hstore('browser_name_version', $$(
 	NEW.browser_name || ' ' || split_part(NEW.browser_version, '.', 1) || (CASE 
 		WHEN NEW.browser_name in ('opera', 'safari', 'chrome') 
 			THEN ''
 	  	ELSE '.' || split_part(NEW.browser_version, '.', 2) 
-		END))$$,
+		END))$$),
 	ARRAY['browser_name', 'browser_version']);
 
 
@@ -170,8 +173,8 @@ select create_aggregate_table('by_page', ARRAY['page'], NULL, ARRAY['page']);
 select create_aggregate_table('by_hash', ARRAY['page', 'hash'], NULL, ARRAY['page', 'hash']);
 
 select create_aggregate_table('by_hour', ARRAY['hour'], 
-  'hour'=> $$
-	date_part('hour', NEW.date)$$, 
+  hstore('hour',  $$
+	date_part('hour', NEW.date)$$), 
   ARRAY['hour']);
 
 select create_aggregate_table('by_uuid', ARRAY['uuid'], NULL, ARRAY['uuid']);
