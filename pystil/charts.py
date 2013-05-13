@@ -38,6 +38,123 @@ PystilStyle = Style(
     ))
 
 
+class Chart(object):
+    def __init__(self, db, site, criteria, from_date, to_date):
+        self.db = db
+        self.site = site
+        self.criteria = criteria
+        self.from_date = from_date
+        self.to_date = to_date
+        self.table = Visit.__table__
+        self.criterion = None
+        self.chart = None
+        self.count_col = None
+
+    def get_chart(self):
+        return self.type(
+            interpolate='cubic',
+            fill=True,
+            truncate_legend=200,
+            style=PystilStyle,
+            width=1000,
+            height=400,
+            legend_at_bottom=self.type != Pie)
+
+    def get_restrict(self):
+        if self.criterion is not None:
+            return self.criterion != None
+        return True
+
+    def filter(self, query):
+        return (query
+                .filter(on(self.site, self.table))
+                .filter(between(self.from_date, self.to_date, self.table))
+                .filter(self.get_restrict()))
+
+    def get_query(self):
+        self.table, self.criterion, self.count_col = get_attribute_and_count(
+            self.criteria)
+        return (
+            self.filter(self.db.query(
+                self.criterion.label("key"), self.count_col.label("count")))
+            .group_by(self.criterion))
+
+    def render(self):
+        self.chart = self.get_chart()
+        self.populate()
+        self.chart.title = titlize(self.criteria, 'us')
+        return self.chart.render()
+
+
+class Line(Chart):
+    type = pygal.Line
+
+    def populate(self):
+        all = (self.filter(self.db
+               .query(Visit.day, count(1), count(distinct(Visit.uuid))))
+               .group_by(Visit.day)
+               .order_by(Visit.day)
+               .all())
+
+        self.chart.x_labels = list(map(
+            lambda x: x.strftime('%Y-%m-%d'), cut(all, 0)))
+        self.chart.add(labelize('all', 'us'), cut(all, 1))
+        self.chart.add(labelize('unique', 'us'), cut(all, 2))
+
+        new = (
+            self.db
+            .query(count(distinct(Visit.uuid)))
+            .filter(Visit.last_visit == None)
+            .group_by(Visit.day)
+            .order_by(Visit.day)
+            .all())
+        self.chart.add(labelize('new', 'us'), cut(new, 0))
+        self.chart.x_label_rotation = 45
+
+
+class Bar(Chart):
+    type = pygal.Bar
+
+    def populate(self):
+        all = self.get_query().order_by(self.criterion).all()
+        self.chart.x_labels = list(map(str, cut(all, 0)))
+        self.chart.add(labelize(self.criteria, 'us'),
+                       list(map(float, cut(all, 1))))
+
+
+class Pie(Chart):
+    type = pygal.Pie
+
+    def get_restrict(self):
+        # Multi criteria restrict
+        if self.criteria == 'browser_name_version':
+            return (
+                (self.table.c.browser_name != None) &
+                (self.table.c.browser_version != None))
+        return super(Pie, self).get_restrict()
+
+    def populate(self):
+        results = (self.get_query()
+                   .order_by(desc(self.count_col))
+                   .limit(10)
+                   .all())
+        visits = [{
+            'label': (
+                parse_referrer(visit.key, host_only=True, second_pass=True)
+                if self.criteria == 'pretty_referrer' else visit.key),
+            'data': visit.count
+        } for visit in results]
+        all_visits = (self.filter(self.db
+                      .query(self.count_col.label("all")))
+                      .first()).all or 0
+        other = all_visits - sum(visit['data'] for visit in visits)
+        if other:
+            visits = visits + [{'label': 'Other', 'data': other}]
+
+        for visit in visits:
+            self.chart.add(str(visit['label']), float(visit['data']))
+
+
 @url(r'/load/data/([^/]+)/([^/]+)/([^/]+).svg')
 class LoadData(Hdr):
     def get(self, site, type_, criteria):
@@ -56,90 +173,7 @@ class LoadData(Hdr):
 class Data(Hdr):
     def get(self, site, type_, criteria):
         self.set_header("Content-Type", "image/svg+xml")
-        chart = getattr(pygal, type_)(
-            interpolate='cubic',
-            fill=True,
-            truncate_legend=200,
-            style=PystilStyle,
-            width=1000,
-            height=400,
-            legend_at_bottom=type_ != 'Pie')
-
         from_date = date.today() - timedelta(days=31)
         to_date = date.today()
-
-        if type_ == 'Line':
-            all = (
-                self.db
-                .query(Visit.day, count(1), count(distinct(Visit.uuid)))
-                .filter(on(site))
-                .filter(between(from_date, to_date))
-                .group_by(Visit.day)
-                .order_by(Visit.day)
-                .all())
-            chart.x_labels = list(map(
-                lambda x: x.strftime('%Y-%m-%d'), cut(all, 0)))
-            chart.add(labelize('all', 'us'), cut(all, 1))
-            chart.add(labelize('unique', 'us'), cut(all, 2))
-
-            new = (
-                self.db
-                .query(count(distinct(Visit.uuid)))
-                .filter(on(site))
-                .filter(between(from_date, to_date))
-                .filter(Visit.last_visit == None)
-                .group_by(Visit.day)
-                .order_by(Visit.day)
-                .all())
-            chart.add(labelize('new', 'us'), cut(new, 0))
-            chart.x_label_rotation = 45
-
-        if type_ == 'Pie':
-            table, criterion, count_col = get_attribute_and_count(criteria)
-            restrict = (criterion != None)
-            if criteria == 'browser_name_version':
-                restrict = ((table.c.browser_name != None) &
-                            (table.c.browser_version != None))
-            rq = (self.db
-                  .query(criterion.label("key"),
-                         count_col.label("count"))
-                  .filter(on(site, table))
-                  .filter(between(from_date, to_date, table=table))
-                  .filter(restrict)
-                  .group_by(criterion)
-                  .order_by(desc(count_col)))
-            results = rq.limit(10).all()
-            visits = [{'label': (
-                parse_referrer(visit.key, host_only=True, second_pass=True)
-                if criteria == 'pretty_referrer' else visit.key),
-                       'data': visit.count}
-                      for visit in results]
-            all_visits = (self.db
-                          .query(count_col.label("all"))
-                          .filter(on(site, table))
-                          .filter(between(from_date, to_date, table=table))
-                          .filter(restrict)
-                          .first()).all or 0
-            other = all_visits - sum(visit['data'] for visit in visits)
-            if other:
-                visits = visits + [{'label': 'Other', 'data': other}]
-
-            for visit in visits:
-                chart.add(str(visit['label']), float(visit['data']))
-
-        if type_ == 'Bar':
-            table, criterion, count_col = get_attribute_and_count(criteria)
-            all = (
-                self.db
-                .query(criterion.label("key"),
-                       count_col.label("count"))
-                .filter(on(site, table))
-                .filter(between(from_date, to_date, table))
-                .order_by(criterion)
-                .group_by(criterion)
-                .all())
-            chart.x_labels = list(map(str, cut(all, 0)))
-            chart.add(labelize(criteria, 'us'), list(map(float, cut(all, 1))))
-
-        chart.title = titlize(criteria, 'us')
+        chart = globals()[type_](self.db, site, criteria, from_date, to_date)
         self.write(chart.render())
