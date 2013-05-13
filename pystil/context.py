@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
+# This file is part of pystil, licensed under a 3-clause BSD license.
+
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from tornado.web import (
     RequestHandler,
-    StaticFileHandler,
-    Application, url as unnamed_url)
+    Application,
+    url as unnamed_url)
 from tornado.options import options
 from logging import getLogger
 from pystil.db import metadata

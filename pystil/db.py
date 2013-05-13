@@ -1,7 +1,7 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 by Florian Mounier, Kozea
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
+
 from datetime import timedelta
 from sqlalchemy import func
 from sqlalchemy.orm import column_property
@@ -41,12 +41,6 @@ def datetime():
 
 def date(pkey=False):
     return Column(Date, primary_key=pkey)
-
-
-def fields(clazz):
-    return [field
-            for field in clazz.__dict__
-            if not field.startswith("_")]
 
 
 class Visit(Base):

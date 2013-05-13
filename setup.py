@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 by Florian Mounier, Kozea
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 """
@@ -25,21 +25,19 @@ options = dict(
     license="BSD",
     platforms="Any",
     packages=find_packages(),
-    install_requires=['pygeoip', "flask>=0.8", 'flask-sqlalchemy', "CSStyle",
-                      'pika', 'gevent'],
+    install_requires=['tornado', 'pygal', 'sqlalchemy'],
     package_data={'pystil': [
-        'templates/*.jinja2',
-        'templates/css/*',
+        'templates/*.html',
         'templates/js/*',
         'static/*.gif',
         'static/js/*',
-        'static/css/*',
+        'static/stylesheets/*',
     ]},
     classifiers=[
         "Development Status :: WIP",
         "Intended Audience :: Public",
         "License :: OSI Approved :: BSD License",
         "Operating System :: Linux",
-        "Programming Language :: Python :: 2.7"])
+        "Programming Language :: Python :: 3.3"])
 
 setup(**options)

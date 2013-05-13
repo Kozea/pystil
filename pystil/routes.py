@@ -1,6 +1,5 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 by Florian Mounier, Kozea
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from pystil.db import Visit, count
@@ -16,7 +15,7 @@ import uuid
 @url(r'/')
 class Index(Hdr):
     def get(self):
-        self.render('index.jinja2')
+        self.render('index.html')
 
 
 @url(r'/pystil.js')
@@ -61,7 +60,7 @@ class Sites(Hdr):
             .group_by(attr)
             .order_by(desc(countcol)))[:20]
         all_ = self.db.query(countcol).scalar()
-        self.render('sites.jinja2', sites=sites, all_=all_)
+        self.render('sites.html', sites=sites, all_=all_)
 
 
 @url(r'/sites/([^/])')
@@ -74,11 +73,11 @@ class SitesQuery(Hdr):
             .filter(Visit.host.like('%%%s%%' % query))
             .group_by(Visit.host)
             .order_by(desc('count')))[:20]
-        self.render('sites_table.jinja2', sites=sites)
+        self.render('sites_table.html', sites=sites)
 
 
 @url(r'/site/([^/]+)')
 class Site(Hdr):
     def get(self, site):
         """Stats per site or all if site = all"""
-        self.render('site.jinja2', site=site)
+        self.render('site.html', site=site)

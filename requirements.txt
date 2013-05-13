@@ -1,1 +1,4 @@
--e git+https://github.com/Kozea/log_colorizer.git#egg=log_colorizer
+tornado
+pygal
+sqlalchemy
+

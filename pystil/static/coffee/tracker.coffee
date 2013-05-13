@@ -1,4 +1,4 @@
-# Copyright (C) 2011 by Florian Mounier, Kozea
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 make_query = (track) ->

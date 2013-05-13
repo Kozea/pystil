@@ -33,6 +33,7 @@ CREATE TABLE visit
   city character varying,
   lat numeric,
   lng numeric,
+  asn varchar,
   CONSTRAINT pk PRIMARY KEY (id)
 )
 WITH (
@@ -49,23 +50,6 @@ CREATE INDEX btrees
   ON visit
   USING btree
   (host, date);
-
-
--- Table: keys
-
-DROP TABLE IF EXISTS keys;
-
-CREATE TABLE keys
-(
-  id serial NOT NULL,
-  "key" character varying NOT NULL,
-  "host" character varying NOT NULL,
-  CONSTRAINT keys_pk PRIMARY KEY (id)
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE keys OWNER TO pystil;
 
 
 \i aggregates.sql

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
+# This file is part of pystil, licensed under a 3-clause BSD license.
+
 from functools import reduce
 from pystil.db import Visit, count, sum_
 from pystil.context import pystil

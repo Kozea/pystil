@@ -1,8 +1,10 @@
-from datetime import datetime, date, timedelta
-from pystil.data.utils import date_to_time, labelize, titlize
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
+# This file is part of pystil, licensed under a 3-clause BSD license.
+
+from datetime import date, timedelta
+from pystil.utils import on, between
 from pystil.context import Hdr, url
-from pystil.db import count
-from pystil.data.utils import on, between
 from pystil.aggregates import get_attribute_and_count
 from pygal.util import cut
 from lxml import etree
@@ -17,16 +19,19 @@ with open(os.path.join(os.path.dirname(__file__), 'map.svg')) as map_file:
 class Map(Hdr):
     def get(self, site):
         self.set_header("Content-Type", "image/svg+xml")
-        from_date = date_to_time(date.today() - timedelta(days=31))
-        to_date = date_to_time(date.today() + timedelta(days=1))
+        from_date = date.today() - timedelta(days=31)
+        to_date = date.today()
         table, criteria, count_col = get_attribute_and_count('country_code')
-        all = (self.db
-             .query(table.c.country, table.c.country_code,
-                    count_col.label("count"))
-             .filter(on(site, table))
-             .filter(between(from_date, to_date, table))
-             .group_by(table.c.country_code, table.c.country)
-             .all())
+        all = (
+            self.db
+            .query(
+                table.c.country,
+                table.c.country_code,
+                count_col.label("count"))
+            .filter(on(site, table))
+            .filter(between(from_date, to_date, table))
+            .group_by(table.c.country_code, table.c.country)
+            .all())
         visit_max = float(max(cut(all, 2) or [1]))
         map = etree.fromstring(MAP)
         for visit in all:

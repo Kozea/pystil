@@ -1,4 +1,8 @@
-from pystil.data.utils import (
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011-2013 by Florian Mounier, Kozea
+# This file is part of pystil, licensed under a 3-clause BSD license.
+
+from pystil.utils import (
     try_decode, parse_ua, parse_referrer, parse_domain)
 from pystil.db import Visit, country, city, asn
 from threading import Thread
