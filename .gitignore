@@ -8,3 +8,4 @@ pystil/static/js/tracker.js
 node_modules/
 pystil.egg-info
 venv
+geoip/*.csv

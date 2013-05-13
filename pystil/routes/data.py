@@ -71,16 +71,14 @@ class Data(Hdr):
             legend_at_bottom=type_ != 'Pie')
 
         from_date = date_to_time(date.today() - timedelta(days=31))
-        to_date = date_to_time(date.today())
+        to_date = date_to_time(date.today() + timedelta(days=1))
 
         if type_ == 'Line':
             all = (
                 self.db
                 .query(Visit.day, count(1), count(distinct(Visit.uuid)))
                 .filter(on(site))
-                .filter(between(
-                    date_to_time(date.today() - timedelta(days=31)),
-                    date_to_time(date.today())))
+                .filter(between(from_date, to_date))
                 .group_by(Visit.day)
                 .order_by(Visit.day)
                 .all())
@@ -91,7 +89,7 @@ class Data(Hdr):
 
             new = (
                 self.db
-                .query(count(1))
+                .query(count(distinct(Visit.uuid)))
                 .filter(on(site))
                 .filter(between(from_date, to_date))
                 .filter(Visit.last_visit == None)
@@ -150,7 +148,6 @@ class Data(Hdr):
 
         chart.title = titlize(criteria, 'us')
         self.write(chart.render())
-
 
     def post(self):
         self.set_header("Content-Type", "application/json")

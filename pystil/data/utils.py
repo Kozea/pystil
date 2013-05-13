@@ -65,6 +65,7 @@ def titlize(string, lang):
     if lang == 'fr':
         return {
             'all': 'Statistiques par jour',
+            'asn': "Top fournisseur d'accès",
             'host': 'Top sites',
             'page': 'Pages les plus vues',
             'hash': 'Hashs les plus vus',
@@ -81,6 +82,7 @@ def titlize(string, lang):
 
     return {
         'all': 'Stats by day',
+        'asn': 'Top access networks',
         'host': 'Top sites',
         'page': 'Most viewed pages',
         'hash': 'Most viewed hashes',

@@ -8,7 +8,7 @@ from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import case
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
-    Column, Integer, String, Numeric, DateTime, Date, Interval)
+    Column, Integer, String, Numeric, DateTime, Date, Interval, Table)
 
 Base = declarative_base()
 count = func.count
@@ -78,6 +78,7 @@ class Visit(Base):
     city = string()
     lat = decimal()
     lng = decimal()
+    asn = string()
 
     browser_name_version = column_property(
         browser_name + ' ' + split_part(browser_version, '.', 1) +
@@ -128,5 +129,35 @@ class Keys(Base):
     key = string()
     host = string()
 
-
 metadata = Base.metadata
+
+
+# Geoip database
+country = Table(
+    'country', metadata,
+    Column('ipr', String),
+    Column('country_code', String),
+    Column('country_name', String),
+    schema='geoip'
+)
+
+city = Table(
+    'city', metadata,
+    Column('ipr', String),
+    Column('country_code', String),
+    Column('region', String),
+    Column('city', String),
+    Column('postal_code', String),
+    Column('latitude', Numeric),
+    Column('longitude', Numeric),
+    Column('metro_code', Integer),
+    Column('area_code', Integer),
+    schema='geoip'
+)
+
+asn = Table(
+    'asn', metadata,
+    Column('ipr', String),
+    Column('asn', String),
+    schema='geoip'
+)

@@ -1,6 +1,6 @@
 from pystil.data.utils import (
     try_decode, parse_ua, parse_referrer, parse_domain)
-from pystil.db import Visit
+from pystil.db import Visit, country, city, asn
 from threading import Thread
 from datetime import datetime, timedelta
 from sqlalchemy import desc
@@ -33,17 +33,26 @@ class Tracking(Thread):
         kind = get('d')
         uuid = get('_')
         platform, browser, version = parse_ua(self.ua)
+        if kind == 'c':
+            visit = (self.db
+                     .query(Visit)
+                     .filter(Visit.uuid == uuid)
+                     .order_by(desc(Visit.date))
+                     .first())
+            if visit:
+                visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
 
-        if kind == 'o':
+        elif kind == 'o':
             last_visit = get('l')
             if last_visit and 'undefined' not in last_visit:
                 last_visit = datetime.fromtimestamp(int(last_visit) / 1000)
             else:
                 last_visit = None
+
             visit = {'uuid': uuid,
                      'host': get('k'),
                      'site': get('u'),
-                     'client_tz_offset': get('z', 0),
+                     'client_tz_offset': int(float(get('z', 0))),
                      'date': self.stamp,
                      'last_visit': last_visit,
                      'ip': self.ip,
@@ -60,16 +69,51 @@ class Tracking(Thread):
                      'browser_name': browser,
                      'browser_version': version,
                      'platform': platform}
-            # self.add_geolocalization(visit)
+
+            lat = None
+            lng = None
+            city_name = None
+            country_code = None
+            asn_name = None
+
+            if self.ip.startswith('::ffff'):
+                self.ip = self.ip.replace('::ffff:', '')
+
+            if (self.ip == '127.0.0.1' or
+                    self.ip.startswith('192.168.') or
+                    self.ip.startswith('10.')):
+                city_name = 'Local'
+                country_name = 'Local'
+                asn_name = 'Local'
+            else:
+                countries = list(self.db.execute(
+                    country.select().where(
+                        country.c.ipr.op('>>=')(visit['ip']))))
+
+                if len(countries) > 0:
+                    country_name = countries[0].country_name
+                    country_code = countries[0].country_code
+                    cities = list(self.db.execute(
+                        city.select().where(
+                            city.c.ipr.op('>>=')(visit['ip']))))
+                    if len(cities) > 0:
+                        city_name = cities[0].city
+                        lat = cities[0].latitude
+                        lng = cities[0].longitude
+                asns = list(self.db.execute(
+                    asn.select().where(
+                        asn.c.ipr.op('>>=')(visit['ip']))))
+                if len(asns) > 0:
+                    asn_name = asns[0].asn
+
+            visit['country'] = country_name
+            visit['country_code'] = country_code
+            visit['city'] = city_name
+            visit['lat'] = lat
+            visit['lng'] = lng
+            visit['asn'] = asn_name
+
             self.db.add(Visit(**visit))
-            self.db.commit()
-            return visit
-        if kind == 'c':
-            visit = (self.db
-                     .query(Visit)
-                     .filter(Visit.uuid == uuid)
-                     .order_by(desc(Visit.date))
-                     .first())
-            if visit:
-                visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
-                self.db.commit()
+
+        self.db.commit()
+        return visit
