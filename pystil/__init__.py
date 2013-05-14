@@ -20,4 +20,3 @@ define("debug", default=True, help="Debug mode")
 # Import for db init
 import pystil.routes
 import pystil.charts
-import pystil.map

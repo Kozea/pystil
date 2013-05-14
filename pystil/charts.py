@@ -9,9 +9,9 @@ from pystil.db import Visit, count, distinct
 from pystil.i18n import labelize, titlize
 from pystil.aggregates import get_attribute_and_count
 from sqlalchemy import desc
-import pygal
 from pygal.style import Style
 from pygal.util import cut
+import pygal
 
 
 PystilStyle = Style(
@@ -85,6 +85,16 @@ class Chart(object):
         self.chart.title = titlize(self.criteria, 'us')
         return self.chart.render()
 
+    def render_load(self):
+        self.chart = self.type(
+            fill=True,
+            style=PystilStyle,
+            width=1000,
+            height=400)
+        self.chart.no_data_text = 'Loading'
+        self.chart.title = titlize(self.criteria, 'us')
+        return self.chart.render()
+
 
 class Line(Chart):
     type = pygal.Line
@@ -155,25 +165,11 @@ class Pie(Chart):
             self.chart.add(str(visit['label']), float(visit['data']))
 
 
-@url(r'/load/data/([^/]+)/([^/]+)/([^/]+).svg')
-class LoadData(Hdr):
-    def get(self, site, type_, criteria):
-        self.set_header("Content-Type", "image/svg+xml")
-        chart = getattr(pygal, type_)(
-            fill=True,
-            style=PystilStyle,
-            width=1000,
-            height=400)
-        chart.no_data_text = 'Loading'
-        chart.title = titlize(criteria, 'us')
-        self.write(chart.render())
+class Worldmap(Chart):
+    type = pygal.Worldmap
 
-
-@url(r'/data/([^/]+)/([^/]+)/([^/]+).svg')
-class Data(Hdr):
-    def get(self, site, type_, criteria):
-        self.set_header("Content-Type", "image/svg+xml")
-        from_date = date.today() - timedelta(days=31)
-        to_date = date.today()
-        chart = globals()[type_](self.db, site, criteria, from_date, to_date)
-        self.write(chart.render())
+    def populate(self):
+        all = self.get_query().all()
+        self.chart.add('Top visits', [
+            (country.key.lower(), float(country.count)) for country in all
+        ])

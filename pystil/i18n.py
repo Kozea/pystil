@@ -29,6 +29,7 @@ def titlize(string, lang):
         return {
             'all': 'Statistiques par jour',
             'asn': "Top fournisseur d'accès",
+            'country_code': "Carte du monde des visites",
             'host': 'Top sites',
             'page': 'Pages les plus vues',
             'hash': 'Hashs les plus vus',
@@ -46,6 +47,7 @@ def titlize(string, lang):
     return {
         'all': 'Stats by day',
         'asn': 'Top access networks',
+        'country_code': 'Visit worldmap',
         'host': 'Top sites',
         'page': 'Most viewed pages',
         'hash': 'Most viewed hashes',

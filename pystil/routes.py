@@ -8,8 +8,12 @@ from pystil.aggregates import get_attribute_and_count
 from pystil.context import Hdr, url
 from tornado.web import asynchronous
 from sqlalchemy import desc
+from datetime import date, timedelta
 import os
 import uuid
+import pygal
+import pystil.charts
+from pystil.charts import PystilStyle
 
 
 @url(r'/')
@@ -81,3 +85,23 @@ class Site(Hdr):
     def get(self, site):
         """Stats per site or all if site = all"""
         self.render('site.html', site=site)
+
+
+@url(r'/load/data/([^/]+)/([^/]+)/([^/]+).svg')
+class LoadData(Hdr):
+    def get(self, site, type_, criteria):
+        self.set_header("Content-Type", "image/svg+xml")
+        chart = getattr(pystil.charts, type_)(
+            self.db, site, criteria, None, None)
+        self.write(chart.render_load())
+
+
+@url(r'/data/([^/]+)/([^/]+)/([^/]+).svg')
+class Data(Hdr):
+    def get(self, site, type_, criteria):
+        self.set_header("Content-Type", "image/svg+xml")
+        from_date = date.today() - timedelta(days=31)
+        to_date = date.today()
+        chart = getattr(pystil.charts, type_)(
+            self.db, site, criteria, from_date, to_date)
+        self.write(chart.render())
