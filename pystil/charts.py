@@ -120,9 +120,9 @@ class Line(Chart):
         self.chart.add(labelize('all', 'us'), cut(all, 1))
         self.chart.add(labelize('unique', 'us'), cut(all, 2))
 
-        new = (
+        new = (self.filter(
             self.db
-            .query(count(distinct(Visit.uuid)))
+            .query(count(distinct(Visit.uuid))))
             .filter(Visit.last_visit == None)
             .group_by(Visit.day)
             .order_by(Visit.day)

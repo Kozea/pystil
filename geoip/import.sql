@@ -1,4 +1,5 @@
-drop schema geoip cascade;
+\connect pystil pystil
+drop schema if exists geoip cascade;
 create schema geoip;
 \connect pystil postgres
 create extension if not exists ip4r;
@@ -38,8 +39,6 @@ $$ LANGUAGE sql strict immutable;
 CREATE TEMPORARY TABLE geoip_country_tmp (
     begin_str_ip    VARCHAR      NOT NULL,
     end_str_ip      VARCHAR      NOT NULL,
-    begin_ip    VARCHAR      NOT NULL,
-    end_ip      VARCHAR      NOT NULL,
     country     VARCHAR         NOT NULL,
     name        VARCHAR    NOT NULL
 );

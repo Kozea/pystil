@@ -18,7 +18,10 @@
       if (url.indexOf('/between') > -1) {
         url = url.split('/between')[0];
       }
-      return url.replace('.svg', '') + '/between/' + get_dates() + '.svg';
+      if ($('.datepicker').length) {
+        url.replace('.svg', '') + '/between/' + get_dates() + '.svg';
+      }
+      return url;
     };
     $('form.from-to').on('submit', function() {
       $('embed').each(function() {

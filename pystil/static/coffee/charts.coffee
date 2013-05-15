@@ -14,10 +14,9 @@ $ ->
 
         if url.indexOf('/between') > -1
             url = url.split('/between')[0]
-        url.replace('.svg', '') + '/between/' +
-             get_dates() +
-            '.svg'
-
+        if $('.datepicker').length
+            url.replace('.svg', '') + '/between/' + get_dates() + '.svg'
+        url
 
     $('form.from-to').on('submit', ->
         $('embed').each(->
@@ -47,7 +46,7 @@ $ ->
             val = '%'
         $results.addClass 'loading'
         if xhr
-            xhr.abort 
+            xhr.abort
         xhr = $.ajax
             url: "/sites/#{val}"
             dataType: "text"
