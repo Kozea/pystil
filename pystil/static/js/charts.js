@@ -19,7 +19,7 @@
         url = url.split('/between')[0];
       }
       if ($('.datepicker').length) {
-        url.replace('.svg', '') + '/between/' + get_dates() + '.svg';
+        url = url.replace('.svg', '') + '/between/' + get_dates() + '.svg';
       }
       return url;
     };
