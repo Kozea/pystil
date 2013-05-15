@@ -15,8 +15,4 @@ define("db_name", default="pystil", help="Pystil db name")
 define("db_user", default="pystil", help="Pystil db user")
 define("db_password", default="pystil", help="Pystil db password")
 define("db_port", default=5432, help="Pystil db port")
-define("debug", default=True, help="Debug mode")
-
-# Import for db init
-import pystil.routes
-import pystil.charts
+define("debug", default=False, help="Debug mode")

@@ -43,11 +43,12 @@ class Pystil(Application):
         self.db_engine = create_engine(db_url, echo=False)
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
-        getLogger('sqlalchemy').setLevel(10)
+        # getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):
         return log
+
 
 pystil = Pystil(
     debug=options.debug,
