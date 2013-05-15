@@ -1,4 +1,5 @@
 $ ->
+    requestIndex = 0
     $('.datepicker').datepicker(
         dateFormat: 'yy-mm-dd'
         maxDate: new Date()
@@ -37,6 +38,27 @@ $ ->
     if $('.datepicker').length
         $("#from").datepicker("setDate", '-1m')
         $("#to").datepicker("setDate", new Date())
+
+     $('#filter').keyup (e) ->
+        $this = $ @
+        $results = $ 'section.results'
+        val = $this.val().trim()
+        if !val
+            val = '%'
+        $results.addClass 'loading'
+        if xhr
+            xhr.abort 
+        xhr = $.ajax
+            url: "/sites/#{val}"
+            dataType: "text"
+            rqIndex: ++requestIndex
+            success: (data) ->
+                $results.removeClass 'loading'
+                if @rqIndex is requestIndex
+                    $results.html data
+            error: () ->
+                if @rqIndex is requestIndex
+                    $results.html ""
 
     load_embed_maybe = (embed, url=null, callback=null) ->
         if $(embed).closest('figure').data('loading')

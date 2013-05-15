@@ -16,25 +16,24 @@
 body {
   background: url('/static/img/bg-top-right.png?1355139710') no-repeat top right, url('/static/img/border-top.png?1355139710') repeat-x 0 0, url('/static/img/bkgd1.png?1355139710') repeat top left;
   font: 0.9em verdana, sans-serif;
-  margin: 0;
+  margin: 0 0 35px;
   min-height: 100%;
   padding: 0;
-  position: absolute;
   width: 100%;
   overflow-x: hidden;
 }
-/* line 15, ../sass/style.sass */
+/* line 14, ../sass/style.sass */
 body a {
   color: #222222;
   text-decoration: none;
   font-size: 1.1em;
 }
 
-/* line 20, ../sass/style.sass */
+/* line 19, ../sass/style.sass */
 header h1 {
   margin: 0;
 }
-/* line 22, ../sass/style.sass */
+/* line 21, ../sass/style.sass */
 header h1 a {
   background: url('/static/img/logo.png?1355139710') no-repeat top left;
   border: none;
@@ -44,26 +43,26 @@ header h1 a {
   width: 500px;
 }
 
-/* line 30, ../sass/style.sass */
+/* line 29, ../sass/style.sass */
 nav {
   background: url('/static/img/aside-top.png?1355139710') no-repeat top left, url('/static/img/aside-bottom.png?1355139710') no-repeat bottom center;
   margin: -300px 0 0 480px;
   padding: 0.6em 0;
 }
-/* line 34, ../sass/style.sass */
+/* line 33, ../sass/style.sass */
 nav ul {
   background: rgba(255, 255, 255, 0.25);
   margin: 0;
   padding: 0;
   text-align: center;
 }
-/* line 39, ../sass/style.sass */
+/* line 38, ../sass/style.sass */
 nav ul li {
   display: inline-block;
   list-style: none;
   padding: 5px 10px;
 }
-/* line 43, ../sass/style.sass */
+/* line 42, ../sass/style.sass */
 nav ul li a {
   color: #73716a;
   font-family: "Elevant";
@@ -75,11 +74,11 @@ nav ul li a {
   -o-transition: color 0.3s linear;
   transition: color 0.3s linear;
 }
-/* line 50, ../sass/style.sass */
+/* line 49, ../sass/style.sass */
 nav ul li a.active {
   color: #4ca5a2;
 }
-/* line 52, ../sass/style.sass */
+/* line 51, ../sass/style.sass */
 nav ul li a:hover, nav ul li a:focus {
   color: #be3e3a;
   -webkit-transition: color 0.2 linear;
@@ -88,10 +87,11 @@ nav ul li a:hover, nav ul li a:focus {
   transition: color 0.2 linear;
 }
 
-/* line 56, ../sass/style.sass */
+/* line 55, ../sass/style.sass */
 article nav {
   background: url('/static/img/aside2-top.png?1355139710') no-repeat top right, url('/static/img/aside2-bottom.png?1355139710') no-repeat bottom right;
   margin: 0 0 0 -17%;
+  float: left;
   width: 13%;
 }
 /* line 60, ../sass/style.sass */
@@ -341,7 +341,7 @@ img.logo {
 
 /* line 226, ../sass/style.sass */
 .loading {
-  background-image: url('/static/img/ajaxloader.gif?1355139711');
+  background-image: url('/static/img/ajaxloader.gif?1367919349');
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -365,27 +365,17 @@ img.logo {
 }
 
 /* line 240, ../sass/style.sass */
-.tab {
-  position: absolute;
-  top: 40px;
-  -webkit-transition: 1s;
-  -moz-transition: 1s;
-  -o-transition: 1s;
-  transition: 1s;
-}
-
-/* line 245, ../sass/style.sass */
 figure {
   background: url('/static/img/bg-h2.png?1355139710') repeat-x bottom left;
   margin: 30px 0 10px;
   overflow: auto;
 }
-/* line 249, ../sass/style.sass */
+/* line 244, ../sass/style.sass */
 figure:last-of-type {
   background: none;
 }
 
-/* line 252, ../sass/style.sass */
+/* line 247, ../sass/style.sass */
 figcaption {
   color: #bb6120;
   font-family: "Elevant";
@@ -395,7 +385,7 @@ figcaption {
   text-align: center;
 }
 
-/* line 261, ../sass/style.sass */
+/* line 256, ../sass/style.sass */
 footer {
   background: url('/static/img/footer.png?1355139710') repeat 0 center;
   bottom: 0;
@@ -407,17 +397,17 @@ footer {
   position: fixed;
   width: 100%;
 }
-/* line 269, ../sass/style.sass */
+/* line 264, ../sass/style.sass */
 footer ul {
   margin: 0;
   padding: 8px 0;
   text-align: center;
 }
-/* line 273, ../sass/style.sass */
+/* line 268, ../sass/style.sass */
 footer ul li {
   display: inline-block;
 }
-/* line 275, ../sass/style.sass */
+/* line 270, ../sass/style.sass */
 footer ul li a {
   color: #8c7743;
   font-size: 0.9em;
@@ -429,7 +419,7 @@ footer ul li a {
   -o-transition: color 0.2s linear;
   transition: color 0.2s linear;
 }
-/* line 282, ../sass/style.sass */
+/* line 277, ../sass/style.sass */
 footer ul li a:hover, footer ul li a :focus {
   color: #685422;
   -webkit-transition: color 0.4s linear;

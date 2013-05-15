@@ -67,17 +67,20 @@ class Sites(Hdr):
         self.render('sites.html', sites=sites, all_=all_)
 
 
-@url(r'/sites/([^/])')
+@url(r'/sites/(.+)')
 class SitesQuery(Hdr):
     def get(self, query):
         """Sites matching query"""
+        table, attr, countcol = get_attribute_and_count('domain')
         sites = (
             self.db
-            .query(Visit.host, count(1).label('count'))
-            .filter(Visit.host.like('%%%s%%' % query))
-            .group_by(Visit.host)
-            .order_by(desc('count')))[:20]
-        self.render('sites_table.html', sites=sites)
+            .query(attr.label('host'), countcol.label('count'))
+            .filter(attr.like('%%%s%%' % query))
+            .group_by(attr)
+            .order_by(desc(countcol)))[:20]
+
+        all_ = self.db.query(countcol).scalar()
+        self.render('sites_table.html', sites=sites, all_=all_)
 
 
 @url(r'/site/([^/]+)/([^/]*)')

@@ -6,10 +6,9 @@
 body
   background: image-url('bg-top-right.png') no-repeat top right, image-url('border-top.png') repeat-x 0 0, image-url('bkgd1.png') repeat top left
   font: 0.9em verdana, sans-serif
-  margin: 0
+  margin: 0 0 35px
   min-height: 100%
   padding: 0
-  position: absolute
   width: 100%
   overflow-x: hidden
   a
@@ -56,6 +55,7 @@ nav
 article nav
   background: image-url('aside2-top.png') no-repeat top right, image-url('aside2-bottom.png') no-repeat bottom right
   margin: 0 0 0 -17%
+  float: left
   width: 13%
   ul li
     background: image-url('bg-h2.png') repeat-x bottom left
@@ -236,11 +236,6 @@ img.logo
 
 .pystil-tabs
   position: relative
-
-.tab
-  position: absolute
-  top: 40px
-  +transition(1s)
 
 figure
   background: image-url('bg-h2.png') repeat-x bottom left

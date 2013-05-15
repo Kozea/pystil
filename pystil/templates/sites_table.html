@@ -7,12 +7,17 @@
     </tr>
   </thead>
   <tbody>
+    <tr class="domain">
+      <td>{{ all_ }}</td>
+      <td>All</td>
+      <td class="edit"><a href="{{ reverse_url('Site', 'all', 'visits') }}">Go</a></td>
+    </tr>
     {% for site in sites %}
       {% if site and site.host %}
         <tr>
           <td>{{ site.count }}</td>
           <td>{{ site.host }}</td>
-          <td class="edit"><a href="{{ reverse_url('Site', site.host) }}">Go</a></td>
+          <td class="edit"><a href="{{ reverse_url('Site', site.host, 'visits') }}">Go</a></td>
         </tr>
       {% end %}
     {% end %}
