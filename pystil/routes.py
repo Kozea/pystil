@@ -80,28 +80,41 @@ class SitesQuery(Hdr):
         self.render('sites_table.html', sites=sites)
 
 
-@url(r'/site/([^/]+)')
+@url(r'/site/([^/]+)/([^/]*)')
 class Site(Hdr):
-    def get(self, site):
+    def get(self, site, page):
         """Stats per site or all if site = all"""
-        self.render('site.html', site=site)
+        page = page or '/visits'
+        self.render('site/_base.html', site=site, page=page)
+
+    def post(self, site, page):
+        self.render('site/%s.html' % page, site=site)
 
 
-@url(r'/load/data/([^/]+)/([^/]+)/([^/]+).svg')
+@url(r'/load/data/([^/]+)/([^/]+)/([^/]+)'
+     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?.svg')
 class LoadData(Hdr):
-    def get(self, site, type_, criteria):
+    def get(self, site, type_, criteria, dates=None):
         self.set_header("Content-Type", "image/svg+xml")
         chart = getattr(pystil.charts, type_)(
-            self.db, site, criteria, None, None)
+            self.db, site, criteria, None, None, '%s://%s' % (
+                self.request.protocol, self.request.host))
         self.write(chart.render_load())
 
 
-@url(r'/data/([^/]+)/([^/]+)/([^/]+).svg')
+@url(r'/data/([^/]+)/([^/]+)/([^/]+)'
+     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?.svg')
 class Data(Hdr):
-    def get(self, site, type_, criteria):
+    def get(self, site, type_, criteria, dates=None):
         self.set_header("Content-Type", "image/svg+xml")
-        from_date = date.today() - timedelta(days=31)
-        to_date = date.today()
+        if dates:
+            from_date, to_date = dates.replace('/between/', '').split('/')
+            from_date = date(*map(int, from_date.split('-')))
+            to_date = date(*map(int, to_date.split('-')))
+        else:
+            from_date = date.today() - timedelta(days=31)
+            to_date = date.today()
         chart = getattr(pystil.charts, type_)(
-            self.db, site, criteria, from_date, to_date)
+            self.db, site, criteria, from_date, to_date, '%s://%s' % (
+                self.request.protocol, self.request.host))
         self.write(chart.render())

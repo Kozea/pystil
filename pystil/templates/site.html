@@ -2,98 +2,25 @@
 
 {% block article %}
   <article class="dates">
-    <label for="from">From: </label><input id="from" type="text" class="datepicker" />
-    <label for="to">To: </label><input id="to" type="text" class="datepicker" />
+    <form class="from-to">
+      <label for="from">From: </label><input id="from" type="text" class="datepicker" />
+      <label for="to">To: </label><input id="to" type="text" class="datepicker" />
+      <input type="submit" value="Load" />
   </article>
   <article id="graphs" class="pystil-tabs">
     <h2>On site {{ site }}</h2>
     <nav>
       <ul>
-        <li><a href="#visits">Visits</a></li>
-        <li><a href="#time">Time</a></li>
-        <li><a href="#map">Worldmap</a></li>
-        <li><a href="#pages">Pages</a></li>
-        <li><a href="#visitor">Visitor</a></li>
-        <li><a href="#misc">Misc</a></li>
+        <li><a href="{{reverse_url('Site', site, 'visits') }}">Visits</a></li>
+        <li><a href="{{reverse_url('Site', site, 'time') }}">Time</a></li>
+        <li><a href="{{reverse_url('Site', site, 'map') }}">Worldmap</a></li>
+        <li><a href="{{reverse_url('Site', site, 'pages') }}">Pages</a></li>
+        <li><a href="{{reverse_url('Site', site, 'visitor') }}">Visitor</a></li>
+        <li><a href="{{reverse_url('Site', site, 'misc') }}">Misc</a></li>
       </ul>
     </nav>
-    <section id="visits" class="tab">
-      {# <figure> #}
-      {#   <div class="graph" data-graph="Last" data-criteria="all"></div> #}
-      {#   <figcaption>Real time last visits</figcaption> #}
-      {# </figure> #}
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Line/all.svg" />
-      </figure>
-      {# <figure> #}
-      {#   <div class="graph" data-graph="Top" data-criteria="subdomain"></div> #}
-      {#   <figcaption>Top subdomains</figcaption> #}
-      {# </figure> #}
-    </section>
-    <section id="time" class="tab">
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Bar/hour.svg" />
-      </figure>
-      {# <figure> #}
-      {#   <div class="graph" data-graph="Time" data-criteria="spent_time"></div> #}
-      {#   <figcaption>Time spent on site</figcaption> #}
-      {# </figure> #}
-    </section>
-    <section id="map" class="tab">
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Worldmap/country_code.svg" />
-      </figure>
-    </section>
-    <section id="pages" class="tab">
-      {% if site == 'all' %}
-        <figure>
-          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/host.svg" />
-        </figure>
-      {% else %}
-        <figure>
-          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/page.svg" />
-        </figure>
-        <figure>
-          <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/hash.svg" />
-        </figure>
-      {% end %}
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/referrer_domain.svg" />
-      </figure>
-    </section>
-    <section id="visitor" class="tab">
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/browser_name.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/browser_name_version.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/size.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/platform.svg" />
-      </figure>
-    </section>
-    <section id="misc" class="tab">
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/asn.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/country.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/day.svg" />
-      </figure>
-
-      <figure>
-        <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/ip.svg" />
-      </figure>
+    <section id="container">
+      {% include page + '.html' %}
     </section>
   </article>
 {% end %}

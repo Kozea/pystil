@@ -1,0 +1,26 @@
+{% extends "../_layout.html" %}
+
+{% block article %}
+  <article class="dates">
+    <form class="from-to">
+      <label for="from">From: </label><input id="from" type="text" class="datepicker" />
+      <label for="to">To: </label><input id="to" type="text" class="datepicker" />
+      <input type="submit" value="Load" />
+  </article>
+  <article id="graphs" class="pystil-tabs">
+    <h2>On site {{ site }}</h2>
+    <nav class="xhr">
+      <ul>
+        <li><a href="{{ reverse_url('Site', site, 'visits') }}" class="{{ 'active' if page == 'visits' else '' }}" data-page="visits">Visits</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'time') }}" class="{{ 'active' if page == 'time' else '' }}" data-page="time">Time</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'map') }}" class="{{ 'active' if page == 'map' else '' }}" data-page="map">Worldmap</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'pages') }}" class="{{ 'active' if page == 'pages' else '' }}" data-page="pages">Pages</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'visitor') }}" class="{{ 'active' if page == 'visitor' else '' }}" data-page="visitor">Visitor</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'misc') }}" class="{{ 'active' if page == 'misc' else '' }}" data-page="misc">Misc</a></li>
+      </ul>
+    </nav>
+    <section id="container">
+      {% module Template('site/' + page + '.html', site=site) %}
+    </section>
+  </article>
+{% end %}

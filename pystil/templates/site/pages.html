@@ -1,0 +1,17 @@
+<section id="pages" class="tab">
+  {% if site == 'all' %}
+  <figure>
+    <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/host.svg" />
+  </figure>
+  {% else %}
+  <figure>
+    <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/page.svg" />
+  </figure>
+  <figure>
+    <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/hash.svg" />
+  </figure>
+  {% end %}
+  <figure>
+    <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/referrer_domain.svg" />
+  </figure>
+</section>

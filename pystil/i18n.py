@@ -35,10 +35,12 @@ def titlize(string, lang):
             'hash': 'Hashs les plus vus',
             'referrer_domain': 'Top référeurs',
             'hour': 'Visites par heure',
+            'subdomain': 'Top sous domaines',
             'browser_name': 'Top navigateurs',
             'browser_name_version': 'Top version de navigateur',
             'size': "Top tailles d'écran",
             'platform': 'Top plateforme',
+            'spent_time': 'Temps passé sur le site',
             'country': 'Top pays',
             'day': 'Top jours',
             'ip': 'Top adresses IP',
@@ -53,12 +55,13 @@ def titlize(string, lang):
         'hash': 'Most viewed hashes',
         'referrer_domain': 'Best referrers',
         'hour': 'Visits per hour',
+        'subdomain': 'Top subdomains',
         'browser_name': 'Top browsers',
         'browser_name_version': 'Top browser versions',
         'size': 'Top screen sizes',
         'platform': 'Top platforms',
+        'spent_time': 'Time spent on site',
         'country': 'Top countries',
         'day': 'Top days',
         'ip': 'Top IP addresses'
     }[string]
-

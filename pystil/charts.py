@@ -39,7 +39,7 @@ PystilStyle = Style(
 
 
 class Chart(object):
-    def __init__(self, db, site, criteria, from_date, to_date):
+    def __init__(self, db, site, criteria, from_date, to_date, host):
         self.db = db
         self.site = site
         self.criteria = criteria
@@ -49,6 +49,7 @@ class Chart(object):
         self.criterion = None
         self.chart = None
         self.count_col = None
+        self.host = host
 
     def get_chart(self):
         return self.type(
@@ -58,6 +59,10 @@ class Chart(object):
             style=PystilStyle,
             width=1000,
             height=400,
+            js=[
+                self.host + '/static/js/svg.jquery.js',
+                self.host + '/static/js/pygal-tooltips.js'
+            ],
             legend_at_bottom=self.type != Pie)
 
     def get_restrict(self):
@@ -90,7 +95,11 @@ class Chart(object):
             fill=True,
             style=PystilStyle,
             width=1000,
-            height=400)
+            height=400,
+            js=[
+                self.host + '/static/js/svg.jquery.js',
+                self.host + '/static/js/pygal-tooltips.js'
+            ])
         self.chart.no_data_text = 'Loading'
         self.chart.title = titlize(self.criteria, 'us')
         return self.chart.render()
@@ -127,7 +136,12 @@ class Bar(Chart):
 
     def populate(self):
         all = self.get_query().order_by(self.criterion).all()
-        self.chart.x_labels = list(map(str, cut(all, 0)))
+        if self.criteria == 'spent_time':
+            self.chart.x_labels = [
+                "<1s", "1s", "2s", "5s", "10s", "20s",
+                "30s", "1min", "2min", "5min",  ">10min"]
+        else:
+            self.chart.x_labels = list(map(str, cut(all, 0)))
         self.chart.add(labelize(self.criteria, 'us'),
                        list(map(float, cut(all, 1))))
 
