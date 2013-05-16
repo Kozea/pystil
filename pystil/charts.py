@@ -55,6 +55,7 @@ class Chart(object):
         return self.type(
             interpolate='cubic',
             fill=True,
+            human_readable=True,
             truncate_legend=200,
             style=PystilStyle,
             width=1000,
@@ -63,7 +64,7 @@ class Chart(object):
                 self.host + '/static/js/svg.jquery.js',
                 self.host + '/static/js/pygal-tooltips.js'
             ],
-            legend_at_bottom=self.type != Pie)
+            legend_at_bottom=self.type != pygal.Pie)
 
     def get_restrict(self):
         if self.criterion is not None:
@@ -93,6 +94,7 @@ class Chart(object):
     def render_load(self):
         self.chart = self.type(
             fill=True,
+            human_readable=True,
             style=PystilStyle,
             width=1000,
             height=400,
@@ -141,7 +143,7 @@ class Bar(Chart):
                 "<1s", "1s", "2s", "5s", "10s", "20s",
                 "30s", "1min", "2min", "5min",  ">10min"]
         else:
-            self.chart.x_labels = list(map(str, cut(all, 0)))
+            self.chart.x_labels = list(map(str, map(int, cut(all, 0))))
         self.chart.add(labelize(self.criteria, 'us'),
                        list(map(float, cut(all, 1))))
 

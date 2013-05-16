@@ -12,6 +12,7 @@
     <nav class="xhr">
       <ul>
         <li><a href="{{ reverse_url('Site', site, 'visits') }}" class="{{ 'active' if page == 'visits' else '' }}" data-page="visits">Visits</a></li>
+        <li><a href="{{ reverse_url('Site', site, 'last') }}" class="{{ 'active' if page == 'last' else '' }}" data-page="last">Last visits</a></li>
         <li><a href="{{ reverse_url('Site', site, 'time') }}" class="{{ 'active' if page == 'time' else '' }}" data-page="time">Time</a></li>
         <li><a href="{{ reverse_url('Site', site, 'map') }}" class="{{ 'active' if page == 'map' else '' }}" data-page="map">Worldmap</a></li>
         <li><a href="{{ reverse_url('Site', site, 'pages') }}" class="{{ 'active' if page == 'pages' else '' }}" data-page="pages">Pages</a></li>
@@ -20,7 +21,7 @@
       </ul>
     </nav>
     <section id="container">
-      {% module Template('site/' + page + '.html', site=site) %}
+      {% module Template('site/' + page + '.html', **kwargs) %}
     </section>
   </article>
 {% end %}

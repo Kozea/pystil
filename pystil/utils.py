@@ -72,6 +72,20 @@ def between(from_date, to_date, table=Visit.__table__):
             (table.c.date < to_date + timedelta(1)))
 
 
+def visit_to_table_line(visit):
+    html = '<tr data-visit-id="%d">' % visit.id
+    for key in ['date', 'site', 'ip', 'country', 'city', 'page', 'referrer']:
+        html += '<td>'
+        val = getattr(visit, key)
+        if val:
+            if key == 'date':
+                val = val.strftime('%Y-%m-%d %H:%M:%S')
+            html += val
+        html += '</td>'
+    html += '</tr>'
+    return html
+
+
 def parse_referrer(referrer, with_query=False, host_only=False,
                    second_pass=False):
     """Return a pretty format for most search engines"""

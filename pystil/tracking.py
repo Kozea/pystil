@@ -3,11 +3,12 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from pystil.utils import (
-    try_decode, parse_ua, parse_referrer, parse_domain)
+    try_decode, parse_ua, parse_referrer, parse_domain, visit_to_table_line)
 from pystil.db import Visit, country, city, asn
 from threading import Thread
 from datetime import datetime, timedelta
 from sqlalchemy import desc
+from pystil.websocket import broadcast
 
 
 class Tracking(Thread):
@@ -27,7 +28,7 @@ class Tracking(Thread):
             value = self.qs_args.get(key, [default])[0]
             if value and value == b'undefined':
                 value = None
-            if value:
+            if value is not None:
                 if from_encoding:
                     value = value.decode(from_encoding)
                 else:
@@ -116,8 +117,12 @@ class Tracking(Thread):
             visit['lat'] = lat
             visit['lng'] = lng
             visit['asn'] = asn_name
-
-            self.db.add(Visit(**visit))
+            visit = Visit(**visit)
+            self.db.add(visit)
 
         self.db.commit()
+        if kind == 'o':
+            broadcast('VISIT|' + visit_to_table_line(visit))
+        elif kind == 'c':
+            visit and broadcast('EXIT|%d' % visit.id)
         return visit

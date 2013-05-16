@@ -6,6 +6,7 @@ from pystil.db import Visit, count
 from pystil.tracking import Tracking
 from pystil.aggregates import get_attribute_and_count
 from pystil.context import Hdr, url
+from pystil.utils import visit_to_table_line, on
 from tornado.web import asynchronous
 from sqlalchemy import desc
 from datetime import date, timedelta
@@ -85,13 +86,26 @@ class SitesQuery(Hdr):
 
 @url(r'/site/([^/]+)/([^/]*)')
 class Site(Hdr):
+    def kwargs(self, site, page):
+        kwargs = {
+            'page': page,
+            'site': site
+        }
+        page = page or '/visits'
+        if page == 'last':
+            visits = (self.db.query(Visit)
+                      .filter(on(site))
+                      .order_by(Visit.date.desc())[:10])
+            kwargs['top_lines'] = ''.join(map(visit_to_table_line, visits))
+        kwargs['kwargs'] = kwargs
+        return kwargs
+
     def get(self, site, page):
         """Stats per site or all if site = all"""
-        page = page or '/visits'
-        self.render('site/_base.html', site=site, page=page)
+        self.render('site/_base.html', **self.kwargs(site, page))
 
     def post(self, site, page):
-        self.render('site/%s.html' % page, site=site)
+        self.render('site/%s.html' % page, **self.kwargs(site, page))
 
 
 @url(r'/load/data/([^/]+)/([^/]+)/([^/]+)'

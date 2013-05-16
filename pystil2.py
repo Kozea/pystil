@@ -12,6 +12,7 @@ parse_command_line()
 
 import pystil.routes
 import pystil.charts
+import pystil.websocket
 from pystil.context import pystil
 
 pystil.listen(options.port)
