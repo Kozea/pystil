@@ -79,6 +79,7 @@ class Message(object):
             lng = None
             city_name = None
             country_code = None
+            country_name = None
             asn_name = None
 
             if self.ip.startswith('::ffff'):
