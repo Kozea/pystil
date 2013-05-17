@@ -47,7 +47,7 @@ class Tracking(Thread):
         while True:
             try:
                 message = MESSAGE_QUEUE.get(True)
-                self.log.info('Message got %r' % self)
+                self.log.info('Message got %r' % message)
                 self.db.begin()
                 try:
                     visit, opening = message.process(self.db)

@@ -52,7 +52,7 @@ class Tracker(Hdr):
             self.request.headers.get(
                 'X-FORWARDED-FOR', self.request.remote_ip))
         self.log.info('Inserting message for %s (Already in queue %s)' % (
-            self.request.remote_ip, MESSAGE_QUEUE.qsize()))
+            message.ip, MESSAGE_QUEUE.qsize()))
         MESSAGE_QUEUE.put(message, True)
         self.log.info('Message for %s inserted' % message.ip)
 
