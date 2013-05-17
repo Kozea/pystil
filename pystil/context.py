@@ -45,22 +45,26 @@ class Tracking(Thread):
         from pystil.websocket import broadcast
         from pystil.utils import visit_to_table_line
         while True:
-            message = MESSAGE_QUEUE.get(True)
-            self.db.begin()
             try:
-                visit, opening = message.process(self.db)
-                if not visit:
-                    raise NotImplementedError(
-                        'Unknown kind %s' % message.qs_args)
-                self.db.commit()
+                message = MESSAGE_QUEUE.get(True)
+                self.log.exception('Message got %r' % self)
+                self.db.begin()
+                try:
+                    visit, opening = message.process(self.db)
+                    if not visit:
+                        raise NotImplementedError(
+                            'Unknown kind %s' % message.qs_args)
+                    self.db.commit()
 
-                if opening:
-                    broadcast('VISIT|' + visit_to_table_line(visit))
-                else:
-                    visit and broadcast('EXIT|%d' % visit.id)
+                    if opening:
+                        broadcast('VISIT|' + visit_to_table_line(visit))
+                    else:
+                        visit and broadcast('EXIT|%d' % visit.id)
+                except:
+                    self.db.rollback()
+                    self.log.exception('Error processing visit')
             except:
-                self.db.rollback()
-                self.log.exception('Error processing visit')
+                self.log.exception('Exception in loop')
 
 
 class Pystil(Application):
