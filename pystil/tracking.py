@@ -16,6 +16,8 @@ class Message(object):
         self.qs_args = qs_args
         self.ua = ua
         self.stamp = datetime.utcnow()
+        if ', ' in ip:
+            self.ip = ip.split(', ')[0]
         self.ip = ip
 
     def process(self, db):
