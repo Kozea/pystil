@@ -39,7 +39,7 @@ class Tracking(Thread):
     def __init__(self, db, log, *args, **kwargs):
         super(Tracking, self).__init__(*args, **kwargs)
         self.log = log
-        self.db = db()
+        self.db = db
 
     def run(self):
         from pystil.websocket import broadcast
@@ -49,17 +49,15 @@ class Tracking(Thread):
                 self.log.info('Blocking for messages')
                 message = MESSAGE_QUEUE.get(True)
                 self.log.info('Message got %r' % message)
-                self.db.begin()
                 try:
-                    visit, opening = message.process(self.db)
-                    self.db.commit()
+                    visit_or_uuid, opening = message.process(self.db)
 
                     if opening:
-                        broadcast('VISIT|' + visit_to_table_line(visit))
+                        broadcast(
+                            'VISIT|' + visit_to_table_line(visit_or_uuid))
                     else:
-                        visit and broadcast('EXIT|%d' % visit.id)
+                        visit_or_uuid and broadcast('EXIT|%s' % visit_or_uuid)
                 except:
-                    self.db.rollback()
                     self.log.exception('Error processing visit')
             except:
                 self.log.exception('Exception in loop')
@@ -78,10 +76,8 @@ class Pystil(Application):
         self.db_engine = create_engine(db_url, echo=False)
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
-
-        tracking_session = sessionmaker(bind=self.db_engine, autocommit=True)
-        Tracking(tracking_session, self.log).start()
-        # getLogger('sqlalchemy').setLevel(10)
+        Tracking(self.db_engine.connect(), self.log).start()
+        getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):

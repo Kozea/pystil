@@ -6,7 +6,7 @@ from pystil.utils import (
     try_decode, parse_ua, parse_referrer, parse_domain)
 from pystil.db import Visit, country, city, asn
 from datetime import datetime, timedelta
-from sqlalchemy import desc
+from sqlalchemy import desc, select
 
 
 class Message(object):
@@ -22,6 +22,7 @@ class Message(object):
 
     def process(self, db):
         self.log.info('Processing message %r' % self)
+        visits = Visit.__table__
 
         def get(key, default=None, from_encoding=None):
             value = self.qs_args.get(key, [default])[0]
@@ -39,15 +40,22 @@ class Message(object):
         uuid = get('_')
         platform, browser, version = parse_ua(self.ua)
         if kind == 'c':
-            # visit = (db
-                     # .query(Visit)
-                     # .filter(Visit.uuid == uuid)
-                     # .order_by(desc(Visit.date))
-                     # .first())
-            if visit:
-                visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
+            try:
+                id = db.execute(
+                    select([visits.c.id])
+                    .where(visits.c.uuid == uuid)
+                    .order_by(desc(visits.c.date))
+                ).fetchone()['id']
+            except:
+                self.log.exception('Could not find uuid %s' % uuid)
             else:
-                raise Exception('Visit not found uuid=%s' % uuid)
+                db.execute(
+                    visits
+                    .update()
+                    .where(visits.c.id == id)
+                    .values(time=timedelta(seconds=int(get('t', 0)) / 1000)))
+                self.log.info('%r inserted' % self)
+            return uuid, False
 
         elif kind == 'o':
             last_visit = get('l')
@@ -120,13 +128,8 @@ class Message(object):
             visit['lat'] = lat
             visit['lng'] = lng
             visit['asn'] = asn_name
-            visit = Visit(**visit)
-            db.add(visit)
+            db.execute(visits.insert(), **visit)
+            self.log.info('%r inserted' % self)
+            return visit, True
 
-        if visit is None:
-            raise NotImplementedError(
-                'Unknown kind %s' % kind)
-
-        self.log.info('%r inserted' % self)
-
-        return visit, kind == 'o'
+        raise NotImplementedError('Unknown kind %s' % kind)

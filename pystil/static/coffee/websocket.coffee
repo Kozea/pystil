@@ -15,9 +15,8 @@ commands = (
         setTimeout (->
             $('header h1 a').removeClass 'pulse'
         ), 75
-    EXIT: (id) ->
-        id = parseInt(id)
-        $("table.last tr[data-visit-id=#{id}]").removeClass 'active'
+    EXIT: (uuid) ->
+        $("table.last tr[data-visit-uuid=#{uuid}]").removeClass 'active'
 )
 
 $ ->

@@ -23,9 +23,8 @@
         return $('header h1 a').removeClass('pulse');
       }), 75);
     },
-    EXIT: function(id) {
-      id = parseInt(id);
-      return $("table.last tr[data-visit-id=" + id + "]").removeClass('active');
+    EXIT: function(uuid) {
+      return $("table.last tr[data-visit-uuid=" + uuid + "]").removeClass('active');
     }
   };
 
