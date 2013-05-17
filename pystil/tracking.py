@@ -38,6 +38,8 @@ class Message(object):
         visit = None
         kind = get('d')
         uuid = get('_')
+        if '; ' in uuid:
+            uuid = uuid.split('; ')[0]
         platform, browser, version = parse_ua(self.ua)
         if kind == 'c':
             try:
