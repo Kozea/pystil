@@ -46,6 +46,8 @@ class Message(object):
                      .first())
             if visit:
                 visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
+            else:
+                raise Exception('Visit not found uuid=%s' % uuid)
 
         elif kind == 'o':
             last_visit = get('l')
@@ -120,6 +122,10 @@ class Message(object):
             visit['asn'] = asn_name
             visit = Visit(**visit)
             db.add(visit)
+
+        if visit is None:
+            raise NotImplementedError(
+                'Unknown kind %s' % kind)
 
         self.log.info('%r inserted' % self)
 

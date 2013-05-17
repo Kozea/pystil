@@ -47,13 +47,10 @@ class Tracking(Thread):
         while True:
             try:
                 message = MESSAGE_QUEUE.get(True)
-                self.log.exception('Message got %r' % self)
+                self.log.info('Message got %r' % self)
                 self.db.begin()
                 try:
                     visit, opening = message.process(self.db)
-                    if not visit:
-                        raise NotImplementedError(
-                            'Unknown kind %s' % message.qs_args)
                     self.db.commit()
 
                     if opening:
