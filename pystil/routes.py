@@ -49,7 +49,8 @@ class Tracker(Hdr):
             self.log,
             self.request.arguments,
             self.request.headers['User-Agent'],
-            self.request.remote_ip)
+            self.request.headers.get(
+                'X-FORWARDED-FOR', self.request.remote_ip))
         self.log.info('Inserting message for %s' % self.request.remote_ip)
         MESSAGE_QUEUE.put(message, True)
         self.log.info('Message for %s inserted' % self.request.remote_ip)
