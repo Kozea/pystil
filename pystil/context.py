@@ -39,15 +39,27 @@ class Tracking(Thread):
     def __init__(self, db, log, *args, **kwargs):
         super(Tracking, self).__init__(*args, **kwargs)
         self.log = log
-        self.db = db
-        self.db()
+        self.db = db()
 
     def run(self):
+        from pystil.websocket import broadcast
+        from pystil.utils import visit_to_table_line
         while True:
             message = MESSAGE_QUEUE.get(True)
+            self.db.begin()
             try:
-                message.process(self.db)
+                visit, opening = message.process(self.db)
+                if not visit:
+                    raise NotImplementedError(
+                        'Unknown kind %s' % message.qs_args)
+                self.db.commit()
+
+                if opening:
+                    broadcast('VISIT|' + visit_to_table_line(visit))
+                else:
+                    visit and broadcast('EXIT|%d' % visit.id)
             except:
+                self.db.rollback()
                 self.log.exception('Error processing visit')
 
 
@@ -64,7 +76,9 @@ class Pystil(Application):
         self.db_engine = create_engine(db_url, echo=False)
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
-        Tracking(self.db, self.log).start()
+
+        tracking_session = sessionmaker(bind=self.db_engine, autocommit=True)
+        Tracking(tracking_session, self.log).start()
         # getLogger('sqlalchemy').setLevel(10)
 
     @property

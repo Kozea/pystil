@@ -3,11 +3,10 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from pystil.utils import (
-    try_decode, parse_ua, parse_referrer, parse_domain, visit_to_table_line)
+    try_decode, parse_ua, parse_referrer, parse_domain)
 from pystil.db import Visit, country, city, asn
 from datetime import datetime, timedelta
 from sqlalchemy import desc
-from pystil.websocket import broadcast
 
 
 class Message(object):
@@ -35,6 +34,7 @@ class Message(object):
                     value = try_decode(value)
             return value
 
+        visit = None
         kind = get('d')
         uuid = get('_')
         platform, browser, version = parse_ua(self.ua)
@@ -120,11 +120,6 @@ class Message(object):
             visit = Visit(**visit)
             db.add(visit)
 
-        db.commit()
         self.log.info('%r inserted' % self)
 
-        if kind == 'o':
-            broadcast('VISIT|' + visit_to_table_line(visit))
-        elif kind == 'c':
-            visit and broadcast('EXIT|%d' % visit.id)
-        return visit
+        return visit, kind == 'o'
