@@ -74,7 +74,9 @@ def between(from_date, to_date, table=Visit.__table__):
 
 def visit_to_table_line(visit):
     html = '<tr data-visit-uuid="%s">' % visit.uuid
-    for key in ['date', 'site', 'ip', 'country', 'city', 'page', 'referrer']:
+    for key in [
+            'date', 'site', 'ip', 'country',
+            'city', 'page', 'pretty_referrer']:
         html += '<td>'
         val = getattr(visit, key)
         if val:
