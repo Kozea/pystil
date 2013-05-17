@@ -7,13 +7,12 @@
 pystil - An elegant site web traffic analyzer
 """
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # Use a time-based version number with ridiculous precision as pip in tox
 # does not reinstall the same version.
 import datetime
 VERSION = "git-" + datetime.datetime.now().isoformat()
-
 
 options = dict(
     name="pystil",
@@ -26,6 +25,17 @@ options = dict(
     platforms="Any",
     packages=find_packages(),
     scripts=["pystil2.py"],
+    package_data={
+        'pystil': ['static/*.js',
+                   'static/*.gif',
+                   'static/*.png',
+                   'static/sylesheets/*',
+                   'static/js/*',
+                   'static/img/*',
+                   'static/font/*',
+                   'templates/site/*',
+                   'tempaltes/*.html']
+    },
     install_requires=['tornado', 'pygal', 'sqlalchemy', 'psycopg2'],
     classifiers=[
         "Development Status :: WIP",
