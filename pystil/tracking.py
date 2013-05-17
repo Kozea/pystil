@@ -39,11 +39,11 @@ class Message(object):
         uuid = get('_')
         platform, browser, version = parse_ua(self.ua)
         if kind == 'c':
-            visit = (db
-                     .query(Visit)
-                     .filter(Visit.uuid == uuid)
-                     .order_by(desc(Visit.date))
-                     .first())
+            # visit = (db
+                     # .query(Visit)
+                     # .filter(Visit.uuid == uuid)
+                     # .order_by(desc(Visit.date))
+                     # .first())
             if visit:
                 visit.time = timedelta(seconds=int(get('t', 0)) / 1000)
             else:
