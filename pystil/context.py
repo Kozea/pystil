@@ -11,7 +11,12 @@ from tornado.web import (
     url as unnamed_url)
 from tornado.options import options
 from logging import getLogger
-from pystil.db import metadata
+from pystil.db import metadata, Visit
+from threading import Thread
+from queue import Queue
+
+MESSAGE_QUEUE = Queue()
+
 log = getLogger("pystil")
 
 
@@ -30,6 +35,36 @@ def monkey_patch():
 # monkey_patch()
 
 
+class Tracking(Thread):
+    def __init__(self, db, log, *args, **kwargs):
+        super(Tracking, self).__init__(*args, **kwargs)
+        self.log = log
+        self.db = db
+
+    def run(self):
+        from pystil.websocket import broadcast
+        from pystil.utils import visit_to_table_line
+        while True:
+            try:
+                self.log.info('Blocking for messages')
+                message = MESSAGE_QUEUE.get(True)
+                self.log.info('Message got %r' % message)
+                try:
+                    visit_or_uuid, opening = message.process(self.db)
+
+                    if opening:
+                        visit = Visit(**visit_or_uuid)
+                        broadcast(
+                            'VISIT|' + visit.host + '|' +
+                            visit_to_table_line(visit))
+                    else:
+                        visit_or_uuid and broadcast('EXIT|%s' % visit_or_uuid)
+                except:
+                    self.log.exception('Error processing visit')
+            except:
+                self.log.exception('Exception in loop')
+
+
 class Pystil(Application):
     def __init__(self, *args, **kwargs):
         super(Pystil, self).__init__(*args, **kwargs)
@@ -43,6 +78,8 @@ class Pystil(Application):
         self.db_engine = create_engine(db_url, echo=False)
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
+        Tracking(self.db_engine.connect(), self.log).start()
+        # getLogger('sqlalchemy').setLevel(10)
         # getLogger('sqlalchemy').setLevel(10)
 
     @property

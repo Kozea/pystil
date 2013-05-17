@@ -114,15 +114,6 @@ class Visit(Base):
                         strpos(host, '.') + 1,
                         length(host) - strpos(host, '.') + 1)))
 
-
-class Keys(Base):
-    """This mapped lass contains the auth keys"""
-    __tablename__ = 'keys'
-
-    id = integer(pkey=True)
-    key = string()
-    host = string()
-
 metadata = Base.metadata
 
 

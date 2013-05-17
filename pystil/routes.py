@@ -2,25 +2,27 @@
 # Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from pystil.db import Visit, count
-from pystil.tracking import Tracking
+from pystil.db import Visit
+from pystil.tracking import Message
 from pystil.aggregates import get_attribute_and_count
-from pystil.context import Hdr, url
+from pystil.context import Hdr, url, MESSAGE_QUEUE
 from pystil.utils import visit_to_table_line, on
 from tornado.web import asynchronous
 from sqlalchemy import desc
 from datetime import date, timedelta
 import os
 import uuid
-import pygal
 import pystil.charts
-from pystil.charts import PystilStyle
 
 
 @url(r'/')
 class Index(Hdr):
     def get(self):
-        self.render('index.html')
+        visits = (self.db.query(Visit)
+                  .order_by(Visit.date.desc())[:10])
+        self.render(
+            'index.html',
+            top_lines=''.join(map(visit_to_table_line, visits)))
 
 
 @url(r'/pystil.js')
@@ -47,11 +49,16 @@ class Tracker(Hdr):
         with open(gif_fn, 'rb') as gif_file:
             self.write(gif_file.read())
         self.finish()
-        Tracking(
-            self.db,
+        message = Message(
+            self.log,
             self.request.arguments,
             self.request.headers['User-Agent'],
-            self.request.remote_ip)
+            self.request.headers.get(
+                'X-FORWARDED-FOR', self.request.remote_ip))
+        self.log.info('Inserting message for %s (Already in queue %s)' % (
+            message.ip, MESSAGE_QUEUE.qsize()))
+        MESSAGE_QUEUE.put(message, True)
+        self.log.info('Message for %s inserted' % message.ip)
 
 
 @url(r'/sites')

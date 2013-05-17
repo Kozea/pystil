@@ -73,13 +73,17 @@ def between(from_date, to_date, table=Visit.__table__):
 
 
 def visit_to_table_line(visit):
-    html = '<tr data-visit-id="%d">' % visit.id
-    for key in ['date', 'site', 'ip', 'country', 'city', 'page', 'referrer']:
+    html = '<tr data-visit-uuid="%s">' % visit.uuid
+    for key in [
+            'date', 'site', 'ip', 'country',
+            'city', 'page', 'referrer']:
         html += '<td>'
         val = getattr(visit, key)
         if val:
             if key == 'date':
                 val = val.strftime('%Y-%m-%d %H:%M:%S')
+            if key == 'referrer':
+                val = parse_referrer(val, True, True)
             html += val
         html += '</td>'
     html += '</tr>'
@@ -138,6 +142,8 @@ def get_aggregate(criteria):
 def try_decode(astring):
     """Try decoding a string in various encodings, with a fallback to good old
     ascii."""
+    if isinstance(astring, str):
+        return astring
     for encoding in ('utf8', 'latin'):
         try:
             return astring.decode(encoding)
