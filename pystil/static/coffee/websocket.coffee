@@ -21,7 +21,10 @@ commands = (
 )
 
 $ ->
-    window.ws = ws = new WebSocket("ws://#{location.host}/ws")
+    host = location.host
+    if host.indexOf(':')
+        host = host.split(':')[0]
+    window.ws = ws = new WebSocket("ws://#{host}:#{window._pystil_port}/ws")
 
     ws.onopen = ->
         console.log('Websocket opened', arguments)
