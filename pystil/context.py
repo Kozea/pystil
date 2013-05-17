@@ -53,9 +53,10 @@ class Tracking(Thread):
                     visit_or_uuid, opening = message.process(self.db)
 
                     if opening:
+                        visit = Visit(**visit_or_uuid)
                         broadcast(
-                            'VISIT|' + visit_to_table_line(
-                                Visit(**visit_or_uuid)))
+                            'VISIT|' + visit.host + '|' +
+                            visit_to_table_line(visit))
                     else:
                         visit_or_uuid and broadcast('EXIT|%s' % visit_or_uuid)
                 except:

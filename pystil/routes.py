@@ -18,7 +18,11 @@ import pystil.charts
 @url(r'/')
 class Index(Hdr):
     def get(self):
-        self.render('index.html')
+        visits = (self.db.query(Visit)
+                  .order_by(Visit.date.desc())[:10])
+        self.render(
+            'index.html',
+            top_lines=''.join(map(visit_to_table_line, visits)))
 
 
 @url(r'/pystil.js')

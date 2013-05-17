@@ -3,10 +3,28 @@
 {% block article %}
   <article>
     <h2>Last visits</h2>
-    {# <figure> #}
-    {#   <section class="graph" data-graph="Last" data-criteria="all"></section> #}
-    {#   <figcaption>Real time last visits</figcaption> #}
-    {# <figure> #}
+    <section id="visits" class="tab">
+      <figure>
+        <figcaption>Real time last visits</figcaption>
+        <table class="last" data-site="all">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Site</th>
+              <th>Ip</th>
+              <th>Country</th>
+              <th>City</th>
+              <th>Page</th>
+              <th>Referrer</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% raw top_lines %}
+          </tbody>
+        </table>
+      </figure>
+    </section>
+
     <figure>
       <embed type="image/svg+xml" src="/load/data/all/Line/all.svg" />
     </figure>

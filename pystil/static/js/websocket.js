@@ -7,16 +7,22 @@
       return console.log(m);
     },
     VISIT: function(m) {
-      var $line;
+      var $line, line, pipe, site, site_filter;
 
       if ($('table.last').size()) {
-        $line = $(m);
-        $line.addClass('active');
-        $line.addClass('recent');
-        $('table.last tbody').prepend($line);
-        setTimeout((function() {
-          return $line.removeClass('recent');
-        }), 500);
+        pipe = m.indexOf('|');
+        site = m.substr(0, pipe);
+        line = m.substr(pipe + 1);
+        $line = $(line);
+        site_filter = $('table.last').attr('data-site');
+        if (site_filter === 'all' || site.indexOf(site_filter) > -1) {
+          $line.addClass('active');
+          $line.addClass('recent');
+          $('table.last tbody').prepend($line);
+          setTimeout((function() {
+            return $line.removeClass('recent');
+          }), 500);
+        }
       }
       $('header h1 a').addClass('pulse');
       return setTimeout((function() {
