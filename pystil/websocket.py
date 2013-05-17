@@ -1,5 +1,5 @@
 from tornado.websocket import WebSocketHandler
-from pystil.context import Hdr, url
+from pystil.context import Hdr, url, MESSAGE_QUEUE
 
 
 CLIENTS = []
@@ -9,11 +9,15 @@ CLIENTS = []
 class EchoWebSocket(Hdr, WebSocketHandler):
 
     def open(self):
+        self.log.info('Opening websocket')
         CLIENTS.append(self)
 
     def on_message(self, message):
         if message == '/count':
             self.write_message('INFO|There are %d clients' % len(CLIENTS))
+        elif message == '/queue_count':
+            self.write_message(
+                'INFO|There are %d waiting messages' % MESSAGE_QUEUE.qsize())
 
     def on_close(self):
         CLIENTS.remove(self)

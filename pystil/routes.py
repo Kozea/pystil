@@ -2,19 +2,17 @@
 # Copyright (C) 2011-2013 by Florian Mounier, Kozea
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
-from pystil.db import Visit, count
-from pystil.tracking import Tracking
+from pystil.db import Visit
+from pystil.tracking import Message
 from pystil.aggregates import get_attribute_and_count
-from pystil.context import Hdr, url
+from pystil.context import Hdr, url, MESSAGE_QUEUE
 from pystil.utils import visit_to_table_line, on
 from tornado.web import asynchronous
 from sqlalchemy import desc
 from datetime import date, timedelta
 import os
 import uuid
-import pygal
 import pystil.charts
-from pystil.charts import PystilStyle
 
 
 @url(r'/')
@@ -47,11 +45,14 @@ class Tracker(Hdr):
         with open(gif_fn, 'rb') as gif_file:
             self.write(gif_file.read())
         self.finish()
-        Tracking(
-            self.db,
+        message = Message(
+            self.log,
             self.request.arguments,
             self.request.headers['User-Agent'],
             self.request.remote_ip)
+        self.log.info('Inserting message for %s' % self.request.remote_ip)
+        MESSAGE_QUEUE.put(message, True)
+        self.log.info('Message for %s inserted' % self.request.remote_ip)
 
 
 @url(r'/sites')

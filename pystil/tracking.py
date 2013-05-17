@@ -5,24 +5,21 @@
 from pystil.utils import (
     try_decode, parse_ua, parse_referrer, parse_domain, visit_to_table_line)
 from pystil.db import Visit, country, city, asn
-from threading import Thread
 from datetime import datetime, timedelta
 from sqlalchemy import desc
 from pystil.websocket import broadcast
 
 
-class Tracking(Thread):
-    def __init__(self, db, qs_args, ua, ip, *args, **kwargs):
-        super(Tracking, self).__init__(*args, **kwargs)
-        self.db = db
+class Message(object):
+    def __init__(self, log, qs_args, ua, ip):
+        self.log = log
         self.qs_args = qs_args
         self.ua = ua
         self.stamp = datetime.utcnow()
         self.ip = ip
-        self.start()
 
-    def run(self):
-        self.db()
+    def process(self, db):
+        self.log.info('Processing message %r' % self)
 
         def get(key, default=None, from_encoding=None):
             value = self.qs_args.get(key, [default])[0]
@@ -39,7 +36,7 @@ class Tracking(Thread):
         uuid = get('_')
         platform, browser, version = parse_ua(self.ua)
         if kind == 'c':
-            visit = (self.db
+            visit = (db
                      .query(Visit)
                      .filter(Visit.uuid == uuid)
                      .order_by(desc(Visit.date))
@@ -91,21 +88,21 @@ class Tracking(Thread):
                 country_name = 'Local'
                 asn_name = 'Local'
             else:
-                countries = list(self.db.execute(
+                countries = list(db.execute(
                     country.select().where(
                         country.c.ipr.op('>>=')(visit['ip']))))
 
                 if len(countries) > 0:
                     country_name = countries[0].country_name
                     country_code = countries[0].country_code
-                    cities = list(self.db.execute(
+                    cities = list(db.execute(
                         city.select().where(
                             city.c.ipr.op('>>=')(visit['ip']))))
                     if len(cities) > 0:
                         city_name = cities[0].city
                         lat = cities[0].latitude
                         lng = cities[0].longitude
-                asns = list(self.db.execute(
+                asns = list(db.execute(
                     asn.select().where(
                         asn.c.ipr.op('>>=')(visit['ip']))))
                 if len(asns) > 0:
@@ -118,9 +115,11 @@ class Tracking(Thread):
             visit['lng'] = lng
             visit['asn'] = asn_name
             visit = Visit(**visit)
-            self.db.add(visit)
+            db.add(visit)
 
-        self.db.commit()
+        db.commit()
+        self.log.info('%r inserted' % self)
+
         if kind == 'o':
             broadcast('VISIT|' + visit_to_table_line(visit))
         elif kind == 'c':
