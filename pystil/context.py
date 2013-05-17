@@ -11,7 +11,7 @@ from tornado.web import (
     url as unnamed_url)
 from tornado.options import options
 from logging import getLogger
-from pystil.db import metadata
+from pystil.db import metadata, Visit
 from threading import Thread
 from queue import Queue
 
@@ -54,7 +54,8 @@ class Tracking(Thread):
 
                     if opening:
                         broadcast(
-                            'VISIT|' + visit_to_table_line(visit_or_uuid))
+                            'VISIT|' + visit_to_table_line(
+                                Visit(**visit_or_uuid)))
                     else:
                         visit_or_uuid and broadcast('EXIT|%s' % visit_or_uuid)
                 except:
@@ -77,7 +78,8 @@ class Pystil(Application):
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
         Tracking(self.db_engine.connect(), self.log).start()
-        getLogger('sqlalchemy').setLevel(10)
+        # getLogger('sqlalchemy').setLevel(10)
+        # getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):

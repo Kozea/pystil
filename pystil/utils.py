@@ -73,10 +73,10 @@ def between(from_date, to_date, table=Visit.__table__):
 
 
 def visit_to_table_line(visit):
-    html = '<tr data-visit-uuid="%s">' % visit['uuid']
+    html = '<tr data-visit-uuid="%s">' % visit.uuid
     for key in ['date', 'site', 'ip', 'country', 'city', 'page', 'referrer']:
         html += '<td>'
-        val = visit.get(key)
+        val = getattr(visit, key)
         if val:
             if key == 'date':
                 val = val.strftime('%Y-%m-%d %H:%M:%S')
