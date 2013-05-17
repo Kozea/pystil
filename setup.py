@@ -25,14 +25,8 @@ options = dict(
     license="BSD",
     platforms="Any",
     packages=find_packages(),
-    install_requires=['tornado', 'pygal', 'sqlalchemy'],
-    package_data={'pystil': [
-        'templates/*.html',
-        'templates/js/*',
-        'static/*.gif',
-        'static/js/*',
-        'static/stylesheets/*',
-    ]},
+    scripts=["pystil2.py"],
+    install_requires=['tornado', 'pygal', 'sqlalchemy', 'psycopg2'],
     classifiers=[
         "Development Status :: WIP",
         "Intended Audience :: Public",
