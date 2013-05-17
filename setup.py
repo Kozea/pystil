@@ -34,7 +34,7 @@ options = dict(
                    'static/img/*',
                    'static/font/*',
                    'templates/site/*',
-                   'tempaltes/*.html']
+                   'templates/*.html']
     },
     install_requires=['tornado', 'pygal', 'sqlalchemy', 'psycopg2'],
     classifiers=[
