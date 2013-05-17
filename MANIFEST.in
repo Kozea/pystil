@@ -1,0 +1,4 @@
+graft pystil/static
+graft pystil/templates
+prune static/sass
+prune static/coffee
