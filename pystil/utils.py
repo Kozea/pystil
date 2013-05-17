@@ -142,6 +142,8 @@ def get_aggregate(criteria):
 def try_decode(astring):
     """Try decoding a string in various encodings, with a fallback to good old
     ascii."""
+    if isinstance(astring, str):
+        return astring
     for encoding in ('utf8', 'latin'):
         try:
             return astring.decode(encoding)
