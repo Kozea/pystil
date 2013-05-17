@@ -46,6 +46,7 @@ class Tracking(Thread):
         from pystil.utils import visit_to_table_line
         while True:
             try:
+                self.log.info('Blocking for messages')
                 message = MESSAGE_QUEUE.get(True)
                 self.log.info('Message got %r' % message)
                 self.db.begin()
