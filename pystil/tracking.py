@@ -18,7 +18,8 @@ class Message(object):
         self.stamp = datetime.utcnow()
         if ', ' in ip:
             self.ip = ip.split(', ')[0]
-        self.ip = ip
+        else:
+            self.ip = ip
 
     def process(self, db):
         self.log.info('Processing message %r' % self)
