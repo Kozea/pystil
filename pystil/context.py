@@ -12,6 +12,7 @@ from tornado.web import (
 
 import logging
 from logging.handlers import SysLogHandler, SMTPHandler
+from uuid import uuid4
 from tornado.options import options
 from logging import getLogger
 from pystil.db import metadata, Visit
@@ -116,6 +117,7 @@ class Pystil(Application):
 
 pystil = Pystil(
     debug=options.debug,
+    cookie_secret=options.secret,
     static_path=os.path.join(os.path.dirname(__file__), "static"),
     template_path=os.path.join(os.path.dirname(__file__), "templates")
 )
@@ -129,6 +131,11 @@ class Hdr(RequestHandler):
     @property
     def log(self):
         return log
+
+    def prepare(self):
+        if not self.get_secure_cookie('_pystil_site'):
+            self.log.info('Setting secure cookie')
+            self.set_secure_cookie('_pystil_site', 'local|' + str(uuid4()))
 
 
 class url(object):
