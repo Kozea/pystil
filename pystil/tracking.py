@@ -21,7 +21,7 @@ class Message(object):
             self.ip = ip
 
     def process(self, db):
-        self.log.info('Processing message %r' % self)
+        self.log.debug('Processing message %r' % self)
         visits = Visit.__table__
         if len(self.qs_args) == 0:
             raise ValueError('No params in request. Must be a bot.')
@@ -58,7 +58,7 @@ class Message(object):
                     .update()
                     .where(visits.c.id == id)
                     .values(time=timedelta(seconds=int(get('t', 0)) / 1000)))
-                self.log.info('%r inserted' % self)
+                self.log.debug('%r inserted' % self)
             return uuid, False
 
         elif kind == 'o':
@@ -133,7 +133,7 @@ class Message(object):
             visit['lng'] = lng
             visit['asn'] = asn_name
             db.execute(visits.insert(), **visit)
-            self.log.info('%r inserted' % self)
+            self.log.debug('%r inserted' % self)
             return visit, True
 
         raise NotImplementedError('Unknown kind %s' % kind)

@@ -9,6 +9,9 @@ from tornado.web import (
     RequestHandler,
     Application,
     url as unnamed_url)
+
+import logging
+from logging.handlers import SysLogHandler, SMTPHandler
 from tornado.options import options
 from logging import getLogger
 from pystil.db import metadata, Visit
@@ -46,9 +49,9 @@ class Tracking(Thread):
         from pystil.utils import visit_to_table_line
         while True:
             try:
-                self.log.info('Blocking for messages')
+                self.log.debug('Blocking for messages')
                 message = MESSAGE_QUEUE.get(True)
-                self.log.info('Message got %r' % message)
+                self.log.debug('Message got %r' % message)
                 try:
                     visit_or_uuid, opening = message.process(self.db)
 
@@ -79,8 +82,31 @@ class Pystil(Application):
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
         Tracking(self.db_engine.connect(), self.log).start()
-        # getLogger('sqlalchemy').setLevel(10)
-        # getLogger('sqlalchemy').setLevel(10)
+        if not options.debug:
+            handler = SysLogHandler(
+                address='/dev/log', facility=SysLogHandler.LOG_LOCAL1)
+            handler.setLevel(logging.INFO)
+            handler.setFormatter(
+                logging.Formatter(
+                    'PYSTIL: %(name)s: %(levelname)s %(message)s'))
+
+            smtp_handler = SMTPHandler(
+                'smtp.keleos.fr',
+                'no-reply@pystil.org',
+                'errors@pystil.org',
+                'Pystil Exception')
+            smtp_handler.setLevel(logging.ERROR)
+
+            log.addHandler(smtp_handler)
+            for logger in (
+                    'tornado.access',
+                    'tornado.application',
+                    'tornado.general',
+                    'sqlalchemy'):
+                getLogger(logger).addHandler(handler)
+                getLogger(logger).addHandler(smtp_handler)
+        else:
+            getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):
