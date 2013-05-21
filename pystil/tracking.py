@@ -23,6 +23,8 @@ class Message(object):
     def process(self, db):
         self.log.info('Processing message %r' % self)
         visits = Visit.__table__
+        if len(self.qs_args) == 0:
+            raise ValueError('No params in request. Must be a bot.')
 
         def get(key, default=None, from_encoding=None):
             value = self.qs_args.get(key, [default])[0]
@@ -49,7 +51,7 @@ class Message(object):
                     .order_by(desc(visits.c.date))
                 ).fetchone()['id']
             except:
-                self.log.exception('Could not find uuid %s' % uuid)
+                self.log.warn('Could not find uuid %s' % uuid, exc_info=True)
             else:
                 db.execute(
                     visits
@@ -103,7 +105,7 @@ class Message(object):
                 city_name = 'Local'
                 country_name = 'Local'
                 asn_name = 'Local'
-            else:
+            elif self.ip != 'unknown':
                 countries = list(db.execute(
                     country.select().where(
                         country.c.ipr.op('>>=')(visit['ip']))))
