@@ -93,7 +93,7 @@ class Pystil(Application):
             smtp_handler = SMTPHandler(
                 'smtp.keleos.fr',
                 'no-reply@pystil.org',
-                'errors@pystil.org',
+                'pystil-errors@kozea.fr',
                 'Pystil Exception')
             smtp_handler.setLevel(logging.ERROR)
 
