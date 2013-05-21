@@ -29,7 +29,7 @@ options = dict(
         'pystil': ['static/*.js',
                    'static/*.gif',
                    'static/*.png',
-                   'static/sylesheets/*',
+                   'static/stylesheets/*',
                    'static/js/*',
                    'static/img/*',
                    'static/font/*',

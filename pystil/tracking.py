@@ -132,7 +132,7 @@ class Message(object):
             visit['lat'] = lat
             visit['lng'] = lng
             visit['asn'] = asn_name
-            db.execute(visits.insert(), **visit)
+            print(db.execute(visits.insert(), **visit))
             self.log.debug('%r inserted' % self)
             return visit, True
 
