@@ -39,10 +39,11 @@ PystilStyle = Style(
 
 
 class Chart(object):
-    def __init__(self, db, site, criteria, from_date, to_date, host):
+    def __init__(self, db, site, criteria, from_date, to_date, host, lang):
         self.db = db
         self.site = site
         self.criteria = criteria
+        self.lang = lang
         self.from_date = from_date
         self.to_date = to_date
         self.table = Visit.__table__
@@ -88,7 +89,7 @@ class Chart(object):
     def render(self):
         self.chart = self.get_chart()
         self.populate()
-        self.chart.title = titlize(self.criteria, 'us')
+        self.chart.title = titlize(self.criteria, self.lang)
         return self.chart.render()
 
     def render_load(self):
@@ -103,7 +104,7 @@ class Chart(object):
                 self.host + '/static/js/pygal-tooltips.js'
             ])
         self.chart.no_data_text = 'Loading'
-        self.chart.title = titlize(self.criteria, 'us')
+        self.chart.title = titlize(self.criteria, self.lang)
         return self.chart.render()
 
 
@@ -119,8 +120,8 @@ class Line(Chart):
 
         self.chart.x_labels = list(map(
             lambda x: x.strftime('%Y-%m-%d'), cut(all, 0)))
-        self.chart.add(labelize('all', 'us'), cut(all, 1))
-        self.chart.add(labelize('unique', 'us'), cut(all, 2))
+        self.chart.add(labelize('all', self.lang), cut(all, 1))
+        self.chart.add(labelize('unique', self.lang), cut(all, 2))
 
         new = (self.filter(
             self.db
@@ -129,7 +130,7 @@ class Line(Chart):
             .group_by(Visit.day)
             .order_by(Visit.day)
             .all())
-        self.chart.add(labelize('new', 'us'), cut(new, 0))
+        self.chart.add(labelize('new', self.lang), cut(new, 0))
         self.chart.x_label_rotation = 45
 
 
@@ -144,7 +145,7 @@ class Bar(Chart):
                 "30s", "1min", "2min", "5min",  ">10min"]
         else:
             self.chart.x_labels = list(map(str, map(int, cut(all, 0))))
-        self.chart.add(labelize(self.criteria, 'us'),
+        self.chart.add(labelize(self.criteria, self.lang),
                        list(map(float, cut(all, 1))))
 
 

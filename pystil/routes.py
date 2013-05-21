@@ -116,21 +116,31 @@ class Site(Hdr):
 
 
 @url(r'/load/data/([^/]+)/([^/]+)/([^/]+)'
-     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?.svg')
+     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?'
+     '(/in/\w{2})?.svg')
 class LoadData(Hdr):
-    def get(self, site, type_, criteria, dates=None):
+    def get(self, site, type_, criteria, dates=None, lang=None):
         self.set_header("Content-Type", "image/svg+xml")
+        if lang:
+            lang = lang.replace('/in/', '')
+        else:
+            lang = 'us'
         chart = getattr(pystil.charts, type_)(
             self.db, site, criteria, None, None, '%s://%s' % (
-                self.request.protocol, self.request.host))
+                self.request.protocol, self.request.host), lang)
         self.write(chart.render_load())
 
 
 @url(r'/data/([^/]+)/([^/]+)/([^/]+)'
-     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?.svg')
+     '(/between/\d{4}-\d{2}-\d{2}/\d{4}-\d{2}-\d{2})?'
+     '(/in/\w{2})?.svg')
 class Data(Hdr):
-    def get(self, site, type_, criteria, dates=None):
+    def get(self, site, type_, criteria, dates=None, lang=None):
         self.set_header("Content-Type", "image/svg+xml")
+        if lang:
+            lang = lang.replace('/in/', '')
+        else:
+            lang = 'us'
         if dates:
             from_date, to_date = dates.replace('/between/', '').split('/')
             from_date = date(*map(int, from_date.split('-')))
@@ -140,5 +150,5 @@ class Data(Hdr):
             to_date = date.today()
         chart = getattr(pystil.charts, type_)(
             self.db, site, criteria, from_date, to_date, '%s://%s' % (
-                self.request.protocol, self.request.host))
+                self.request.protocol, self.request.host), lang)
         self.write(chart.render())
