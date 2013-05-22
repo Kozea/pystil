@@ -183,7 +183,10 @@ def parse_ua(user_agent):
 
 def format_angle(angle, round_to_second=True):
     """Format an angle to sexagesimal system"""
-    d = floor(angle)
+    try:
+        d = floor(angle)
+    except:
+        return
     rv = '%d°' % d
     r = (angle - d) * 60
     if r:
