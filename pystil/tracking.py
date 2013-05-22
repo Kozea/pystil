@@ -39,6 +39,8 @@ class Message(object):
 
         visit = None
         kind = get('d')
+        if kind == 'e':
+            raise RuntimeError('Problem in tracker: "%s"' % get('r'))
         uuid = get('_')
         if '; ' in uuid:
             uuid = uuid.split('; ')[0]

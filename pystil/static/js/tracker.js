@@ -64,7 +64,21 @@
     };
   };
 
-  this.setTimeout(tracker, 10);
+  this.setTimeout((function() {
+    var e, inner;
+
+    try {
+      return tracker();
+    } catch (_error) {
+      e = _error;
+      try {
+        return send('d=e&r=' + e.toString(), new Date().getTime());
+      } catch (_error) {
+        inner = _error;
+        return null;
+      }
+    }
+  }), 10);
 
 }).call(this);
 

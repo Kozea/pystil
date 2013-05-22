@@ -13,7 +13,6 @@ tracker = () =>
     time = now.getTime()
     # Get the cookie uuid or take a new one
     uuid = (@document.cookie.match('pystil=[0-9]+\\$(.+)') or [])[1] or "%s"
-
     track =
         _: uuid
         # Resolution
@@ -58,4 +57,12 @@ tracker = () =>
         send(make_query(retrack), time)
         previous_unload()
 
-@setTimeout(tracker, 10)
+@setTimeout (->
+    try
+        tracker()
+    catch e
+        try
+            send 'd=e&r=' + e.toString(), new Date().getTime()
+        catch inner
+            null
+), 10
