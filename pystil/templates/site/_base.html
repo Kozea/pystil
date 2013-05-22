@@ -3,9 +3,10 @@
 {% block article %}
   <article class="dates">
     <form class="from-to">
-      <label for="from">From: </label><input id="from" type="text" class="datepicker" />
-      <label for="to">To: </label><input id="to" type="text" class="datepicker" />
-      <input type="submit" value="Load" />
+      <div><label for="from">From: </label><input id="from" type="text" class="datepicker" /></div>
+      <div><label for="to">To: </label><input id="to" type="text" class="datepicker" /></div>
+      <i class="icon-search icon-2x load"></i>
+      <input style="visibility: hidden" type="submit" value="Load" />
   </article>
   <article id="graphs" class="pystil-tabs">
     <h2>On site {{ site }}</h2>

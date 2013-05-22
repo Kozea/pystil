@@ -83,7 +83,7 @@ class Message(object):
                      'size': get('s'),
                      'page': get('p', from_encoding='latin-1'),
                      'hash': get('h', from_encoding='latin-1'),
-                     'query_string': get('q'),
+                     'query': get('q'),
                      'language': get('i'),
                      'browser_name': browser,
                      'browser_version': version,
@@ -132,7 +132,8 @@ class Message(object):
             visit['lat'] = lat
             visit['lng'] = lng
             visit['asn'] = asn_name
-            print(db.execute(visits.insert(), **visit))
+            id = db.execute(visits.insert(), **visit).inserted_primary_key[0]
+            visit['id'] = id
             self.log.debug('%r inserted' % self)
             return visit, True
 

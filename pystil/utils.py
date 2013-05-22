@@ -5,6 +5,7 @@
 
 """Utility functions to help processing data"""
 from datetime import timedelta
+from math import floor
 from urllib.parse import urlparse, parse_qs
 from pystil.context import pystil
 from pystil.db import Visit
@@ -75,17 +76,22 @@ def between(from_date, to_date, table=Visit.__table__):
 def visit_to_table_line(visit):
     html = '<tr data-visit-uuid="%s">' % visit.uuid
     for key in [
-            'date', 'site', 'ip', 'country',
+            'date', 'host', 'ip', 'country',
             'city', 'page', 'referrer']:
-        html += '<td>'
         val = getattr(visit, key)
         if val:
             if key == 'date':
                 val = val.strftime('%Y-%m-%d %H:%M:%S')
             if key == 'referrer':
                 val = parse_referrer(val, True, True)
-            html += val
+        else:
+            val = ''
+        html += '<td title="%s">' % val
+        html += val
         html += '</td>'
+    html += ('<td>'
+             '<a href="/visit/%d"><i class="icon-search"></i></a>'
+             '</td>' % visit.id)
     html += '</tr>'
     return html
 
@@ -168,3 +174,21 @@ def parse_ua(user_agent):
     else:
         browser = version = None
     return platform, browser, version
+
+
+def format_angle(angle, round_to_second=True):
+    """Format an angle to sexagesimal system"""
+    d = floor(angle)
+    rv = '%d°' % d
+    r = (angle - d) * 60
+    if r:
+        m = floor(r)
+        rv += " %d'" % m
+        r = (r - m) * 60
+        if r:
+            if round_to_second:
+                f = ' %d"'
+            else:
+                f = ' %f"'
+            rv += f % r
+    return rv

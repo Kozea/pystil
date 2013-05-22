@@ -1,0 +1,63 @@
+{% extends "_layout.html" %}
+
+{% block article %}
+  <article>
+    <h2>Visit #{{ visit.id }}</h2>
+    <dl>
+      <dt><i class="icon-large icon-calendar"></i> Date</dt>
+      <dd>{{ visit.date.strftime('%Y-%m-%d %H:%M:%S') }}</dd>
+
+      <dt><i class="icon-large icon-link"></i> Site</dt>
+      <dd><a href="{{ visit.site }}">{{ visit.site }}</a> <i class="icon-external-link-sign"></i></dd>
+
+      <dt><i class="icon-large icon-cloud"></i> Ip</dt>
+      <dd><a href="http://who.is/whois-ip/ip-address/{{ visit.ip }}">{{ visit.ip }}</a> <i class="icon-external-link-sign"></i></dd>
+
+      <dt><i class="icon-large icon-home"></i> Asn</dt>
+      <dd>{{ visit.asn  or '∅' }}</dd>
+
+      <dt><i class="icon-large icon-map-marker"></i> Location</dt>
+      {% from pystil.utils import format_angle %}
+      {% if visit.country != 'Local' %}
+        <dd><a href="http://maps.google.com/maps?q={{ visit.lat }} {{ visit.lng }}">{{ visit.country }}: {{ visit.city }} ({{ format_angle(visit.lat) }} {{ format_angle(visit.lng) }})</a> <i class="icon-external-link-sign"></i></dd>
+      {% else %}
+        <dd>∅</dd>
+      {% end %}
+
+      <dt><i class="icon-large icon-desktop"></i> Operating System</dt>
+      <dd>{{ visit.platform.title() }}</dd>
+
+      <dt><i class="icon-large icon-globe"></i> Browser</dt>
+      <dd>{{ visit.browser_name.title() }} {{ visit.browser_version }}</dd>
+
+      {% from urllib.parse import parse_qs %}
+      <dt><i class="icon-large icon-question"></i> Parameters</dt>
+      {% if visit.query %}
+        <dd>
+          <dl>
+            {% raw ''.join(['<dt>%s</dt><dd>%s</dd>' % (escape(k), escape(', '.join(v))) for k, v in parse_qs(visit.query.lstrip('?')).items()]) %}
+          </dl>
+        </dd>
+      {% else %}
+        <dd>∅</dd>
+      {% end %}
+
+      <dt># History</dt>
+      <dd>{{ visit.hash.lstrip('#') if visit.hash else '∅' }}</dd>
+
+      <dt><i class="icon-large icon-share-alt"></i> Referrer</dt>
+      {% if visit.country != 'Direct' %}
+        <dd><a href="{{ visit.referrer }}">{{ visit.pretty_referrer }}</a> <i class="icon-external-link-sign"></i></dd>
+      {% else %}
+        <dd>∅</dd>
+      {% end %}
+
+      <dt><i class="icon-large icon-flag"></i> Language</dt>
+      <dd>{{ visit.language }}</dd>
+
+      <dt><i class="icon-large icon-time"></i> Duration</dt>
+      <dd>{{ str(visit.time).split('.')[0] if visit.time else '∅' }}</dd>
+    </dl>
+  </article>
+{% end %}
+

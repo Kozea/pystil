@@ -35,6 +35,9 @@
       });
       return false;
     });
+    $('i.load').click(function() {
+      return $('form.from-to').submit();
+    });
     load_embed_maybe = function(embed, url, callback) {
       var $new;
 

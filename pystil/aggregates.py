@@ -3,12 +3,11 @@
 # This file is part of pystil, licensed under a 3-clause BSD license.
 
 from functools import reduce
-from pystil.db import Visit, count, sum_
-from pystil.context import pystil
+from pystil.db import Visit, count, sum_, metadata
+from logging import getLogger
 
-db = pystil.db
-metadata = pystil.db_metadata
-engine = pystil.db_engine
+
+log = getLogger("pystil")
 
 
 class memoized(object):
@@ -24,11 +23,6 @@ class memoized(object):
         return value
 
 
-@memoized
-def init_if_needed():
-    metadata.reflect(bind=engine, schema='agg')
-
-
 def key_with_min_value(item1, item2):
     key1, value1 = item1
     key2, value2 = item2
@@ -41,7 +35,6 @@ def key_with_min_value(item1, item2):
 @memoized
 def get_aggregate_table(attr_name):
     """Return the best aggregate table for the given attribute"""
-    init_if_needed()
     scores = {}
     for tablename, table in metadata.tables.items():
         if table.schema == 'agg' and hasattr(table.c, attr_name):
@@ -63,7 +56,7 @@ def get_attribute_and_count(attr_name):
     table = get_aggregate_table(attr_name)
     if table is None:
         table = Visit.__table__
-        pystil.log.warn('No aggregate table found for %s' % attr_name)
+        log.warn('No aggregate table found for %s' % attr_name)
         countcol = count(1)
         attr = getattr(Visit, attr_name)
     else:

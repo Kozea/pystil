@@ -61,6 +61,14 @@ class Tracker(Hdr):
         self.log.debug('Message for %s inserted' % message.ip)
 
 
+@url(r'/visit/(\d+)')
+class ViewVisit(Hdr):
+    def get(self, visit_id):
+        """List of sites"""
+        visit = self.db.query(Visit).get(visit_id)
+        self.render('visit.html', visit=visit)
+
+
 @url(r'/sites')
 class Sites(Hdr):
     def get(self):

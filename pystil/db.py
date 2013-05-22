@@ -60,7 +60,7 @@ class Visit(Base):
     language = string()
     page = string()
     platform = string()
-    query_string = Column('query', String)
+    query = string()
     referrer = string()
     pretty_referrer = string()
     referrer_domain = string()

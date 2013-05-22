@@ -70,8 +70,8 @@ class Tracking(Thread):
 
 
 class Pystil(Application):
-    def __init__(self, *args, **kwargs):
-        super(Pystil, self).__init__(*args, **kwargs)
+    def listen(self, *args, **kwargs):
+        super(Pystil, self).listen(*args, **kwargs)
         db_url = 'postgresql+psycopg2://%s:%s@%s:%d/%s' % (
             options.db_user,
             options.db_password,
@@ -80,6 +80,7 @@ class Pystil(Application):
             options.db_name)
 
         self.db_engine = create_engine(db_url, echo=False)
+        metadata.reflect(bind=self.db_engine, schema='agg')
         self.db_metadata = metadata
         self.db = scoped_session(sessionmaker(bind=self.db_engine))
         Tracking(self.db_engine.connect(), self.log).start()
@@ -107,8 +108,9 @@ class Pystil(Application):
                 getLogger(logger).addHandler(handler)
                 getLogger(logger).addHandler(smtp_handler)
         else:
-            pass
-            # getLogger('sqlalchemy').setLevel(10)
+            # pass
+            self.log.setLevel(logging.DEBUG)
+            getLogger('sqlalchemy').setLevel(10)
 
     @property
     def log(self):

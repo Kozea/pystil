@@ -28,6 +28,7 @@ $ ->
         )
         false
     )
+    $('i.load').click(-> $('form.from-to').submit())
 
     load_embed_maybe = (embed, url=null, callback=null) ->
         if $(embed).closest('figure').data('loading') or (

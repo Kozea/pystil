@@ -1,4 +1,9 @@
 @import compass/css3
+$use-mozilla-ellipsis-binding: true
+@import "compass/typography/text/ellipsis"
+@import "compass/utilities/general/clearfix"
+
+
 +font-face("Elevant", font-files("Elevant.woff", "Elevant.ttf", "Elevant.svg"), "Elevant.eot", 400)
 +font-face("Elevant", font-files("ElevantBold.woff", "ElevantBold.ttf", "ElevantBold.svg"), "ElevantBold.eot", 700)
 
@@ -26,7 +31,7 @@ header h1
     width: 500px
     padding-top: 126px
     font-family: "Elevant"
-    color: #C51637
+    color: #c51637
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 0 #C51637
     padding-left: 112px
     text-transform: uppercase
@@ -106,14 +111,39 @@ article
         color: #49b4b0
       &.recent
         color: #ea9316
+      td
+        max-width: 50px
+        +ellipsis
+
     thead tr
       background: none
       color: #7e7e7e
       &:hover
         background: none
         color: #7e7e7e
-  table tr td
-    word-break: break-word
+
+  > dl
+    background: image-url('bg-table.png') no-repeat bottom right, rgba(255, 255, 255, 0.4)
+    width: 100%
+    padding: .5em
+
+    a
+      font-size: .95em
+      &:hover
+        text-decoration: underline
+
+    dt, dd
+      color: #7e7e7e
+
+    dt
+      font-weight: bold
+
+    dd
+      margin-bottom: 1.5em
+
+    dl
+      margin-top: 0
+
 
 .sites table
   border-collapse: collapse
@@ -127,8 +157,12 @@ article
     height: 1.8em
 
 .dates
+  +clearfix
+  color: #af9e73
+
+  div
+    float: left
   label
-    color: #af9e73
     font-family: 'Elevant'
     font-size: 1.5em
     font-weight: bold
@@ -141,6 +175,11 @@ article
     width: 250px
     &:focus, &:hover
       outline: none
+
+  i:hover
+    cursor: pointer
+    color: darken(#af9e73, 10%)
+
 
 .search
   margin: 0 0 25px 5%
