@@ -39,7 +39,7 @@
       <ul>
         <li><a href="{{ reverse_url('Index') }}">Home</a></li>
         <li><a href="{{ reverse_url('Sites') }}">Sites</a></li>
-        <li><a href="{{ reverse_url('Criterion', 'date', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) }}">Search</a></li>
+        <li><a href="/criterion/date/{{ datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') }}">Search</a></li>
       </ul>
     </nav>
     <section>

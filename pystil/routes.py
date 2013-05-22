@@ -69,10 +69,15 @@ class ViewVisit(Hdr):
         self.render('visit.html', visit=visit)
 
 
-@url(r'/criterion/([^/]+)/(.+)')
+@url(r'/criterion/(offset/\d+/)?([^/]+)/(.+)')
 class Criterion(Hdr):
-    def get(self, criterion, value):
+    def get(self, offset, criterion, value):
         """Visits by criterion"""
+        if offset:
+            offset = int(offset.replace('offset/', '').rstrip('/'))
+        else:
+            offset = 0
+
         available_criteria = sorted(filter(
             lambda x: not x.startswith('_') and not x in (
                 'client_tz_offset', 'pretty_referrer', 'referrer_domain',
@@ -98,7 +103,7 @@ class Criterion(Hdr):
                 self.db
                 .query(Visit)
                 .filter(filter_)
-                .order_by(desc(Visit.date)))[:20],
+                .order_by(desc(Visit.date)))[offset:offset + 20],
             criterion=criterion, value=value,
             available_criteria=available_criteria)
 
