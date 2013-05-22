@@ -9,8 +9,11 @@
       <dt><i class="icon-large icon-calendar"></i> Date</dt>
       <dd>{{ visit.date.strftime('%Y-%m-%d %H:%M:%S') }}</dd>
 
-      <dt><i class="icon-large icon-link"></i> Site</dt>
+      <dt><i class="icon-large icon-terminal"></i> Site</dt>
       <dd><a href="{{ visit.site }}">{{ visit.site }}</a> <i class="icon-external-link-sign"></i></dd>
+
+      <dt><i class="icon-large icon-link"></i> Url</dt>
+      <dd><a href="{{ visit.site }}{{ visit.page }}">{{ visit.page }}</a> <i class="icon-external-link-sign"></i></dd>
 
       <dt><i class="icon-large icon-cloud"></i> Ip</dt>
       <dd><a href="http://who.is/whois-ip/ip-address/{{ visit.ip }}">{{ visit.ip }}</a> <i class="icon-external-link-sign"></i></dd>

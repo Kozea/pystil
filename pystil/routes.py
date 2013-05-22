@@ -21,8 +21,8 @@ class Index(Hdr):
     def get(self):
         self.render(
             'index.html',
-            visits = (self.db.query(Visit)
-                      .order_by(Visit.date.desc())[:10]))
+            visits=(self.db.query(Visit)
+                    .order_by(Visit.date.desc())[:10]))
 
 
 @url(r'/pystil.js')
@@ -87,7 +87,7 @@ class Criterion(Hdr):
                 value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
             filter_ = func.date_trunc('DAY', Visit.date) == value.date()
         elif criterion in (
-                'referrer', 'asn', 'browser_name',
+                'referrer', 'asn', 'browser_name', 'site',
                 'browser_version', 'browser_name_version', 'query'):
             filter_ = getattr(Visit, criterion).ilike('%%%s%%' % value)
         else:
