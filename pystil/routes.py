@@ -6,10 +6,11 @@ from pystil.db import Visit
 from pystil.tracking import Message
 from pystil.aggregates import get_attribute_and_count
 from pystil.context import Hdr, url, MESSAGE_QUEUE
-from pystil.utils import visit_to_table_line, on
-from tornado.web import asynchronous
-from sqlalchemy import desc
-from datetime import date, timedelta
+from pystil.utils import on
+from tornado.web import asynchronous, HTTPError
+from sqlalchemy import desc, func
+from datetime import date, timedelta, datetime
+
 import os
 import uuid
 import pystil.charts
@@ -18,11 +19,10 @@ import pystil.charts
 @url(r'/')
 class Index(Hdr):
     def get(self):
-        visits = (self.db.query(Visit)
-                  .order_by(Visit.date.desc())[:10])
         self.render(
             'index.html',
-            top_lines=''.join(map(visit_to_table_line, visits)))
+            visits = (self.db.query(Visit)
+                      .order_by(Visit.date.desc())[:10]))
 
 
 @url(r'/pystil.js')
@@ -69,6 +69,40 @@ class ViewVisit(Hdr):
         self.render('visit.html', visit=visit)
 
 
+@url(r'/criterion/([^/]+)/(.+)')
+class Criterion(Hdr):
+    def get(self, criterion, value):
+        """Visits by criterion"""
+        available_criteria = sorted(filter(
+            lambda x: not x.startswith('_') and not x in (
+                'client_tz_offset', 'pretty_referrer', 'referrer_domain',
+                'spent_time', 'metadata'
+            ), dir(Visit)))
+
+        if criterion not in available_criteria:
+            raise HTTPError(404)
+
+        if criterion == 'date':
+            value = datetime.strptime(
+                value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
+            filter_ = func.date_trunc('DAY', Visit.date) == value.date()
+        elif criterion in (
+                'referrer', 'asn', 'browser_name',
+                'browser_version', 'browser_name_version', 'query'):
+            filter_ = getattr(Visit, criterion).ilike('%%%s%%' % value)
+        else:
+            filter_ = func.lower(getattr(Visit, criterion)) == value.lower()
+        self.render(
+            'criterion.html',
+            visits=(
+                self.db
+                .query(Visit)
+                .filter(filter_)
+                .order_by(desc(Visit.date)))[:20],
+            criterion=criterion, value=value,
+            available_criteria=available_criteria)
+
+
 @url(r'/sites')
 class Sites(Hdr):
     def get(self):
@@ -108,10 +142,10 @@ class Site(Hdr):
         }
         page = page or '/visits'
         if page == 'last':
-            visits = (self.db.query(Visit)
-                      .filter(on(site))
-                      .order_by(Visit.date.desc())[:10])
-            kwargs['top_lines'] = ''.join(map(visit_to_table_line, visits))
+            kwargs['visits'] = (
+                self.db.query(Visit)
+                .filter(on(site))
+                .order_by(Visit.date.desc())[:10])
         kwargs['kwargs'] = kwargs
         return kwargs
 

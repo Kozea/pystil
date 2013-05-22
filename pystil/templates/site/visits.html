@@ -2,7 +2,13 @@
   <figure>
     <embed type="image/svg+xml" src="/load/data/{{ site }}/Line/all.svg" />
   </figure>
-  <figure>
-    <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/subdomain.svg" />
-  </figure>
+  {% if site == 'all' %}
+    <figure>
+      <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/host.svg" />
+    </figure>
+  {% else %}
+    <figure>
+      <embed type="image/svg+xml" src="/load/data/{{ site }}/Pie/subdomain.svg" />
+    </figure>
+  {% end %}
 </section>

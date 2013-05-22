@@ -1,6 +1,8 @@
 {% extends "_layout.html" %}
 
 {% block article %}
+  {% from pystil.utils import format_angle, parse_referrer %}
+  {% from urllib.parse import parse_qs %}
   <article>
     <h2>Visit #{{ visit.id }}</h2>
     <dl>
@@ -17,20 +19,21 @@
       <dd>{{ visit.asn  or '∅' }}</dd>
 
       <dt><i class="icon-large icon-map-marker"></i> Location</dt>
-      {% from pystil.utils import format_angle %}
       {% if visit.country != 'Local' %}
         <dd><a href="http://maps.google.com/maps?q={{ visit.lat }} {{ visit.lng }}">{{ visit.country }}: {{ visit.city }} ({{ format_angle(visit.lat) }} {{ format_angle(visit.lng) }})</a> <i class="icon-external-link-sign"></i></dd>
       {% else %}
         <dd>∅</dd>
       {% end %}
 
-      <dt><i class="icon-large icon-desktop"></i> Operating System</dt>
+      <dt><i class="icon-large icon-cogs"></i> Operating System</dt>
       <dd>{{ visit.platform.title() }}</dd>
 
       <dt><i class="icon-large icon-globe"></i> Browser</dt>
       <dd>{{ visit.browser_name.title() }} {{ visit.browser_version }}</dd>
 
-      {% from urllib.parse import parse_qs %}
+      <dt><i class="icon-large icon-desktop"></i> Screen size</dt>
+      <dd>{{ visit.size }}</dd>
+
       <dt><i class="icon-large icon-question"></i> Parameters</dt>
       {% if visit.query %}
         <dd>
@@ -47,7 +50,7 @@
 
       <dt><i class="icon-large icon-share-alt"></i> Referrer</dt>
       {% if visit.country != 'Direct' %}
-        <dd><a href="{{ visit.referrer }}">{{ visit.pretty_referrer }}</a> <i class="icon-external-link-sign"></i></dd>
+        <dd><a href="{{ visit.referrer }}">{{ parse_referrer(visit.referrer, True, True) }}</a> <i class="icon-external-link-sign"></i></dd>
       {% else %}
         <dd>∅</dd>
       {% end %}

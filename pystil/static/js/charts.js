@@ -35,8 +35,12 @@
       });
       return false;
     });
+    $('.criterion form').on('submit', function() {
+      location.href = '/criterion/' + $(this).find('#criterion').val() + '/' + $(this).find('#value').val();
+      return false;
+    });
     $('i.load').click(function() {
-      return $('form.from-to').submit();
+      return $(this).closest('form').submit();
     });
     load_embed_maybe = function(embed, url, callback) {
       var $new;

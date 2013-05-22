@@ -28,7 +28,11 @@ $ ->
         )
         false
     )
-    $('i.load').click(-> $('form.from-to').submit())
+    $('.criterion form').on('submit', ->
+        location.href = '/criterion/' + $(this).find('#criterion').val() + '/' + $(this).find('#value').val()
+        false
+    )
+    $('i.load').click(-> $(this).closest('form').submit())
 
     load_embed_maybe = (embed, url=null, callback=null) ->
         if $(embed).closest('figure').data('loading') or (

@@ -65,3 +65,40 @@ def titlize(string, lang):
         'day': 'Top days',
         'ip': 'Top IP addresses'
     }[string]
+
+
+def criteria(criterion, lang='us'):
+    return {
+        'id': 'Identifier',
+        'uuid': 'Unique identifier (uuid)',
+        'browser_name': 'Browser Name',
+        'hash': 'History tag',
+        'host': 'Host',
+        'browser_version': 'Browser Version',
+        'client_tz_offset': 'Timezone',
+        'date': 'Date',
+        'last_visit': 'Last Visit',
+        'ip': 'Ip',
+        'language': 'Language',
+        'page': 'Page visited',
+        'platform': 'Operating system',
+        'query': 'Arguments',
+        'referrer': 'Referrer',
+        'pretty_referrer': 'Pretty Referrer',
+        'referrer_domain': 'Referrer domain',
+        'site': 'Site url',
+        'size': 'Screen Size',
+        'time': 'Time spent on site',
+        'country': 'Country',
+        'country_code': 'Country Code',
+        'city': 'City',
+        'lat': 'Latitude',
+        'lng': 'Longitude',
+        'asn': 'Access Service Network',
+        'browser_name_version': 'Browser (Name and Version)',
+        'day': 'Day Number',
+        'hour': 'Hour of day',
+        'spent_time': 'Time Spent',
+        'subdomain': 'Subdomain',
+        'domain': 'Domain'
+    }.get(criterion, criterion)

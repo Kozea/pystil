@@ -118,23 +118,28 @@ article nav ul li {
 /* line 78, ../sass/style.sass */
 section {
   margin-top: 250px;
+  margin-bottom: 50px;
   width: 100%;
 }
-/* line 81, ../sass/style.sass */
+/* line 82, ../sass/style.sass */
 section section {
   margin: 0;
 }
 
-/* line 85, ../sass/style.sass */
+/* line 86, ../sass/style.sass */
 article {
   margin: 0 auto;
   width: 75%;
 }
-/* line 88, ../sass/style.sass */
+/* line 89, ../sass/style.sass */
+article a {
+  color: #656565;
+}
+/* line 91, ../sass/style.sass */
 article > * {
   margin: 10px 0 20px;
 }
-/* line 90, ../sass/style.sass */
+/* line 93, ../sass/style.sass */
 article h2 {
   background: url('/static/img/bg-h2.png?1355139710') repeat-x bottom left;
   color: #c51637;
@@ -142,16 +147,20 @@ article h2 {
   font-size: 2.4em;
   padding: 0 15px;
 }
-/* line 96, ../sass/style.sass */
+/* line 99, ../sass/style.sass */
 article input {
   width: auto;
 }
-/* line 99, ../sass/style.sass */
+/* line 102, ../sass/style.sass */
 article table {
   background: url('/static/img/bg-table.png?1355139710') no-repeat bottom right;
   width: 100%;
 }
-/* line 102, ../sass/style.sass */
+/* line 105, ../sass/style.sass */
+article table.last tr td:last-of-type {
+  width: 15px;
+}
+/* line 107, ../sass/style.sass */
 article table tr {
   -webkit-transition: 500ms;
   -moz-transition: 500ms;
@@ -161,20 +170,20 @@ article table tr {
   color: #7e7e7e;
   height: 1.8em;
 }
-/* line 107, ../sass/style.sass */
+/* line 112, ../sass/style.sass */
 article table tr:hover {
   background: rgba(255, 255, 255, 0.7);
   color: #343434;
 }
-/* line 110, ../sass/style.sass */
+/* line 115, ../sass/style.sass */
 article table tr.active {
   color: #49b4b0;
 }
-/* line 112, ../sass/style.sass */
+/* line 117, ../sass/style.sass */
 article table tr.recent {
   color: #ea9316;
 }
-/* line 114, ../sass/style.sass */
+/* line 119, ../sass/style.sass */
 article table tr td {
   max-width: 50px;
   white-space: nowrap;
@@ -184,83 +193,83 @@ article table tr td {
   text-overflow: ellipsis;
   -moz-binding: url('/static/stylesheets/xml/ellipsis.xml#ellipsis');
 }
-/* line 118, ../sass/style.sass */
+/* line 123, ../sass/style.sass */
 article table thead tr {
   background: none;
   color: #7e7e7e;
 }
-/* line 121, ../sass/style.sass */
+/* line 126, ../sass/style.sass */
 article table thead tr:hover {
   background: none;
   color: #7e7e7e;
 }
-/* line 125, ../sass/style.sass */
+/* line 130, ../sass/style.sass */
 article > dl {
   background: url('/static/img/bg-table.png?1355139710') no-repeat bottom right, rgba(255, 255, 255, 0.4);
   width: 100%;
   padding: 0.5em;
 }
-/* line 130, ../sass/style.sass */
+/* line 135, ../sass/style.sass */
 article > dl a {
   font-size: 0.95em;
 }
-/* line 132, ../sass/style.sass */
+/* line 137, ../sass/style.sass */
 article > dl a:hover {
   text-decoration: underline;
 }
-/* line 135, ../sass/style.sass */
+/* line 140, ../sass/style.sass */
 article > dl dt, article > dl dd {
   color: #7e7e7e;
 }
-/* line 138, ../sass/style.sass */
+/* line 143, ../sass/style.sass */
 article > dl dt {
   font-weight: bold;
 }
-/* line 141, ../sass/style.sass */
+/* line 146, ../sass/style.sass */
 article > dl dd {
   margin-bottom: 1.5em;
 }
-/* line 144, ../sass/style.sass */
+/* line 149, ../sass/style.sass */
 article > dl dl {
   margin-top: 0;
 }
 
-/* line 148, ../sass/style.sass */
+/* line 153, ../sass/style.sass */
 .sites table {
   border-collapse: collapse;
 }
-/* line 151, ../sass/style.sass */
+/* line 156, ../sass/style.sass */
 .sites table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.3);
 }
-/* line 153, ../sass/style.sass */
+/* line 158, ../sass/style.sass */
 .sites table tbody tr:hover {
   background: rgba(255, 255, 255, 0.5);
 }
-/* line 155, ../sass/style.sass */
+/* line 160, ../sass/style.sass */
 .sites table thead tr {
   background: rgba(255, 255, 255, 0.7);
   height: 1.8em;
 }
 
-/* line 159, ../sass/style.sass */
-.dates {
+/* line 164, ../sass/style.sass */
+.dates, .criterion {
   overflow: hidden;
   *zoom: 1;
   color: #af9e73;
 }
-/* line 163, ../sass/style.sass */
-.dates div {
+/* line 168, ../sass/style.sass */
+.dates div, .criterion div {
   float: left;
 }
-/* line 165, ../sass/style.sass */
-.dates label {
+/* line 170, ../sass/style.sass */
+.dates label, .criterion label {
   font-family: "Elevant";
   font-size: 1.5em;
   font-weight: bold;
 }
-/* line 169, ../sass/style.sass */
-.dates input[type="text"] {
+/* line 174, ../sass/style.sass */
+.dates input[type="text"], .dates select, .criterion input[type="text"], .criterion select {
   background: url('/static/img/bg-form.png?1355139710') no-repeat top left;
   border: 0;
   color: #6d5d2c;
@@ -268,26 +277,26 @@ article > dl dl {
   padding: 2px 10px;
   width: 250px;
 }
-/* line 176, ../sass/style.sass */
-.dates input[type="text"]:focus, .dates input[type="text"]:hover {
+/* line 181, ../sass/style.sass */
+.dates input[type="text"]:focus, .dates input[type="text"]:hover, .dates select:focus, .dates select:hover, .criterion input[type="text"]:focus, .criterion input[type="text"]:hover, .criterion select:focus, .criterion select:hover {
   outline: none;
 }
-/* line 179, ../sass/style.sass */
-.dates i:hover {
+/* line 184, ../sass/style.sass */
+.dates i:hover, .criterion i:hover {
   cursor: pointer;
   color: #988657;
 }
 
-/* line 184, ../sass/style.sass */
+/* line 189, ../sass/style.sass */
 .search {
   margin: 0 0 25px 5%;
 }
-/* line 186, ../sass/style.sass */
+/* line 191, ../sass/style.sass */
 .search label {
   color: transparent;
   font-size: 0;
 }
-/* line 189, ../sass/style.sass */
+/* line 194, ../sass/style.sass */
 .search input {
   background: rgba(201, 190, 155, 0.4) url('/static/img/icon-search.png?1355139710') no-repeat 2px center;
   border: 1px solid #bfb38c;
@@ -296,23 +305,23 @@ article > dl dl {
   padding: 0.3em 2px 0.3em 25px;
   width: 20%;
 }
-/* line 196, ../sass/style.sass */
+/* line 201, ../sass/style.sass */
 .search input:hover, .search input:focus {
   background: rgba(201, 190, 155, 0.8) url('/static/img/icon-search.png?1355139710') no-repeat 2px center;
 }
 
-/* line 200, ../sass/style.sass */
+/* line 205, ../sass/style.sass */
 input::-webkit-input-placeholder, input:-moz-placeholder {
   color: #7e6b2d;
 }
 
-/* line 204, ../sass/style.sass */
+/* line 209, ../sass/style.sass */
 .sites.results table {
   width: 90%;
   margin: 10px 5% 90px;
 }
 
-/* line 209, ../sass/style.sass */
+/* line 214, ../sass/style.sass */
 .ui-datepicker {
   border: 0;
   border-radius: 0;
@@ -322,17 +331,17 @@ input::-webkit-input-placeholder, input:-moz-placeholder {
   width: 240px;
 }
 
-/* line 217, ../sass/style.sass */
+/* line 222, ../sass/style.sass */
 .ui-widget-content {
   background: #d8ceb0;
   width: 240px;
 }
-/* line 220, ../sass/style.sass */
+/* line 225, ../sass/style.sass */
 .ui-widget-content:hover, .ui-widget-content:focus {
   outline: none;
 }
 
-/* line 223, ../sass/style.sass */
+/* line 228, ../sass/style.sass */
 .ui-widget-header {
   background: rgba(255, 255, 255, 0.5);
   border: 0;
@@ -340,31 +349,31 @@ input::-webkit-input-placeholder, input:-moz-placeholder {
   outline: none;
 }
 
-/* line 230, ../sass/style.sass */
+/* line 235, ../sass/style.sass */
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
   border: none;
 }
 
-/* line 233, ../sass/style.sass */
+/* line 238, ../sass/style.sass */
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
   color: #4f4116;
 }
 
-/* line 236, ../sass/style.sass */
+/* line 241, ../sass/style.sass */
 ui-datepicker-calendar {
   margin: 0 5px;
 }
 
-/* line 240, ../sass/style.sass */
+/* line 245, ../sass/style.sass */
 table thead {
   text-align: left;
 }
 
-/* line 243, ../sass/style.sass */
+/* line 248, ../sass/style.sass */
 td.edit {
   width: 22px;
 }
-/* line 245, ../sass/style.sass */
+/* line 250, ../sass/style.sass */
 td.edit a {
   background: url('/static/img/icon-go.png?1355139710') no-repeat top left;
   color: transparent;
@@ -373,17 +382,17 @@ td.edit a {
   width: 22px;
 }
 
-/* line 252, ../sass/style.sass */
+/* line 257, ../sass/style.sass */
 section aside {
   background: none;
   margin: 0 auto;
 }
-/* line 255, ../sass/style.sass */
+/* line 260, ../sass/style.sass */
 section aside table {
   margin: 10px 10%;
 }
 
-/* line 258, ../sass/style.sass */
+/* line 263, ../sass/style.sass */
 img.logo {
   position: absolute;
   right: 0;
@@ -391,35 +400,35 @@ img.logo {
   width: 450px;
 }
 
-/* line 264, ../sass/style.sass */
+/* line 269, ../sass/style.sass */
 .loading {
   background-image: url('/static/img/ajaxloader.gif?1368777428');
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* line 269, ../sass/style.sass */
+/* line 274, ../sass/style.sass */
 .new-visit {
   color: orangered !important;
 }
 
-/* line 272, ../sass/style.sass */
+/* line 277, ../sass/style.sass */
 .pystil-tabs {
   position: relative;
 }
 
-/* line 275, ../sass/style.sass */
+/* line 280, ../sass/style.sass */
 figure {
   background: url('/static/img/bg-h2.png?1355139710') repeat-x bottom left;
   margin: 30px 0 10px;
   overflow: auto;
 }
-/* line 279, ../sass/style.sass */
+/* line 284, ../sass/style.sass */
 figure:last-of-type {
   background: none;
 }
 
-/* line 282, ../sass/style.sass */
+/* line 287, ../sass/style.sass */
 figcaption {
   color: #bb6120;
   font-family: "Elevant";
@@ -429,7 +438,7 @@ figcaption {
   text-align: center;
 }
 
-/* line 291, ../sass/style.sass */
+/* line 296, ../sass/style.sass */
 footer {
   background: url('/static/img/footer.png?1355139710') repeat 0 center;
   bottom: 0;
@@ -441,17 +450,17 @@ footer {
   position: fixed;
   width: 100%;
 }
-/* line 299, ../sass/style.sass */
+/* line 304, ../sass/style.sass */
 footer ul {
   margin: 0;
   padding: 8px 0;
   text-align: center;
 }
-/* line 303, ../sass/style.sass */
+/* line 308, ../sass/style.sass */
 footer ul li {
   display: inline-block;
 }
-/* line 305, ../sass/style.sass */
+/* line 310, ../sass/style.sass */
 footer ul li a {
   color: #8c7743;
   font-size: 0.9em;
@@ -463,7 +472,7 @@ footer ul li a {
   -o-transition: color 0.2s linear;
   transition: color 0.2s linear;
 }
-/* line 312, ../sass/style.sass */
+/* line 317, ../sass/style.sass */
 footer ul li a:hover, footer ul li a :focus {
   color: #685422;
   -webkit-transition: color 0.4s linear;

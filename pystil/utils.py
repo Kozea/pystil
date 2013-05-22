@@ -79,15 +79,20 @@ def visit_to_table_line(visit):
             'date', 'host', 'ip', 'country',
             'city', 'page', 'referrer']:
         val = getattr(visit, key)
+        title = None
         if val:
             if key == 'date':
                 val = val.strftime('%Y-%m-%d %H:%M:%S')
             if key == 'referrer':
+                title = val
                 val = parse_referrer(val, True, True)
         else:
             val = ''
-        html += '<td title="%s">' % val
+        title = title or val
+        html += '<td title="%s">' % title
+        html += '<a href="/criterion/%s/%s">' % (key, val)
         html += val
+        html += '</>'
         html += '</td>'
     html += ('<td>'
              '<a href="/visit/%d"><i class="icon-search"></i></a>'

@@ -108,9 +108,8 @@ class Pystil(Application):
                 getLogger(logger).addHandler(handler)
                 getLogger(logger).addHandler(smtp_handler)
         else:
-            # pass
             self.log.setLevel(logging.DEBUG)
-            getLogger('sqlalchemy').setLevel(10)
+            # getLogger('sqlalchemy').setLevel(logging.DEBUG)
 
     @property
     def log(self):

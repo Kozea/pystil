@@ -1,0 +1,24 @@
+{% extends "_layout.html" %}
+
+{% block article %}
+  {% from pystil.i18n import criteria %}
+  <article class="criterion">
+    <form>
+      <div>
+        <label for="criterion">Criterion: </label>
+        <select id="criterion" type="text">
+          {% for key in available_criteria %}
+            <option value="{{ key }}"{% if criterion == key %}selected="selected"{% end %}>{{ criteria(key) }}</option>
+          {% end %}
+        </select>
+      </div>
+      <div><label for="value">Value: </label><input id="value" type="text" value="{{ value }}"/></div>
+      <i class="icon-search icon-2x load"></i>
+      <input style="visibility: hidden" type="submit" value="Load" />
+  </article>
+
+  <article>
+    <h2>{{ criteria(criterion) }} = {{ value }}</h2>
+    {% module Template('site/last.html', visits=visits, site=None) %}
+  </article>
+{% end %}
