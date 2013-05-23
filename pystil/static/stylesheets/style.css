@@ -179,11 +179,11 @@ article table tr a:hover {
   color: #343434;
 }
 /* line 116, ../sass/style.sass */
-article table tr a.active {
+article table tr.active a {
   color: #49b4b0;
 }
 /* line 118, ../sass/style.sass */
-article table tr a.recent {
+article table tr.recent a {
   color: #ea9316;
 }
 /* line 120, ../sass/style.sass */
