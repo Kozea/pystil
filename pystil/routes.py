@@ -88,8 +88,14 @@ class Criterion(Hdr):
             raise HTTPError(404)
 
         if criterion == 'date':
-            value = datetime.strptime(
-                value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
+            try:
+                value = datetime.strptime(
+                    value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
+            except ValueError:
+                try:
+                    value = datetime.strptime('%Y-%m-%d')
+                except ValueError:
+                    value = datetime.now()
             filter_ = func.date_trunc('DAY', Visit.date) == value.date()
         elif criterion in (
                 'referrer', 'asn', 'browser_name', 'site',
