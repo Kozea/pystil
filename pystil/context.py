@@ -138,6 +138,9 @@ class Hdr(RequestHandler):
             self.log.info('Setting secure cookie')
             self.set_secure_cookie('_pystil_site', 'local|' + str(uuid4()))
 
+    def on_finish(self):
+        self.db.rollback();
+
 
 class url(object):
     def __init__(self, url):
