@@ -1,7 +1,9 @@
 {% from pystil.utils import visit_to_table_line %}
 <section id="visits" class="tab">
   <figure>
-    <figcaption>Real time last visits</figcaption>
+    {% if site %}
+      <figcaption>Real time last visits</figcaption>
+    {% end %}
     <table class="last"{% if site %} data-site="{{ site }}"{% end %}>
       <thead>
         <tr>

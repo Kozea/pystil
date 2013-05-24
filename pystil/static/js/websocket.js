@@ -35,20 +35,20 @@
   };
 
   $(function() {
-    var host, ws;
+    var host, last_visit_ws;
 
     host = location.host;
     if (host.indexOf(':')) {
       host = host.split(':')[0];
     }
-    window.ws = ws = new WebSocket("ws://" + host + ":" + window._pystil_port + "/ws");
-    ws.onopen = function() {
-      return console.log('Websocket opened', arguments);
+    window.last_visit_ws = last_visit_ws = new WebSocket("ws://" + host + ":" + window._pystil_port + "/last_visits");
+    last_visit_ws.onopen = function() {
+      return console.log('Last visits websocket opened', arguments);
     };
-    ws.onerror = function() {
-      return console.log('Websocket errored', arguments);
+    last_visit_ws.onerror = function() {
+      return console.log('Last visits websocket errored', arguments);
     };
-    return ws.onmessage = function(evt) {
+    return last_visit_ws.onmessage = function(evt) {
       var cmd, data, message, pipe;
 
       message = evt.data;

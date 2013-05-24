@@ -1,26 +1,42 @@
 from tornado.websocket import WebSocketHandler
-from pystil.context import Hdr, url, MESSAGE_QUEUE
+from pystil.context import url, MESSAGE_QUEUE, log
+from pystil.db import Visit
+from tornado.options import options
+from tornado.ioloop import IOLoop
+from psycopg2.extensions import POLL_OK, POLL_READ, POLL_WRITE
+from pystil.utils import visit_to_table_line
+from sqlalchemy import func, desc
+from datetime import datetime
+from functools import partial
+import psycopg2
+import momoko
+
+dsn = 'dbname=%s user=%s password=%s host=%s port=%s' % (
+    options.db_name, options.db_user, options.db_password,
+    options.db_host, options.db_port)
+
+adb = momoko.Pool(dsn=dsn, size=5)
 
 
-@url(r'/ws')
-class PystilWebSocket(Hdr, WebSocketHandler):
+@url(r'/last_visits')
+class LastVisitsWebSocket(WebSocketHandler):
     waiters = set()
 
     def open(self):
-        self.log.info('Opening websocket')
+        log.info('Opening last visits websocket')
         site = self.get_secure_cookie('_pystil_site')
         site = site and site.decode('utf-8').split('|')[0]
         if site is not None:
             self.site = site
-            PystilWebSocket.waiters.add(self)
+            LastVisitsWebSocket.waiters.add(self)
         else:
-            self.log.warn('Websocket open without secure cookie')
+            log.warn('Lats visits websocket open without secure cookie')
             self.close()
 
     def on_message(self, message):
         if message == '/count':
             self.write_message(
-                'INFO|There are %d clients' % len(PystilWebSocket.waiters))
+                'INFO|There are %d clients' % len(LastVisitsWebSocket.waiters))
         elif message == '/queue_count':
             self.write_message(
                 'INFO|There are %d waiting messages' % MESSAGE_QUEUE.qsize())
@@ -29,15 +45,121 @@ class PystilWebSocket(Hdr, WebSocketHandler):
                 'INFO|You are on %s' % self.site)
 
     def on_close(self):
-        if self in PystilWebSocket.waiters:
-            PystilWebSocket.waiters.remove(self)
+        if self in LastVisitsWebSocket.waiters:
+            LastVisitsWebSocket.waiters.remove(self)
 
 
 def broadcast(message):
-    for client in PystilWebSocket.waiters:
+    for client in LastVisitsWebSocket.waiters:
         try:
             client.write_message(message)
         except:
             client.log.exception('Error broadcasting to %r' % client)
-            PystilWebSocket.waiters.remove(client)
+            LastVisitsWebSocket.waiters.remove(client)
             client.close()
+
+
+@url(r'/query')
+class QueryWebSocket(WebSocketHandler):
+
+    def open(self):
+        log.info('Opening query websocket')
+        site = self.get_secure_cookie('_pystil_site')
+        site = site and site.decode('utf-8').split('|')[0]
+        self.query = None
+        if site is None:
+            log.warn('Query websocket open without secure cookie')
+            self.close()
+            return
+
+    def on_message(self, message):
+        log.warn('Message from %r' % self)
+        command = message.split('|')[0]
+        query = '|'.join(message.split('|')[1:])
+        if command == 'criterion':
+            criterion = query.split('|')[0]
+            value = '|'.join(query.split('|')[1:])
+            if criterion == 'date':
+                try:
+                    value = datetime.strptime(
+                        value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
+                except ValueError:
+                    try:
+                        value = datetime.strptime('%Y-%m-%d')
+                    except ValueError:
+                        value = datetime.now()
+                filter_ = func.date_trunc('DAY', Visit.date) == value.date()
+            elif criterion in (
+                    'referrer', 'asn', 'browser_name', 'site',
+                    'browser_version', 'browser_name_version', 'query'):
+                filter_ = getattr(Visit, criterion).ilike('%%%s%%' % value)
+            else:
+                filter_ = func.lower(
+                    getattr(Visit, criterion)) == value.lower()
+            self.execute('')
+
+    def execute(self, query):
+            self.terminated = False
+            self.momoko_connection = adb._get_connection()
+            if not self.momoko_connection:
+                log.warn('No connection')
+                return adb._ioloop.add_callback(partial(self.execute, query))
+            self.connection = self.momoko_connection.connection
+            self.cursor = self.connection.cursor()
+            self.cursor.execute(
+                'BEGIN;'
+                'DECLARE visit_cur SCROLL CURSOR FOR '
+                'SELECT pg_sleep(1), visit.* FROM visit '
+                'ORDER BY date DESC LIMIT 20;'
+                'FETCH FORWARD 1 FROM visit_cur;')
+            self.momoko_connection.ioloop.add_handler(
+                self.momoko_connection.fileno,
+                self.io_callback,
+                IOLoop.WRITE)
+
+    def io_callback(self, fd=None, events=None):
+        try:
+            state = self.connection.poll()
+        except psycopg2.extensions.QueryCanceledError:
+            log.warn('Canceling request %r' % self, exc_info=True)
+            self.cursor.execute('ROLLBACK')
+            self.terminated = True
+        except psycopg2.Warning, psycopg2.Error:
+            log.exception('Poll error')
+            self.momoko_connection.ioloop.remove_handler(
+                self.momoko_connection.fileno)
+            raise
+        else:
+            if state == POLL_OK:
+                if self.terminated:
+                    self.momoko_connection.ioloop.remove_handler(
+                        self.momoko_connection.fileno)
+                    return
+                rows = self.cursor.fetchmany()
+                if not rows:
+                    self.terminated = True
+                    self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
+                else:
+                    try:
+                        self.write_message('Results: %r' % rows)
+                    except:
+                        log.exception('During write')
+                        self.terminated = True
+                        self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
+                    else:
+                        self.cursor.execute('FETCH FORWARD 1 FROM visit_cur;')
+            elif state == POLL_READ:
+                self.momoko_connection.ioloop.update_handler(
+                    self.momoko_connection.fileno, IOLoop.READ)
+            elif state == POLL_WRITE:
+                self.momoko_connection.ioloop.update_handler(
+                    self.momoko_connection.fileno, IOLoop.WRITE)
+            else:
+                raise psycopg2.OperationalError(
+                    'poll() returned {0}'.format(state))
+
+    # self.write_message('VISIT|' + visit_to_table_line(next(self.query)))
+
+    def on_close(self):
+        log.warn('Closing %r' % self)
+        self.connection.cancel()

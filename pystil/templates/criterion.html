@@ -1,5 +1,12 @@
 {% extends "_layout.html" %}
 
+{% block endscript %}
+  <script>
+    window._query_criterion = "{{ criterion }}";
+    window._query_value = "{{ value }}";
+  </script>
+{% end %}
+
 {% block article %}
   {% from pystil.i18n import criteria %}
   <article class="criterion">

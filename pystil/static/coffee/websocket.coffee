@@ -29,15 +29,15 @@ $ ->
     host = location.host
     if host.indexOf(':')
         host = host.split(':')[0]
-    window.ws = ws = new WebSocket("ws://#{host}:#{window._pystil_port}/ws")
+    window.last_visit_ws = last_visit_ws = new WebSocket("ws://#{host}:#{window._pystil_port}/last_visits")
 
-    ws.onopen = ->
-        console.log('Websocket opened', arguments)
+    last_visit_ws.onopen = ->
+        console.log('Last visits websocket opened', arguments)
 
-    ws.onerror = ->
-        console.log('Websocket errored', arguments)
+    last_visit_ws.onerror = ->
+        console.log('Last visits websocket errored', arguments)
 
-    ws.onmessage = (evt) ->
+    last_visit_ws.onmessage = (evt) ->
         message = evt.data
         pipe = message.indexOf('|')
         if pipe > -1

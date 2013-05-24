@@ -87,29 +87,9 @@ class Criterion(Hdr):
         if criterion not in available_criteria:
             raise HTTPError(404)
 
-        if criterion == 'date':
-            try:
-                value = datetime.strptime(
-                    value.replace('+', ' '), '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                try:
-                    value = datetime.strptime('%Y-%m-%d')
-                except ValueError:
-                    value = datetime.now()
-            filter_ = func.date_trunc('DAY', Visit.date) == value.date()
-        elif criterion in (
-                'referrer', 'asn', 'browser_name', 'site',
-                'browser_version', 'browser_name_version', 'query'):
-            filter_ = getattr(Visit, criterion).ilike('%%%s%%' % value)
-        else:
-            filter_ = func.lower(getattr(Visit, criterion)) == value.lower()
         self.render(
             'criterion.html',
-            visits=(
-                self.db
-                .query(Visit)
-                .filter(filter_)
-                .order_by(desc(Visit.date)))[offset:offset + 20],
+            visits=[],
             criterion=criterion, value=value,
             available_criteria=available_criteria)
 
