@@ -4,7 +4,7 @@
 
 from pystil.utils import (
     try_decode, parse_ua, parse_referrer, parse_domain)
-from pystil.db import Visit, country, city, asn
+from pystil.db import Visit, country, city, asn, VisitIdSeq
 from datetime import datetime, timedelta
 from sqlalchemy import desc, select
 
@@ -134,8 +134,23 @@ class Message(object):
             visit['lat'] = lat
             visit['lng'] = lng
             visit['asn'] = asn_name
-            id = db.execute(visits.insert(), **visit).inserted_primary_key[0]
-            visit['id'] = id
+            domain_parts = visit['host'].split('.')
+            if len(domain_parts) > 2:
+                visit['subdomain'] = '.'.join(domain_parts[:-2])
+            else:
+                visit['subdomain'] = None
+            visit['domain'] = '.'.join(domain_parts[-2:])
+            visit['day'] = visit['date'].date()
+            visit['hour'] = visit['date'].hour
+            if visit['browser_name'] in ('opera', 'safari', 'chrome'):
+                browser_minor_version = ''
+            else:
+                browser_minor_version = '.%s' % visit['browser_version'].split('.')[1]
+            visit['browser_name_version'] = '%s %s%s' % (visit['browser_name'],
+                                                         visit['browser_version'].split('.')[0],
+                                                         browser_minor_version)
+            visit['id'] = db.execute(select([VisitIdSeq.next_value()])).scalar()
+            db.execute(visits.insert().returning(visits.c.id), **visit)
             self.log.debug('%r inserted' % self)
             return visit, True
 

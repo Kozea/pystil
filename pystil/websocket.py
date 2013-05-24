@@ -34,7 +34,7 @@ class PystilWebSocket(Hdr, WebSocketHandler):
 
 
 def broadcast(message):
-    for client in PystilWebSocket.waiters:
+    for client in set(PystilWebSocket.waiters):
         try:
             client.write_message(message)
         except:

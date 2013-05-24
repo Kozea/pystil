@@ -7,8 +7,7 @@ from pystil.utils import on, between, parse_referrer
 from pystil.context import Hdr, url
 from pystil.db import Visit, count, distinct
 from pystil.i18n import labelize, titlize
-from pystil.aggregates import get_attribute_and_count
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from pygal.style import Style
 from pygal.util import cut
 import pygal
@@ -42,14 +41,14 @@ class Chart(object):
     def __init__(self, db, site, criteria, from_date, to_date, host, lang):
         self.db = db
         self.site = site
-        self.criteria = criteria
         self.lang = lang
         self.from_date = from_date
         self.to_date = to_date
         self.table = Visit.__table__
-        self.criterion = None
+        self.criteria = getattr(Visit, criteria, None)
+        self.criteria_name = criteria
         self.chart = None
-        self.count_col = None
+        self.count_col = func.count(1)
         self.host = host
 
     def get_chart(self):
@@ -68,8 +67,8 @@ class Chart(object):
             legend_at_bottom=self.type != pygal.Pie)
 
     def get_restrict(self):
-        if self.criterion is not None:
-            return self.criterion != None
+        if self.criteria is not None:
+            return self.criteria != None
         return True
 
     def filter(self, query):
@@ -79,17 +78,15 @@ class Chart(object):
                 .filter(self.get_restrict()))
 
     def get_query(self):
-        self.table, self.criterion, self.count_col = get_attribute_and_count(
-            self.criteria)
         return (
             self.filter(self.db.query(
-                self.criterion.label("key"), self.count_col.label("count")))
-            .group_by(self.criterion))
+                self.criteria.label("key"), self.count_col.label("count")))
+            .group_by(self.criteria))
 
     def render(self):
         self.chart = self.get_chart()
         self.populate()
-        self.chart.title = titlize(self.criteria, self.lang)
+        self.chart.title = titlize(self.criteria_name, self.lang)
         return self.chart.render()
 
     def render_load(self):
@@ -104,7 +101,7 @@ class Chart(object):
                 self.host + '/static/js/pygal-tooltips.js'
             ])
         self.chart.no_data_text = 'Loading'
-        self.chart.title = titlize(self.criteria, self.lang)
+        self.chart.title = titlize(self.criteria_name, self.lang)
         return self.chart.render()
 
 
@@ -138,14 +135,14 @@ class Bar(Chart):
     type = pygal.Bar
 
     def populate(self):
-        all = self.get_query().order_by(self.criterion).all()
-        if self.criteria == 'spent_time':
+        all = self.get_query().order_by(self.criteria).all()
+        if self.criteria_name == 'spent_time':
             self.chart.x_labels = [
                 "<1s", "1s", "2s", "5s", "10s", "20s",
                 "30s", "1min", "2min", "5min",  ">10min"]
         else:
             self.chart.x_labels = list(map(str, map(int, cut(all, 0))))
-        self.chart.add(labelize(self.criteria, self.lang),
+        self.chart.add(labelize(self.criteria_name, self.lang),
                        list(map(float, cut(all, 1))))
 
 
@@ -154,7 +151,7 @@ class Pie(Chart):
 
     def get_restrict(self):
         # Multi criteria restrict
-        if self.criteria == 'browser_name_version':
+        if self.criteria_name == 'browser_name_version':
             return (
                 (self.table.c.browser_name != None) &
                 (self.table.c.browser_version != None))
@@ -168,7 +165,7 @@ class Pie(Chart):
         visits = [{
             'label': (
                 parse_referrer(visit.key, host_only=True, second_pass=True)
-                if self.criteria == 'pretty_referrer' else visit.key),
+                if self.criteria_name == 'pretty_referrer' else visit.key),
             'data': visit.count
         } for visit in results]
         all_visits = (self.filter(self.db
