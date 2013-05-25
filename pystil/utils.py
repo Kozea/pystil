@@ -175,14 +175,14 @@ def parse_ua(user_agent):
         if match is not None:
             break
     else:
-        platform = None
+        platform = ''
     for browser, regex in BROWSERS:
         match = regex.search(user_agent)
         if match is not None:
             version = match.group(1)
             break
     else:
-        browser = version = None
+        browser = version = ''
     return platform, browser, version
 
 

@@ -142,10 +142,12 @@ class Message(object):
             visit['domain'] = '.'.join(domain_parts[-2:])
             visit['day'] = visit['date'].date()
             visit['hour'] = visit['date'].hour
-            if visit['browser_name'] in ('opera', 'safari', 'chrome'):
-                browser_minor_version = ''
-            else:
+            browser_minor_version = ''
+            if (
+                    visit['browser_name'] not in ('opera', 'safari', 'chrome')
+                    len(visit['browser_version'].split('.')) > 1):
                 browser_minor_version = '.%s' % visit['browser_version'].split('.')[1]
+
             visit['browser_name_version'] = '%s %s%s' % (visit['browser_name'],
                                                          visit['browser_version'].split('.')[0],
                                                          browser_minor_version)
