@@ -7,8 +7,6 @@ from psycopg2.extensions import POLL_OK, POLL_READ, POLL_WRITE
 from sqlalchemy.sql.compiler import SQLCompiler
 from pystil.utils import visit_to_table_line
 from sqlalchemy import func, desc
-from sqlalchemy.dialects.postgresql.psycopg2 import PGExecutionContext_psycopg2
-from sqlalchemy.engine.result import ResultProxy
 from datetime import datetime
 from functools import partial
 import psycopg2
@@ -109,13 +107,6 @@ class QueryWebSocket(Hdr, WebSocketHandler):
             dialect = query.session.bind.dialect
             compiler = SQLCompiler(dialect, query.statement)
             compiler.compile()
-
-            self.context = PGExecutionContext_psycopg2()
-            self.context.dialect = dialect
-            self.context.root_connection = query.session.bind
-            self.context.engine = self.application.db_engine
-            self.context._translate_colname = None
-            self.context.result_map = compiler.result_map
             self.execute(compiler.string, compiler.params)
 
     def execute(self, query, parameters):
@@ -125,7 +116,9 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                 log.warn('No connection')
                 return adb._ioloop.add_callback(partial(self.execute, query))
             self.connection = self.momoko_connection.connection
-            self.cursor = self.context.cursor = self.connection.cursor()
+
+            self.cursor = self.connection.cursor(
+                cursor_factory=psycopg2.extras.NamedTupleCursor)
             self.cursor.execute(
                 'BEGIN;'
                 'DECLARE visit_cur SCROLL CURSOR FOR '
@@ -154,14 +147,15 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                     self.momoko_connection.ioloop.remove_handler(
                         self.momoko_connection.fileno)
                     return
-                rows = ResultProxy(self.context).fetchmany()
+                rows = self.cursor.fetchmany()
                 if not rows:
                     self.terminated = True
                     self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
                 else:
                     try:
                         for row in rows:
-                            self.write_message('VISIT|' + visit_to_table_line(row))
+                            self.write_message(
+                                'VISIT|' + visit_to_table_line(row))
                     except:
                         log.exception('During write')
                         self.terminated = True
