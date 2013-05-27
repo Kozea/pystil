@@ -8,7 +8,8 @@ from sqlalchemy.orm import column_property
 from sqlalchemy.sql.expression import case
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
-    Column, Integer, String, Numeric, DateTime, Date, Interval, Table)
+    Column, Integer, String, Numeric, DateTime, Date, Interval, Table,
+    Sequence)
 
 Base = declarative_base()
 count = func.count
@@ -39,7 +40,7 @@ def datetime():
     return Column(DateTime)
 
 
-def date(pkey=False):
+def date_column(pkey=False):
     return Column(Date, primary_key=pkey)
 
 
@@ -74,18 +75,11 @@ class Visit(Base):
     lng = decimal()
     asn = string()
 
-    browser_name_version = column_property(
-        browser_name + ' ' + split_part(browser_version, '.', 1) +
-        case([(
-            browser_name.in_(['opera', 'safari', 'chrome']), '')],
-            else_='.' + split_part(browser_version, '.', 2)
-        ))
-
-    day = column_property(
-        date_trunc('day', date))
-
-    hour = column_property(
-        date_part('hour', date))
+    browser_name_version = string()
+    day = date_column()
+    hour = integer()
+    subdomain = string()
+    domain = string()
 
     spent_time = column_property(
         case([
@@ -102,17 +96,7 @@ class Visit(Base):
             (time < timedelta(seconds=600), 9)
         ], else_=10))
 
-    subdomain = column_property(
-        case([
-            (split_part(host, '.', 3) != '', split_part(host, '.', 1))
-        ], else_=None))
-
-    domain = column_property(
-        case([
-            (split_part(host, '.', 3) == '', host),
-        ], else_=substr(host,
-                        strpos(host, '.') + 1,
-                        length(host) - strpos(host, '.') + 1)))
+VisitIdSeq = Sequence('visit_id_seq')
 
 metadata = Base.metadata
 

@@ -35,11 +35,10 @@ $ ->
         console.log('Websocket errored', arguments)
 
     query_ws.onmessage = (evt) ->
-        console.log(evt.data)
-        # message = evt.data
-        # pipe = message.indexOf('|')
-        # if pipe > -1
-        #     cmd = message.substr(0, pipe)
-        #     data = message.substr(pipe + 1)
-        #     commands[cmd] data
+        message = evt.data
+        pipe = message.indexOf('|')
+        if pipe > -1
+            cmd = message.substr(0, pipe)
+            data = message.substr(pipe + 1)
+            commands[cmd] data
 

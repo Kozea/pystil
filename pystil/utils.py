@@ -4,7 +4,7 @@
 
 
 """Utility functions to help processing data"""
-from datetime import timedelta
+from datetime import timedelta, date
 from math import floor
 from urllib.parse import urlparse, parse_qs
 from pystil.context import pystil
@@ -71,6 +71,11 @@ def between(from_date, to_date, table=Visit.__table__):
     """Generate a filter between 2 dates"""
     return ((from_date <= table.c.date) &
             (table.c.date < to_date + timedelta(1)))
+
+def in_last_month():
+    from_date = date.today() - timedelta(days=31)
+    to_date = date.today()
+    return between(from_date, to_date)
 
 
 def visit_to_table_line(visit):
@@ -170,14 +175,14 @@ def parse_ua(user_agent):
         if match is not None:
             break
     else:
-        platform = None
+        platform = ''
     for browser, regex in BROWSERS:
         match = regex.search(user_agent)
         if match is not None:
             version = match.group(1)
             break
     else:
-        browser = version = None
+        browser = version = ''
     return platform, browser, version
 
 

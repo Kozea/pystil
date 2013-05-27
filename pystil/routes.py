@@ -4,9 +4,8 @@
 
 from pystil.db import Visit
 from pystil.tracking import Message
-from pystil.aggregates import get_attribute_and_count
 from pystil.context import Hdr, url, MESSAGE_QUEUE
-from pystil.utils import on
+from pystil.utils import on, in_last_month
 from tornado.web import asynchronous, HTTPError
 from sqlalchemy import desc, func
 from datetime import date, timedelta, datetime
@@ -98,13 +97,20 @@ class Criterion(Hdr):
 class Sites(Hdr):
     def get(self):
         """List of sites"""
-        table, attr, countcol = get_attribute_and_count('domain')
-        sites = (
+        table = Visit.__table__
+        attr = Visit.domain
+        countcol = func.count(1)
+        sites_query = (
             self.db
             .query(attr, countcol.label('count'))
             .group_by(attr)
-            .order_by(desc(countcol)))[:20]
-        all_ = self.db.query(countcol).scalar()
+            .filter(in_last_month())
+            .order_by(desc(countcol)))
+        sites = sites_query[:20]
+        subquery = sites_query.subquery()
+        all_ = (self.db.query(func.sum(subquery.c.count))
+                .select_from(subquery)
+                .scalar())
         self.render('sites.html', sites=sites, all_=all_)
 
 
@@ -112,15 +118,21 @@ class Sites(Hdr):
 class SitesQuery(Hdr):
     def get(self, query):
         """Sites matching query"""
-        table, attr, countcol = get_attribute_and_count('domain')
-        sites = (
+        table = Visit.__table__
+        attr = Visit.domain
+        countcol = func.count(1)
+        sites_query = (
             self.db
             .query(attr.label('host'), countcol.label('count'))
             .filter(attr.like('%%%s%%' % query))
+            .filter(in_last_month())
             .group_by(attr)
-            .order_by(desc(countcol)))[:20]
-
-        all_ = self.db.query(countcol).scalar()
+            .order_by(desc(countcol)))
+        sites = sites_query[:20]
+        subquery = sites_query.subquery()
+        all_ = (self.db.query(func.sum(subquery.c.count))
+                .select_from(subquery)
+                .scalar())
         self.render('sites_table.html', sites=sites, all_=all_)
 
 

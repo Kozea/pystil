@@ -109,7 +109,7 @@ class Pystil(Application):
                 getLogger(logger).addHandler(smtp_handler)
         else:
             self.log.setLevel(logging.DEBUG)
-            # getLogger('sqlalchemy').setLevel(logging.DEBUG)
+            #getLogger('sqlalchemy').setLevel(logging.DEBUG)
 
     @property
     def log(self):
@@ -137,6 +137,9 @@ class Hdr(RequestHandler):
         if not self.get_secure_cookie('_pystil_site'):
             self.log.info('Setting secure cookie')
             self.set_secure_cookie('_pystil_site', 'local|' + str(uuid4()))
+
+    def on_finish(self):
+        self.db.rollback();
 
 
 class url(object):

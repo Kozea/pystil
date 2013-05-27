@@ -7,10 +7,13 @@ from psycopg2.extensions import POLL_OK, POLL_READ, POLL_WRITE
 from sqlalchemy.sql.compiler import SQLCompiler
 from pystil.utils import visit_to_table_line
 from sqlalchemy import func, desc
+from sqlalchemy.dialects.postgresql.psycopg2 import PGExecutionContext_psycopg2
+from sqlalchemy.engine.result import ResultProxy
 from datetime import datetime
 from functools import partial
 import psycopg2
 import momoko
+
 
 dsn = 'dbname=%s user=%s password=%s host=%s port=%s' % (
     options.db_name, options.db_user, options.db_password,
@@ -51,7 +54,7 @@ class LastVisitsWebSocket(WebSocketHandler):
 
 
 def broadcast(message):
-    for client in LastVisitsWebSocket.waiters:
+    for client in set(LastVisitsWebSocket.waiters):
         try:
             client.write_message(message)
         except:
@@ -103,8 +106,16 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                      .filter(filter_)
                      .order_by(desc(Visit.date))
                      .limit(20))
-            compiler = SQLCompiler(query.session.bind.dialect, query.statement)
+            dialect = query.session.bind.dialect
+            compiler = SQLCompiler(dialect, query.statement)
             compiler.compile()
+
+            self.context = PGExecutionContext_psycopg2()
+            self.context.dialect = dialect
+            self.context.root_connection = query.session.bind
+            self.context.engine = self.application.db_engine
+            self.context._translate_colname = None
+            self.context.result_map = compiler.result_map
             self.execute(compiler.string, compiler.params)
 
     def execute(self, query, parameters):
@@ -114,7 +125,7 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                 log.warn('No connection')
                 return adb._ioloop.add_callback(partial(self.execute, query))
             self.connection = self.momoko_connection.connection
-            self.cursor = self.connection.cursor()
+            self.cursor = self.context.cursor = self.connection.cursor()
             self.cursor.execute(
                 'BEGIN;'
                 'DECLARE visit_cur SCROLL CURSOR FOR '
@@ -143,14 +154,14 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                     self.momoko_connection.ioloop.remove_handler(
                         self.momoko_connection.fileno)
                     return
-                rows = self.cursor.fetchmany()
+                rows = ResultProxy(self.context).fetchmany()
                 if not rows:
                     self.terminated = True
                     self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
                 else:
                     try:
                         for row in rows:
-                            self.write_message(visit_to_table_line(row))
+                            self.write_message('VISIT|' + visit_to_table_line(row))
                     except:
                         log.exception('During write')
                         self.terminated = True

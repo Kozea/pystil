@@ -43,7 +43,15 @@
       return console.log('Websocket errored', arguments);
     };
     return query_ws.onmessage = function(evt) {
-      return console.log(evt.data);
+      var cmd, data, message, pipe;
+
+      message = evt.data;
+      pipe = message.indexOf('|');
+      if (pipe > -1) {
+        cmd = message.substr(0, pipe);
+        data = message.substr(pipe + 1);
+        return commands[cmd](data);
+      }
     };
   });
 
