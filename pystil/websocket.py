@@ -1,9 +1,10 @@
 from tornado.websocket import WebSocketHandler
-from pystil.context import url, MESSAGE_QUEUE, log
+from pystil.context import url, MESSAGE_QUEUE, log, Hdr
 from pystil.db import Visit
 from tornado.options import options
 from tornado.ioloop import IOLoop
 from psycopg2.extensions import POLL_OK, POLL_READ, POLL_WRITE
+from sqlalchemy.sql.compiler import SQLCompiler
 from pystil.utils import visit_to_table_line
 from sqlalchemy import func, desc
 from datetime import datetime
@@ -60,7 +61,7 @@ def broadcast(message):
 
 
 @url(r'/query')
-class QueryWebSocket(WebSocketHandler):
+class QueryWebSocket(Hdr, WebSocketHandler):
 
     def open(self):
         log.info('Opening query websocket')
@@ -96,9 +97,17 @@ class QueryWebSocket(WebSocketHandler):
             else:
                 filter_ = func.lower(
                     getattr(Visit, criterion)) == value.lower()
-            self.execute('')
 
-    def execute(self, query):
+            query = (self.db
+                     .query(Visit)
+                     .filter(filter_)
+                     .order_by(desc(Visit.date))
+                     .limit(20))
+            compiler = SQLCompiler(query.session.bind.dialect, query.statement)
+            compiler.compile()
+            self.execute(compiler.string, compiler.params)
+
+    def execute(self, query, parameters):
             self.terminated = False
             self.momoko_connection = adb._get_connection()
             if not self.momoko_connection:
@@ -109,9 +118,8 @@ class QueryWebSocket(WebSocketHandler):
             self.cursor.execute(
                 'BEGIN;'
                 'DECLARE visit_cur SCROLL CURSOR FOR '
-                'SELECT pg_sleep(1), visit.* FROM visit '
-                'ORDER BY date DESC LIMIT 20;'
-                'FETCH FORWARD 1 FROM visit_cur;')
+                '%s;'
+                'FETCH FORWARD 1 FROM visit_cur;' % query, parameters)
             self.momoko_connection.ioloop.add_handler(
                 self.momoko_connection.fileno,
                 self.io_callback,
@@ -124,7 +132,7 @@ class QueryWebSocket(WebSocketHandler):
             log.warn('Canceling request %r' % self, exc_info=True)
             self.cursor.execute('ROLLBACK')
             self.terminated = True
-        except psycopg2.Warning, psycopg2.Error:
+        except (psycopg2.Warning, psycopg2.Error):
             log.exception('Poll error')
             self.momoko_connection.ioloop.remove_handler(
                 self.momoko_connection.fileno)
@@ -141,7 +149,8 @@ class QueryWebSocket(WebSocketHandler):
                     self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
                 else:
                     try:
-                        self.write_message('Results: %r' % rows)
+                        for row in rows:
+                            self.write_message(visit_to_table_line(row))
                     except:
                         log.exception('During write')
                         self.terminated = True
