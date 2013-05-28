@@ -40,6 +40,8 @@ def monkey_patch():
 
 
 class Tracking(Thread):
+    daemon = True
+
     def __init__(self, db, log, *args, **kwargs):
         super(Tracking, self).__init__(*args, **kwargs)
         self.log = log
@@ -139,7 +141,7 @@ class Hdr(RequestHandler):
             self.set_secure_cookie('_pystil_site', 'local|' + str(uuid4()))
 
     def on_finish(self):
-        self.db.rollback();
+        self.db.rollback()
 
 
 class url(object):

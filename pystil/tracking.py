@@ -143,15 +143,18 @@ class Message(object):
             visit['day'] = visit['date'].date()
             visit['hour'] = visit['date'].hour
             browser_minor_version = ''
-            if (
-                    visit['browser_name'] not in ('opera', 'safari', 'chrome') and
-                    len(visit['browser_version'].split('.')) > 1):
-                browser_minor_version = '.%s' % visit['browser_version'].split('.')[1]
+            if (visit['browser_version'] and visit['browser_name'] not in (
+                    'opera', 'safari', 'chrome') and len(
+                        visit['browser_version'].split('.')) > 1):
+                browser_minor_version = '.%s' % visit[
+                    'browser_version'].split('.')[1]
 
-            visit['browser_name_version'] = '%s %s%s' % (visit['browser_name'],
-                                                         visit['browser_version'].split('.')[0],
-                                                         browser_minor_version)
-            visit['id'] = db.execute(select([VisitIdSeq.next_value()])).scalar()
+            visit['browser_name_version'] = '%s %s%s' % (
+                visit['browser_name'],
+                visit['browser_version'].split('.')[0],
+                browser_minor_version)
+            visit['id'] = db.execute(
+                select([VisitIdSeq.next_value()])).scalar()
             db.execute(visits.insert().returning(visits.c.id), **visit)
             self.log.debug('%r inserted' % self)
             return visit, True

@@ -37,7 +37,7 @@ options = dict(
                    'templates/site/*',
                    'templates/*.html']
     },
-    install_requires=['tornado', 'pygal', 'sqlalchemy', 'psycopg2'],
+    install_requires=['tornado', 'pygal', 'sqlalchemy', 'psycopg2', 'momoko'],
     classifiers=[
         "Development Status :: WIP",
         "Intended Audience :: Public",
