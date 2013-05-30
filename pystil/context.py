@@ -18,25 +18,11 @@ from logging import getLogger
 from pystil.db import metadata, Visit
 from threading import Thread
 from queue import Queue
+from wdb.ext import wdb_tornado, add_w_builtin
 
 MESSAGE_QUEUE = Queue()
 
 log = getLogger("pystil")
-
-
-def monkey_patch():
-    old_execute = RequestHandler._execute
-
-    def _wdb_execute(self, transforms, *args, **kwargs):
-        from wdb import Wdb
-        wdbr = Wdb.trace()
-        old_execute(self, transforms, *args, **kwargs)
-        wdbr.stop_trace()
-        wdbr.die()
-
-    RequestHandler._execute = _wdb_execute
-
-# monkey_patch()
 
 
 class Tracking(Thread):
@@ -111,6 +97,8 @@ class Pystil(Application):
                 getLogger(logger).addHandler(smtp_handler)
         else:
             self.log.setLevel(logging.DEBUG)
+            wdb_tornado(self, start_disabled=True)
+            add_w_builtin()
             #getLogger('sqlalchemy').setLevel(logging.DEBUG)
 
     @property

@@ -143,6 +143,7 @@ class Message(object):
             visit['day'] = visit['date'].date()
             visit['hour'] = visit['date'].hour
             browser_minor_version = ''
+            visit['browser_version'] = visit['browser_version'] or ''
             if (visit['browser_version'] and visit['browser_name'] not in (
                     'opera', 'safari', 'chrome') and len(
                         visit['browser_version'].split('.')) > 1):
