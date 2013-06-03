@@ -45,7 +45,7 @@
       return add_info(m, 'paused');
     },
     BEGIN: function(m) {
-      return add_info(m, 'begun');
+      return add_info(m, 'searching');
     },
     BUSY: function(m) {
       return add_info(m, 'busy');
@@ -90,7 +90,7 @@
         return commands[cmd](data);
       }
     };
-    add_info('Searching...', 'searching');
+    add_info('Initializing', 'init');
     return $(window).scroll(function() {
       if ($(window).scrollTop() + $(window).height() === $(document).height()) {
         if ($('p.paused').size()) {

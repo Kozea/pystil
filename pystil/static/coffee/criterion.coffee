@@ -28,7 +28,7 @@ commands = (
         add_info m, 'paused'
 
     BEGIN: (m) ->
-        add_info m, 'begun'
+        add_info m, 'searching'
 
     BUSY: (m) ->
         add_info m, 'busy'
@@ -67,7 +67,7 @@ $ ->
             data = message.substr(pipe + 1)
             commands[cmd] data
 
-    add_info 'Searching...', 'searching'
+    add_info 'Initializing', 'init'
     $(window).scroll () ->
         if $(window).scrollTop() + $(window).height() == $(document).height()
             if $('p.paused').size()
