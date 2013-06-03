@@ -189,9 +189,11 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                 if not rows:
                     self.terminated = True
                     self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
-                    if self.ws_connection:
+                    try:
                         self.write_message('END|Done found %d visit%s' % (
                             self.count, 's' if self.count > 1 else ''))
+                    except:
+                        pass
                 else:
                     try:
                         for row in rows:
@@ -202,16 +204,23 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                     except Exception as e:
                         log.warn('During write', exc_info=True)
                         self.terminated = True
-                        self.write_message('END|%s: %s' % (type(e), str(e)))
                         self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
+                        try:
+                            self.write_message(
+                                'END|%s: %s' % (type(e), str(e)))
+                        except:
+                            pass
                     else:
                         if self.count < self.stop:
                             self.cursor.execute(
                                 'FETCH FORWARD 1 FROM visit_cur;')
                         else:
                             self.paused = True
-                            self.write_message(
-                                'PAUSE|Paused on %d visits' % self.count)
+                            try:
+                                self.write_message(
+                                    'PAUSE|Paused on %d visits' % self.count)
+                            except:
+                                pass
             elif state == POLL_READ:
                 self.momoko_connection.ioloop.update_handler(
                     self.momoko_connection.fileno, IOLoop.READ)
