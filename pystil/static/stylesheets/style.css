@@ -236,42 +236,56 @@ article > dl dd {
 article > dl dl {
   margin-top: 0;
 }
+/* line 153, ../sass/style.sass */
+article p.query_info {
+  margin: 1em 0;
+  font-size: 1.5em;
+  color: #8b8b8b;
+}
+/* line 157, ../sass/style.sass */
+article p.query_info.paused {
+  opacity: 0;
+}
+/* line 159, ../sass/style.sass */
+article p.query_info.error {
+  color: #c51637;
+}
 
-/* line 154, ../sass/style.sass */
+/* line 162, ../sass/style.sass */
 .sites table {
   border-collapse: collapse;
 }
-/* line 157, ../sass/style.sass */
+/* line 165, ../sass/style.sass */
 .sites table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.3);
 }
-/* line 159, ../sass/style.sass */
+/* line 167, ../sass/style.sass */
 .sites table tbody tr:hover {
   background: rgba(255, 255, 255, 0.5);
 }
-/* line 161, ../sass/style.sass */
+/* line 169, ../sass/style.sass */
 .sites table thead tr {
   background: rgba(255, 255, 255, 0.7);
   height: 1.8em;
 }
 
-/* line 165, ../sass/style.sass */
+/* line 173, ../sass/style.sass */
 .dates, .criterion {
   overflow: hidden;
   *zoom: 1;
   color: #af9e73;
 }
-/* line 169, ../sass/style.sass */
+/* line 177, ../sass/style.sass */
 .dates div, .criterion div {
   float: left;
 }
-/* line 171, ../sass/style.sass */
+/* line 179, ../sass/style.sass */
 .dates label, .criterion label {
   font-family: "Elevant";
   font-size: 1.5em;
   font-weight: bold;
 }
-/* line 175, ../sass/style.sass */
+/* line 183, ../sass/style.sass */
 .dates input[type="text"], .dates select, .criterion input[type="text"], .criterion select {
   background: url('/static/img/bg-form.png?1355139710') no-repeat top left;
   border: 0;
@@ -280,26 +294,26 @@ article > dl dl {
   padding: 2px 10px;
   width: 250px;
 }
-/* line 182, ../sass/style.sass */
+/* line 190, ../sass/style.sass */
 .dates input[type="text"]:focus, .dates input[type="text"]:hover, .dates select:focus, .dates select:hover, .criterion input[type="text"]:focus, .criterion input[type="text"]:hover, .criterion select:focus, .criterion select:hover {
   outline: none;
 }
-/* line 185, ../sass/style.sass */
+/* line 193, ../sass/style.sass */
 .dates i:hover, .criterion i:hover {
   cursor: pointer;
   color: #988657;
 }
 
-/* line 190, ../sass/style.sass */
+/* line 198, ../sass/style.sass */
 .search {
   margin: 0 0 25px 5%;
 }
-/* line 192, ../sass/style.sass */
+/* line 200, ../sass/style.sass */
 .search label {
   color: transparent;
   font-size: 0;
 }
-/* line 195, ../sass/style.sass */
+/* line 203, ../sass/style.sass */
 .search input {
   background: rgba(201, 190, 155, 0.4) url('/static/img/icon-search.png?1355139710') no-repeat 2px center;
   border: 1px solid #bfb38c;
@@ -308,23 +322,23 @@ article > dl dl {
   padding: 0.3em 2px 0.3em 25px;
   width: 20%;
 }
-/* line 202, ../sass/style.sass */
+/* line 210, ../sass/style.sass */
 .search input:hover, .search input:focus {
   background: rgba(201, 190, 155, 0.8) url('/static/img/icon-search.png?1355139710') no-repeat 2px center;
 }
 
-/* line 206, ../sass/style.sass */
+/* line 214, ../sass/style.sass */
 input::-webkit-input-placeholder, input:-moz-placeholder {
   color: #7e6b2d;
 }
 
-/* line 210, ../sass/style.sass */
+/* line 218, ../sass/style.sass */
 .sites.results table {
   width: 90%;
   margin: 10px 5% 90px;
 }
 
-/* line 215, ../sass/style.sass */
+/* line 223, ../sass/style.sass */
 .ui-datepicker {
   border: 0;
   border-radius: 0;
@@ -334,17 +348,17 @@ input::-webkit-input-placeholder, input:-moz-placeholder {
   width: 240px;
 }
 
-/* line 223, ../sass/style.sass */
+/* line 231, ../sass/style.sass */
 .ui-widget-content {
   background: #d8ceb0;
   width: 240px;
 }
-/* line 226, ../sass/style.sass */
+/* line 234, ../sass/style.sass */
 .ui-widget-content:hover, .ui-widget-content:focus {
   outline: none;
 }
 
-/* line 229, ../sass/style.sass */
+/* line 237, ../sass/style.sass */
 .ui-widget-header {
   background: rgba(255, 255, 255, 0.5);
   border: 0;
@@ -352,31 +366,31 @@ input::-webkit-input-placeholder, input:-moz-placeholder {
   outline: none;
 }
 
-/* line 236, ../sass/style.sass */
+/* line 244, ../sass/style.sass */
 .ui-datepicker .ui-datepicker-prev, .ui-datepicker .ui-datepicker-next {
   border: none;
 }
 
-/* line 239, ../sass/style.sass */
+/* line 247, ../sass/style.sass */
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
   color: #4f4116;
 }
 
-/* line 242, ../sass/style.sass */
+/* line 250, ../sass/style.sass */
 ui-datepicker-calendar {
   margin: 0 5px;
 }
 
-/* line 246, ../sass/style.sass */
+/* line 254, ../sass/style.sass */
 table thead {
   text-align: left;
 }
 
-/* line 249, ../sass/style.sass */
+/* line 257, ../sass/style.sass */
 td.edit {
   width: 22px;
 }
-/* line 251, ../sass/style.sass */
+/* line 259, ../sass/style.sass */
 td.edit a {
   background: url('/static/img/icon-go.png?1355139710') no-repeat top left;
   color: transparent;
@@ -385,17 +399,17 @@ td.edit a {
   width: 22px;
 }
 
-/* line 258, ../sass/style.sass */
+/* line 266, ../sass/style.sass */
 section aside {
   background: none;
   margin: 0 auto;
 }
-/* line 261, ../sass/style.sass */
+/* line 269, ../sass/style.sass */
 section aside table {
   margin: 10px 10%;
 }
 
-/* line 264, ../sass/style.sass */
+/* line 272, ../sass/style.sass */
 img.logo {
   position: absolute;
   right: 0;
@@ -403,35 +417,35 @@ img.logo {
   width: 450px;
 }
 
-/* line 270, ../sass/style.sass */
+/* line 278, ../sass/style.sass */
 .loading {
   background-image: url('/static/img/ajaxloader.gif?1368777428');
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* line 275, ../sass/style.sass */
+/* line 283, ../sass/style.sass */
 .new-visit {
   color: orangered !important;
 }
 
-/* line 278, ../sass/style.sass */
+/* line 286, ../sass/style.sass */
 .pystil-tabs {
   position: relative;
 }
 
-/* line 281, ../sass/style.sass */
+/* line 289, ../sass/style.sass */
 figure {
   background: url('/static/img/bg-h2.png?1355139710') repeat-x bottom left;
   margin: 30px 0 10px;
   overflow: auto;
 }
-/* line 285, ../sass/style.sass */
+/* line 293, ../sass/style.sass */
 figure:last-of-type {
   background: none;
 }
 
-/* line 288, ../sass/style.sass */
+/* line 296, ../sass/style.sass */
 figcaption {
   color: #bb6120;
   font-family: "Elevant";
@@ -441,7 +455,7 @@ figcaption {
   text-align: center;
 }
 
-/* line 297, ../sass/style.sass */
+/* line 305, ../sass/style.sass */
 footer {
   background: url('/static/img/footer.png?1355139710') repeat 0 center;
   bottom: 0;
@@ -453,17 +467,17 @@ footer {
   position: fixed;
   width: 100%;
 }
-/* line 305, ../sass/style.sass */
+/* line 313, ../sass/style.sass */
 footer ul {
   margin: 0;
   padding: 8px 0;
   text-align: center;
 }
-/* line 309, ../sass/style.sass */
+/* line 317, ../sass/style.sass */
 footer ul li {
   display: inline-block;
 }
-/* line 311, ../sass/style.sass */
+/* line 319, ../sass/style.sass */
 footer ul li a {
   color: #8c7743;
   font-size: 0.9em;
@@ -475,7 +489,7 @@ footer ul li a {
   -o-transition: color 0.2s linear;
   transition: color 0.2s linear;
 }
-/* line 318, ../sass/style.sass */
+/* line 326, ../sass/style.sass */
 footer ul li a:hover, footer ul li a :focus {
   color: #685422;
   -webkit-transition: color 0.4s linear;

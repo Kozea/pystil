@@ -96,6 +96,44 @@ class Visit(Base):
             (time < timedelta(seconds=600), 9)
         ], else_=10))
 
+
+class CriterionView(Base):
+    __tablename__ = 'criterion_view'
+
+    id = integer(pkey=True)
+    uuid = string()
+    browser_name = string()
+    hash = string()
+    host = string()
+    browser_version = string()
+    client_tz_offset = integer()
+    date = datetime()
+    last_visit = datetime()
+    ip = string()
+    language = string()
+    page = string()
+    platform = string()
+    query = string()
+    referrer = string()
+    pretty_referrer = string()
+    referrer_domain = string()
+    site = string()
+    size = string()
+    time = Column(Interval)
+    country = string()
+    country_code = string()
+    city = string()
+    lat = decimal()
+    lng = decimal()
+    asn = string()
+
+    browser_name_version = string()
+    day = date_column()
+    hour = integer()
+    subdomain = string()
+    domain = string()
+
+
 VisitIdSeq = Sequence('visit_id_seq')
 
 metadata = Base.metadata

@@ -1,13 +1,14 @@
 from tornado.websocket import WebSocketHandler
 from pystil.context import url, MESSAGE_QUEUE, log, Hdr
-from pystil.db import Visit
+from pystil.db import CriterionView as Visit
 from tornado.options import options
 from tornado.ioloop import IOLoop
 from psycopg2.extensions import POLL_OK, POLL_READ, POLL_WRITE
 from sqlalchemy.sql.compiler import SQLCompiler
+from sqlalchemy.sql.expression import between
 from pystil.utils import visit_to_table_line
-from sqlalchemy import func, desc
-from datetime import datetime
+from sqlalchemy import func
+from datetime import datetime, timedelta
 from functools import partial
 import psycopg2
 import momoko
@@ -32,7 +33,7 @@ class LastVisitsWebSocket(WebSocketHandler):
             self.site = site
             LastVisitsWebSocket.waiters.add(self)
         else:
-            log.warn('Lats visits websocket open without secure cookie')
+            log.warn('Last visits websocket open without secure cookie')
             self.close()
 
     def on_message(self, message):
@@ -69,13 +70,13 @@ class QueryWebSocket(Hdr, WebSocketHandler):
         site = self.get_secure_cookie('_pystil_site')
         site = site and site.decode('utf-8').split('|')[0]
         self.query = None
+        self.paused = True
         if site is None:
             log.warn('Query websocket open without secure cookie')
             self.close()
             return
 
     def on_message(self, message):
-        log.warn('Message from %r' % self)
         command = message.split('|')[0]
         query = '|'.join(message.split('|')[1:])
         if command == 'criterion':
@@ -90,7 +91,9 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                         value = datetime.strptime('%Y-%m-%d')
                     except ValueError:
                         value = datetime.now()
-                filter_ = func.date_trunc('DAY', Visit.date) == value.date()
+                filter_ = between(Visit.date,
+                                  value.date(),
+                                  value.date() + timedelta(days=1))
             elif criterion in (
                     'referrer', 'asn', 'browser_name', 'site',
                     'browser_version', 'browser_name_version', 'query'):
@@ -101,29 +104,57 @@ class QueryWebSocket(Hdr, WebSocketHandler):
 
             query = (self.db
                      .query(Visit)
-                     .filter(filter_)
-                     .order_by(desc(Visit.date))
-                     .limit(20))
+                     .filter(filter_))
             dialect = query.session.bind.dialect
             compiler = SQLCompiler(dialect, query.statement)
             compiler.compile()
+            self.count = 0
+            self.stop = 20
+            self.start = True
             self.execute(compiler.string, compiler.params)
+        elif command == 'more':
+            if self.paused:
+                self.stop += 20
+                self.paused = False
+                self.cursor.execute(
+                    'FETCH FORWARD 1 FROM visit_cur;')
+        elif command == '/status':
+            for i, conn in enumerate(adb._pool):
+                if conn.busy():
+                    self.write_message(
+                        'INFO|Connection %d is busy: '
+                        'Executing? %s Closed? %d Status? %s' % (
+                            i, conn.connection.isexecuting(),
+                            conn.connection.closed,
+                            conn.connection.get_transaction_status()))
+                else:
+                    self.write_message('INFO|Connection %d is free' % i)
 
     def execute(self, query, parameters):
             self.terminated = False
             self.momoko_connection = adb._get_connection()
             if not self.momoko_connection:
-                log.warn('No connection')
-                return adb._ioloop.add_callback(partial(self.execute, query))
+                if self.start:
+                    log.info('No connection')
+                    self.write_message('BUSY|Server busy, waiting for slot')
+                self.start = False
+                if self.ws_connection:
+                    return adb._ioloop.add_callback(partial(
+                        self.execute, query, parameters))
+            if not self.ws_connection:
+                return
+            self.start = True
+            self.write_message('BEGIN|Searching')
+            self.paused = False
             self.connection = self.momoko_connection.connection
-
             self.cursor = self.connection.cursor(
                 cursor_factory=psycopg2.extras.NamedTupleCursor)
             self.cursor.execute(
                 'BEGIN;'
                 'DECLARE visit_cur SCROLL CURSOR FOR '
                 '%s;'
-                'FETCH FORWARD 1 FROM visit_cur;' % query, parameters)
+                'SELECT null as id;' % query, parameters)
+                # 'FETCH FORWARD 1 FROM visit_cur;' % query, parameters)
             self.momoko_connection.ioloop.add_handler(
                 self.momoko_connection.fileno,
                 self.io_callback,
@@ -133,7 +164,7 @@ class QueryWebSocket(Hdr, WebSocketHandler):
         try:
             state = self.connection.poll()
         except psycopg2.extensions.QueryCanceledError:
-            log.warn('Canceling request %r' % self, exc_info=True)
+            log.info('Canceling request %r' % self, exc_info=True)
             self.cursor.execute('ROLLBACK')
             self.terminated = True
         except (psycopg2.Warning, psycopg2.Error):
@@ -147,21 +178,40 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                     self.momoko_connection.ioloop.remove_handler(
                         self.momoko_connection.fileno)
                     return
-                rows = self.cursor.fetchmany()
+                try:
+                    rows = self.cursor.fetchmany()
+                except:
+                    self.connection.cancel()
+                    self.momoko_connection.ioloop.remove_handler(
+                        self.momoko_connection.fileno)
+                    return
+
                 if not rows:
                     self.terminated = True
                     self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
+                    if self.ws_connection:
+                        self.write_message('END|Done found %d visit%s' % (
+                            self.count, 's' if self.count > 1 else ''))
                 else:
                     try:
                         for row in rows:
-                            self.write_message(
-                                'VISIT|' + visit_to_table_line(row))
-                    except:
-                        log.exception('During write')
+                            if row.id:
+                                self.count += 1
+                                self.write_message(
+                                    'VISIT|' + visit_to_table_line(row))
+                    except Exception as e:
+                        log.warn('During write', exc_info=True)
                         self.terminated = True
+                        self.write_message('END|%s: %s' % (type(e), str(e)))
                         self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
                     else:
-                        self.cursor.execute('FETCH FORWARD 1 FROM visit_cur;')
+                        if self.count < self.stop:
+                            self.cursor.execute(
+                                'FETCH FORWARD 1 FROM visit_cur;')
+                        else:
+                            self.paused = True
+                            self.write_message(
+                                'PAUSE|Paused on %d visits' % self.count)
             elif state == POLL_READ:
                 self.momoko_connection.ioloop.update_handler(
                     self.momoko_connection.fileno, IOLoop.READ)
@@ -172,8 +222,10 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                 raise psycopg2.OperationalError(
                     'poll() returned {0}'.format(state))
 
-    # self.write_message('VISIT|' + visit_to_table_line(next(self.query)))
-
     def on_close(self):
-        log.warn('Closing %r' % self)
+        log.info('Closing %r' % self)
+        if not self.start:
+            return
+        if self.paused:
+            self.cursor.execute('CLOSE visit_cur; ROLLBACK;')
         self.connection.cancel()

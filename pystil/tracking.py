@@ -24,7 +24,8 @@ class Message(object):
         self.log.debug('Processing message %r' % self)
         visits = Visit.__table__
         if len(self.qs_args) == 0:
-            raise ValueError('No params in request. Must be a bot.')
+            self.log.warn('No params in request. Must be a bot.')
+            return None, False
 
         def get(key, default=None, from_encoding=None):
             value = self.qs_args.get(key, [default])[0]
