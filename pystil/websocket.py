@@ -117,7 +117,7 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                 self.stop += 20
                 self.state = 'executing'
                 self.cursor.execute(
-                    'FETCH FORWARD 10 FROM visit_cur;')
+                    'FETCH FORWARD 1 FROM visit_cur;')
         elif command == '/status':
             for i, conn in enumerate(adb._pool):
                 if conn.busy():
@@ -208,7 +208,7 @@ class QueryWebSocket(Hdr, WebSocketHandler):
                     else:
                         if self.count < self.stop:
                             self.cursor.execute(
-                                'FETCH FORWARD 10 FROM visit_cur;')
+                                'FETCH FORWARD 1 FROM visit_cur;')
                         else:
                             self.state = 'paused'
                             try:
