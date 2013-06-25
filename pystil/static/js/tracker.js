@@ -81,7 +81,3 @@
   }), 10);
 
 }).call(this);
-
-/*
-//@ sourceMappingURL=tracker.map
-*/
