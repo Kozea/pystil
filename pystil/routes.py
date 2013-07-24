@@ -48,10 +48,15 @@ class Tracker(Hdr):
         with open(gif_fn, 'rb') as gif_file:
             self.write(gif_file.read())
         self.finish()
+        try:
+            ua = self.request.headers.get('User-Agent')
+        except KeyError:
+            ua = 'Unknown'
+
         message = Message(
             self.log,
             self.request.arguments,
-            self.request.headers.get('User-Agent', 'Unknown'),
+            ua,
             self.request.headers.get(
                 'X-FORWARDED-FOR', self.request.remote_ip))
         self.log.debug('Inserting message for %s (Already in queue %s)' % (
