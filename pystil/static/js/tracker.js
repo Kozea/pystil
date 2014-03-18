@@ -35,12 +35,12 @@
         e = _error;
         0;
       }
+      uuid = c[1];
       _this.document.cookie = "pystil=" + time + "$" + uuid + "; path=/";
     } catch (_error) {
       e = _error;
-      0;
+      uuid = "%s";
     }
-    uuid = (c || [])[1] || "%s";
     track = {
       _: uuid,
       s: _this.screen.width + 'x' + _this.screen.height,

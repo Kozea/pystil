@@ -18,11 +18,11 @@ tracker = () =>
             l = @document.cookie.match('pystil=([0-9]+)')
         catch e
             0
+        uuid = c[1]
         @document.cookie = "pystil=#{time}$#{uuid}; path=/"
     catch e
-        0
+        uuid = "%s"
     # Get the cookie uuid or take a new one
-    uuid = (c or [])[1] or "%s"
     track =
         _: uuid
         # Resolution
