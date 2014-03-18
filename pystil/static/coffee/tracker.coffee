@@ -11,8 +11,18 @@ send = (query, time) ->
 tracker = () =>
     now = new Date()
     time = now.getTime()
+    c = l = null
+    try
+        c = @document.cookie.match('pystil=[0-9]+\\$(.+)')
+        try
+            l = @document.cookie.match('pystil=([0-9]+)')
+        catch e
+            0
+        @document.cookie = "pystil=#{time}$#{uuid}; path=/"
+    catch e
+        0
     # Get the cookie uuid or take a new one
-    uuid = (@document.cookie.match('pystil=[0-9]+\\$(.+)') or [])[1] or "%s"
+    uuid = (c or [])[1] or "%s"
     track =
         _: uuid
         # Resolution
@@ -34,7 +44,7 @@ tracker = () =>
         # Time zone offset
         z: -now.getTimezoneOffset()
         # Last visit or undefined
-        l: (@document.cookie.match('pystil=([0-9]+)') or [])[1]
+        l: (l or [])[1]
         # Language
         i: navigator.language or navigator.userLanguage or navigator.browserLanguage
 
@@ -42,10 +52,8 @@ tracker = () =>
     if track.r.indexOf(track.u) > -1
         track.r = track.r.replace(track.u, '')
 
-    @document.cookie = "pystil=#{time}$#{uuid}; path=/"
-
     send(make_query(track), time)
-    previous_unload = if @onunload then @onunload else () ->
+    previous_unload = if @onunload then @onunload else ->
 
     @onunload = () ->
         retrack =
@@ -64,5 +72,5 @@ tracker = () =>
         try
             send 'd=e&r=' + e.toString(), new Date().getTime()
         catch inner
-            null
+            0
 ), 10
