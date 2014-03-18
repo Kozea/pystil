@@ -43,7 +43,7 @@ class Message(object):
         if kind == 'e':
             raise RuntimeError('Problem in tracker: "%s"' % get('r'))
         uuid = get('_')
-        if '; ' in uuid:
+        if uuid and '; ' in uuid:
             uuid = uuid.split('; ')[0]
         platform, browser, version = parse_ua(self.ua)
         if kind == 'c':

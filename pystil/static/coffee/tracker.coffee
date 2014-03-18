@@ -12,16 +12,19 @@ tracker = () =>
     now = new Date()
     time = now.getTime()
     c = l = null
+    uuid = "%s"
+
     try
         c = @document.cookie.match('pystil=[0-9]+\\$(.+)')
         try
             l = @document.cookie.match('pystil=([0-9]+)')
         catch e
             0
-        uuid = c[1]
+        if c?.length > 1 and c[1] != 'undefined'
+            uuid = c[1]
         @document.cookie = "pystil=#{time}$#{uuid}; path=/"
     catch e
-        uuid = "%s"
+        0
     # Get the cookie uuid or take a new one
     track =
         _: uuid
