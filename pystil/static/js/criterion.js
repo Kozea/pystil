@@ -67,7 +67,7 @@
     if (host.indexOf(':')) {
       host = host.split(':')[0];
     }
-    window.query_ws = query_ws = new WebSocket("" + (location.protocol === 'https:' ? 'wss' : 'ws') + "://" + host + ":" + window._pystil_port + "/query");
+    window.query_ws = query_ws = new WebSocket((location.protocol === 'https:' ? "wss://" + host : "ws://" + host + ":" + window._pystil_port) + "/query");
     query_ws.onopen = function() {
       console.log('Websocket opened', arguments);
       return query_ws.send("criterion|" + criterion + "|" + value);

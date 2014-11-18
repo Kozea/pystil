@@ -50,7 +50,7 @@ $ ->
     host = location.host
     if host.indexOf(':')
         host = host.split(':')[0]
-    window.query_ws = query_ws = new WebSocket("#{if location.protocol == 'https:' then 'wss' else 'ws'}://#{host}:#{window._pystil_port}/query")
+    window.query_ws = query_ws = new WebSocket((if location.protocol == 'https:' then "wss://#{host}" else "ws://#{host}:#{window._pystil_port}")+ "/query")
 
     query_ws.onopen = ->
         console.log('Websocket opened', arguments)
