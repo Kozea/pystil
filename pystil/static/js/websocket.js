@@ -34,12 +34,12 @@
   };
 
   $(function() {
-    var host, last_visits_ws;
+    var host, last_visit_ws;
     host = location.host;
     if (host.indexOf(':')) {
       host = host.split(':')[0];
     }
-    window.last_visits_ws = last_visits_ws = new WebSocket((location.protocol === 'https:' ? "wss://" + host : "ws://" + host + ":" + window._pystil_port) + "/last_visits");
+    window.last_visit_ws = last_visit_ws = new WebSocket((location.protocol === 'https:' ? "wss://" + host : "ws://" + host + ":" + window._pystil_port) + "/last_visits");
     last_visit_ws.onopen = function() {
       return console.log('Last visits websocket opened', arguments);
     };

@@ -29,7 +29,7 @@ $ ->
     host = location.host
     if host.indexOf(':')
         host = host.split(':')[0]
-    window.last_visits_ws = last_visits_ws = new WebSocket((if location.protocol == 'https:' then "wss://#{host}" else "ws://#{host}:#{window._pystil_port}")+ "/last_visits")
+    window.last_visit_ws = last_visit_ws = new WebSocket((if location.protocol == 'https:' then "wss://#{host}" else "ws://#{host}:#{window._pystil_port}")+ "/last_visits")
 
     last_visit_ws.onopen = ->
         console.log('Last visits websocket opened', arguments)
