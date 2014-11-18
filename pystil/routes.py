@@ -31,7 +31,9 @@ class PystilJs(Hdr):
         js = os.path.join(
             self.application.settings['static_path'],
             'js', 'tracker.js')
-        base_url = '%s://%s/' % (self.request.protocol, self.request.host)
+        base_url = '%s://%s/' % (
+            self.application.settings.get('protocol', self.request.protocol),
+            self.request.host)
         with open(js) as js_file:
             self.write(js_file.read() % (base_url, str(uuid.uuid4())))
 
