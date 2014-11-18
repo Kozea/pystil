@@ -39,7 +39,7 @@
     if (host.indexOf(':')) {
       host = host.split(':')[0];
     }
-    window.last_visit_ws = last_visit_ws = new WebSocket("{if location.protocol == 'https:' then 'wss' else 'ws'}://" + host + ":" + window._pystil_port + "/last_visits");
+    window.last_visit_ws = last_visit_ws = new WebSocket("" + (location.protocol === 'https:' ? 'wss' : 'ws') + "://" + host + ":" + window._pystil_port + "/last_visits");
     last_visit_ws.onopen = function() {
       return console.log('Last visits websocket opened', arguments);
     };
