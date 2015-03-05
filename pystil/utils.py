@@ -53,7 +53,7 @@ BROWSERS = [(
     ('konqueror', 'konqueror'),
     ('k-meleon', 'kmeleon'),
     ('netscape', 'netscape'),
-    (r'msie|microsoft\s+internet\s+explorer', 'msie'),
+    (r'msie|microsoft\s+internet\s+explorer|trident/.+? rv:', 'msie'),
     ('lynx', 'lynx'),
     ('links', 'links'),
     ('seamonkey|mozilla', 'seamonkey')
